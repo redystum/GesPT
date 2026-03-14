@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('estudantes', function (Blueprint $table) {
             $table->id();
             $table->string('email')->unique();
-            $table->foreignId('plano_de_estudo')->constrained('plano_estudos');
+            $table->foreignId('plano_estudo_id')->constrained('plano_estudos');
 
             $table->softDeletes();
             $table->timestamps();
