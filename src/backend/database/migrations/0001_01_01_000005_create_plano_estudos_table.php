@@ -12,7 +12,7 @@ return new class extends Migration {
     {
         Schema::create('plano_estudos', function (Blueprint $table) {
             $table->id();
-            $table->integer('ano');
+            $table->string('ano');
             $table->foreignId('id_curso')->constrained('cursos');
 
             $table->timestamps();

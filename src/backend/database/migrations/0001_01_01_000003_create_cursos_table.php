@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nome');
             $table->string('sigla');
-            $table->string('code');
+            $table->string('codigo');
             $table->foreignId('id_curso_parente')->nullable()->constrained('cursos');
 
             $table->timestamps();

@@ -25,93 +25,129 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // ── Users ────────────────────────────────────────────────────────
+
+        // ----- Persistent data -----
         User::factory()->create([
-            'name'  => 'Admin',
+            'name' => 'Admin',
             'email' => 'admin@gespt.local',
+            'password' => bcrypt('admin123'),
         ]);
-        User::factory(9)->create();
 
-        // ── Roles & Permissions ──────────────────────────────────────────
-        $permissoes = Permissoes::factory(10)->create();
-        $roles      = Role::factory(3)->create();
+        // TODO: aqui é suposto ter todas as Permições possiveis para o admin as puder usar
+        //  ex: can_create_plano, can_create_estudante, can_update_equivalencias, etc...
 
-        foreach ($roles as $role) {
-            $permissoes->random(rand(2, 5))->each(
-                fn ($p) => RolePermissoes::factory()->create([
-                    'id_role'      => $role->id,
-                    'id_permissao' => $p->id,
-                ])
-            );
+        if (app()->isProduction()) {
+            return;
         }
 
-        User::all()->each(function ($user) use ($permissoes) {
-            $permissoes->random(rand(1, 3))->each(
-                fn ($p) => UserPermissoes::factory()->create([
-                    'id_user'      => $user->id,
-                    'id_permiscao' => $p->id,
-                ])
-            );
-        });
+        // ----- Sample data -----
 
-        // ── Academic structure ───────────────────────────────────────────
-        $cursos = Curso::factory(4)->create();
+        Curso::create([
+            ['nome' => 'Engenharia Informática', 'sigla' => 'EI', 'codigo' => '9119'],
+            ['nome' => 'Gestão', 'sigla' => 'GT', 'codigo' => '9120'],
+        ]);
 
-        $ucs = $cursos->flatMap(
-            fn ($curso) => Uc::factory(6)->create(['id_curso' => $curso->id])
-        );
+        PlanoEstudo::create([
+            ['ano' => '2026/27', 'id_curso' => 1,],
+            ['ano' => '2015/16', 'id_curso' => 1,],
+            ['ano' => '2026/27', 'id_curso' => 2,],
+        ]);
 
-        $planos = $cursos->flatMap(
-            fn ($curso) => PlanoEstudo::factory(2)->create(['id_curso' => $curso->id])
-        );
+        Estudante::create([
+            ['email' => 'joao@mail.pt', 'plano_estudo_id' => 1,],
+            ['email' => 'pedro@mail.pt', 'plano_estudo_id' => 1,],
+            ['email' => 'afonso@mail.pt', 'plano_estudo_id' => 3,],
+        ]);
 
-        $planos->each(function ($plano) use ($ucs) {
-            $ucs->random(rand(4, 8))->each(
-                fn ($uc) => PlanoCadeira::factory()->create([
-                    'id_plano' => $plano->id,
-                    'id_uc'    => $uc->id,
-                ])
-            );
-        });
+        Uc::create([
+            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
+            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
+            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
+            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
+            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
+            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
 
-        // ── Students ─────────────────────────────────────────────────────
-        $estudantes = $planos->flatMap(
-            fn ($plano) => Estudante::factory(5)->create(['plano_de_estudo' => $plano->id])
-        );
+            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
+            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
 
-        // ── Optional UC choices ──────────────────────────────────────────
-        if ($ucs->count() >= 2) {
-            $opcoes = collect();
-            for ($i = 0; $i < 10; $i++) {
-                [$ucA, $ucB] = $ucs->random(2)->values();
-                $opcoes->push(Opcoes::factory()->create([
-                    'id_uc_opcional' => $ucA->id,
-                    'id_uc'          => $ucB->id,
-                ]));
-            }
+            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
+            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
+        ]);
 
-            $estudantes->random(min(10, $estudantes->count()))->each(
-                fn ($est) => OpcoesEstudante::factory()->create([
-                    'id_estudante' => $est->id,
-                    'id_opcao'     => $opcoes->random()->id,
-                ])
-            );
-        }
+        EquivalenciaRule::create([
+            ['id_plano' => 1],
+            ['id_plano' => 1],
+            ['id_plano' => 1],
+            ['id_plano' => 1],
+            ['id_plano' => 3],
+            ['id_plano' => 3],
+        ]);
 
-        // ── Equivalencias ────────────────────────────────────────────────
-        $rules = $planos->flatMap(
-            fn ($plano) => EquivalenciaRule::factory(2)->create(['id_plano' => $plano->id])
-        );
+        Equivalencia::create([
+            // p1 + p2 = PA
+            ['id_rule' => 1, 'id_uc' => 1, 'lado' => "origem"], // p1
+            ['id_rule' => 1, 'id_uc' => 2, 'lado' => "origem"], // p2
+            ['id_rule' => 1, 'id_uc' => 3, 'lado' => "final"], // PA
 
-        $rules->each(function ($rule) use ($ucs) {
-            foreach (['Original', 'Final'] as $lado) {
-                Equivalencia::factory()->create([
-                    'id_rule' => $rule->id,
-                    'id_uc'   => $ucs->random()->id,
-                    'lado'    => $lado,
-                    'custom'  => null,
-                ]);
-            }
-        });
+            // pa = p1 + p2 + matA
+            ['id_rule' => 2, 'id_uc' => 3, 'lado' => "origem"], // PA
+            ['id_rule' => 2, 'id_uc' => 1, 'lado' => "final"], // p1
+            ['id_rule' => 2, 'id_uc' => 2, 'lado' => "final"], // p2
+            ['id_rule' => 2, 'id_uc' => 5, 'lado' => "final"], // matA
+
+            // p2 = p1 + p2
+            ['id_rule' => 3, 'id_uc' => 2, 'lado' => "origem"], // p2
+            ['id_rule' => 3, 'id_uc' => 1, 'lado' => "final"], // p1
+            ['id_rule' => 3, 'id_uc' => 2, 'lado' => "final"], // p2
+
+            // SI = p1
+            ['id_rule' => 4, 'id_uc' => 4, 'lado' => "origem"], // SI
+            ['id_rule' => 4, 'id_uc' => 1, 'lado' => "final"], // p1
+
+            // GP = OP1
+            ['id_rule' => 5, 'id_uc' => 7, 'lado' => "origem"], // GP
+            ['id_rule' => 5, 'id_uc' => 9, 'lado' => "final"], // OP1
+
+            // MK = OP2
+            ['id_rule' => 6, 'id_uc' => 8, 'lado' => "origem"], // MK
+            ['id_rule' => 6, 'id_uc' => 10, 'lado' => "final"], // OP2
+        ]);
+
+        Opcoes::create([
+            // op1
+            ['id' => 1, 'id_uc_opcional' => 9, 'id_uc' => 1],
+            ['id' => 2, 'id_uc_opcional' => 9, 'id_uc' => 2],
+            ['id' => 3, 'id_uc_opcional' => 9, 'id_uc' => 3],
+
+            // op2
+            ['id' => 4, 'id_uc_opcional' => 10, 'id_uc' => 3],
+            ['id' => 5, 'id_uc_opcional' => 10, 'id_uc' => 4],
+            ['id' => 6, 'id_uc_opcional' => 10, 'id_uc' => 5],
+            ['id' => 7, 'id_uc_opcional' => 10, 'id_uc' => 6],
+        ]);
+
+        OpcoesEstudante::create([
+            ['id_estudante' => 3, 'id_opcao' => 3],
+            ['id_estudante' => 3, 'id_opcao' => 6],
+        ]);
+
+        PlanoCadeira::create([
+            ['id_plano' => 1, 'id_uc' => 1],
+            ['id_plano' => 1, 'id_uc' => 2],
+            ['id_plano' => 1, 'id_uc' => 3],
+            ['id_plano' => 1, 'id_uc' => 4],
+            ['id_plano' => 1, 'id_uc' => 5],
+            ['id_plano' => 1, 'id_uc' => 6],
+
+            ['id_plano' => 2, 'id_uc' => 1],
+            ['id_plano' => 2, 'id_uc' => 2],
+            ['id_plano' => 2, 'id_uc' => 3],
+            ['id_plano' => 2, 'id_uc' => 4],
+            ['id_plano' => 2, 'id_uc' => 5],
+
+            ['id_plano' => 3, 'id_uc' => 7, 'opcional' => true],
+            ['id_plano' => 3, 'id_uc' => 8, 'opcional' => true],
+        ]);
+
     }
 }
