@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('plano_cadeiras', function (Blueprint $table) {
+        Schema::create('plano_ucs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('id_plano')->constrained('plano_estudos');
             $table->foreignId('id_uc')->constrained('ucs');
@@ -27,6 +27,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('plano_cadeiras');
+        Schema::dropIfExists('plano_ucs');
     }
 };
+

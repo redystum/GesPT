@@ -7,11 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class PlanoCadeira extends Model
+class PlanoUc extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $table = 'plano_cadeiras';
+    protected $table = 'plano_ucs';
 
     protected $fillable = [
         'id_plano',
@@ -33,3 +33,4 @@ class PlanoCadeira extends Model
         return $this->belongsTo(Uc::class, 'id_uc');
     }
 }
+

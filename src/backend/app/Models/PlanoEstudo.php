@@ -24,9 +24,9 @@ class PlanoEstudo extends Model
         return $this->belongsTo(Curso::class, 'id_curso');
     }
 
-    public function planoCadeiras(): HasMany
+    public function planoUcs(): HasMany
     {
-        return $this->hasMany(PlanoCadeira::class, 'id_plano');
+        return $this->hasMany(PlanoUc::class, 'id_plano');
     }
 
     public function estudantes(): HasMany

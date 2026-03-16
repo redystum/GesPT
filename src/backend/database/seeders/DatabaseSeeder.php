@@ -9,7 +9,7 @@ use App\Models\Estudante;
 use App\Models\Opcoes;
 use App\Models\OpcoesEstudante;
 use App\Models\Permissoes;
-use App\Models\PlanoCadeira;
+use App\Models\PlanoUc;
 use App\Models\PlanoEstudo;
 use App\Models\Role;
 use App\Models\RolePermissoes;
@@ -132,7 +132,7 @@ class DatabaseSeeder extends Seeder
             ['id_estudante' => 3, 'id_opcao' => 6],
         ]);
 
-        PlanoCadeira::insert([
+        PlanoUc::insert([
             ['id_plano' => 1, 'id_uc' => 1],
             ['id_plano' => 1, 'id_uc' => 2],
             ['id_plano' => 1, 'id_uc' => 3],
@@ -150,7 +150,7 @@ class DatabaseSeeder extends Seeder
             ['id_plano' => 3, 'id_uc' => 8],
         ]);
 
-        PlanoCadeira::insert([
+        PlanoUc::insert([
             ['id_plano' => 4, 'id_uc' => 9, 'opcional' => true],
             ['id_plano' => 4, 'id_uc' => 10, 'opcional' => true],
         ]);
