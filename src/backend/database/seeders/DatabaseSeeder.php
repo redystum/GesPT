@@ -94,6 +94,7 @@ class DatabaseSeeder extends Seeder
 
 //            ['id' => 7, 'id_plano' => 2, 'id_uc' => 1], // p1
 //            ['id' => 8, 'id_plano' => 2, 'id_uc' => 2], // p2
+            ['id' => 8, 'id_plano' => 2, 'id_uc' => 7], // GP
             ['id' => 9, 'id_plano' => 2, 'id_uc' => 3], // pa
             ['id' => 10, 'id_plano' => 2, 'id_uc' => 4], // SI
             ['id' => 11, 'id_plano' => 2, 'id_uc' => 5], // MATA

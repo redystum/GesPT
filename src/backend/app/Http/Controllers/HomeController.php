@@ -160,6 +160,80 @@ class HomeController extends Controller
         $response['direct_equivalences'] = $direct_equivalences;
         // endregion
 
+        // region all equivalences
+
+        $equivalences = [];
+        $uc_w_eq = [];
+        $planoFinal->planoUcs->each(function ($planoUc) use ($rules_in_plano, &$equivalences, $planoInicial, &$uc_w_eq) {
+
+            /** @var PlanoUc $d_eq */
+            $d_eq = $planoInicial->planoUcs->where('id_uc', $planoUc->id_uc)->first();
+            $eq = $rules_in_plano->map(function ($rule) use ($planoUc) {
+                $have_uc = $rule->equivalencias->map(function ($equivalencia) use ($planoUc) {
+                    return $equivalencia->lado == Equivalencia::LADO_FINAL && $equivalencia->id_plano_uc == $planoUc->id;
+                })->filter()->values()->toArray();
+
+                if (!empty($have_uc)) {
+                    return $rule->equivalencias->load('plano_uc.uc')->toArray();
+                }
+            })->filter()->values();
+
+            if ($eq->isEmpty()) {
+                if ($d_eq) {
+                    $equivalences[] = [
+                        'uc' => $planoUc->uc->toArray(),
+                        'inicial' => $d_eq->makeHidden('uc')->toArray(),
+                        'final' => $planoUc->makeHidden('uc')->toArray()
+                    ];
+                    $uc_w_eq[] = $planoUc->id_uc;
+                } else {
+                    $equivalences[] = [
+                        'uc' => $planoUc->uc->toArray(),
+                        'inicial' => null,
+                        'final' => $planoUc->makeHidden('uc')->toArray()
+                    ];
+                }
+            }
+
+            $inicial = [];
+            if ($d_eq) {
+                $inicial[] = $d_eq->makeHidden('uc')->toArray();
+            }
+
+            $eq->each(function ($equivalencia) use ($planoUc, &$inicial, $planoInicial, &$uc_w_eq) {
+                $origins = collect($equivalencia)->where('lado', Equivalencia::LADO_ORIGINAL);
+                $origins->each(function ($origin) use (&$inicial, $planoInicial) {
+                    $plano_uc = $origin['plano_uc'];
+                    $uc_w_eq[] = $plano_uc['id_uc'] ?? null;
+                    if ($plano_uc && $plano_uc['id_plano'] == $planoInicial->id) {
+                        $inicial[] = collect($plano_uc)->except('plano')->toArray();
+                    }
+                });
+            });
+
+            $equivalences[] = [
+                'uc' => $planoUc->uc->toArray(),
+                'inicial' => $inicial,
+                'final' => $planoUc->makeHidden('uc')->toArray()
+            ];
+
+             if (!$eq->isEmpty() || $d_eq) {
+                $uc_w_eq[] = $planoUc->id_uc;
+            }
+
+        });
+
+        $planoInicial->planoUcs->whereNotIn('id_uc', $uc_w_eq)->each(function ($planoUc) use (&$equivalences) {
+            $equivalences[] = [
+                'uc' => $planoUc->uc->toArray(),
+                'inicial' => $planoUc->makeHidden('uc')->toArray(),
+                'final' => null
+            ];
+        });
+        $response['equivalences'] = $equivalences;
+
+        // endregion
+
         // endregion
         dd($response);
     }
