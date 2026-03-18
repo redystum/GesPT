@@ -21,6 +21,11 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::table('cursos', function (Blueprint $table) {
+            $table->unique('sigla');
+            $table->unique('codigo');
+        });
     }
 
     /**
@@ -29,5 +34,10 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('cursos');
+
+        Schema::table('cursos', function (Blueprint $table) {
+            $table->dropUnique(['sigla']);
+            $table->dropUnique(['codigo']);
+        });
     }
 };
