@@ -7,6 +7,7 @@ use App\Models\EquivalenciaRule;
 use App\Models\Estudante;
 use App\Models\OpcoesEstudante;
 use App\Models\PlanoEstudo;
+use App\Models\PlanoUc;
 use Hamcrest\Matcher;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -121,6 +122,45 @@ class HomeController extends Controller
         $response['plano_final'] = $planoFinal->toArray();
 
 
+        // region compare plans
+
+        // region direct equivalences
+        $direct_equivalences = [];
+        $uc_w_eq = [];
+        $planoFinal->planoUcs->each(function ($planoUc) use (&$direct_equivalences, $planoInicial, &$uc_w_eq) {
+
+            /** @var PlanoUc $eq */
+            $eq = $planoInicial->planoUcs->where('id_uc', $planoUc->id_uc)->first();
+
+            if ($eq) {
+                $direct_equivalences[] = [
+                    'uc' => $planoUc->uc->toArray(),
+                    'inicial' => $eq->makeHidden('uc')->toArray(),
+                    'final' => $planoUc->makeHidden('uc')->toArray()
+                ];
+                $uc_w_eq[] = $planoUc->id_uc;
+            } else {
+                $direct_equivalences[] = [
+                    'uc' => $planoUc->uc->toArray(),
+                    'inicial' => null,
+                    'final' => $planoUc->makeHidden('uc')->toArray()
+                ];
+            }
+
+
+        });
+
+        $planoInicial->planoUcs->whereNotIn('id_uc', $uc_w_eq)->each(function ($planoUc) use (&$direct_equivalences) {
+            $direct_equivalences[] = [
+                'uc' => $planoUc->uc->toArray(),
+                'inicial' => $planoUc->makeHidden('uc')->toArray(),
+                'final' => null
+            ];
+        });
+        $response['direct_equivalences'] = $direct_equivalences;
+        // endregion
+
+        // endregion
         dd($response);
     }
 }
