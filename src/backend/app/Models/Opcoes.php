@@ -19,12 +19,12 @@ class Opcoes extends Model
         'id_uc',
     ];
 
-    public function ucOpcional(): BelongsTo
+    public function planoCadeira(): BelongsTo
     {
-        return $this->belongsTo(Uc::class, 'id_uc_opcional');
+        return $this->belongsTo(PlanoCadeira::class, 'id_uc_opcional');
     }
 
-    public function ucBase(): BelongsTo
+    public function ucEscolhida(): BelongsTo
     {
         return $this->belongsTo(Uc::class, 'id_uc');
     }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('opcoes', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('id_uc_opcional')->constrained('ucs');
+            $table->foreignId('id_uc_opcional')->constrained('plano_ucs');
             $table->foreignId('id_uc')->constrained('ucs');
 
             $table->softDeletes();

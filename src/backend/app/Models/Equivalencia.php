@@ -11,11 +11,14 @@ class Equivalencia extends Model
 {
     use HasFactory, SoftDeletes;
 
+    const LADO_ORIGINAL = "Original";
+    const LADO_FINAL = "Final";
+
     protected $table = 'equivalencias';
 
     protected $fillable = [
         'id_rule',
-        'id_uc',
+        'id_plano_uc',
         'lado',
         'custom',
     ];
@@ -25,8 +28,8 @@ class Equivalencia extends Model
         return $this->belongsTo(EquivalenciaRule::class, 'id_rule');
     }
 
-    public function uc(): BelongsTo
+    public function plano_uc(): BelongsTo
     {
-        return $this->belongsTo(Uc::class, 'id_uc');
+        return $this->belongsTo(PlanoUc::class, 'id_plano_uc');
     }
 }

@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('id_plano')->constrained('plano_estudos');
             $table->foreignId('id_uc')->constrained('ucs');
-            $table->boolean('opcional')->default(false);
 
             $table->timestamps();
             $table->softDeletes();
