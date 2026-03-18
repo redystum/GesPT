@@ -77,21 +77,23 @@ class HomeController extends Controller
                 if (!empty($have_uc)) {
 
                     //! This is to verify if all the origins is the actual initial plan, but this is not necessary.... waste of time...
-//                    $original_is_initial = $rule->equivalencias->map(function ($equivalencia) use ($planoInicial, $planoUc) {
-//                        return $equivalencia->lado == Equivalencia::LADO_ORIGINAL &&
-//                            $equivalencia->load('plano_uc') &&
-//                            $equivalencia->plano_uc?->id_plano == $planoInicial->id &&
-//                            $equivalencia->makeHidden('plano_uc'); // unload plano_uc
-//                    })->filter()->values()->toArray();
-//
-//                    // only returns the trues so the amount of them needs to match the origin so we know that this can be applied
-//                    if (!empty($original_is_initial) &&
-//                        count($original_is_initial) == count($rule->equivalencias->where('lado', Equivalencia::LADO_ORIGINAL))
-//                    ) {
-//                        $rules[] = $rule->equivalencias->toArray();
-//                    }
+                    /*
+                    $original_is_initial = $rule->equivalencias->map(function ($equivalencia) use ($planoInicial, $planoUc) {
+                        return $equivalencia->lado == Equivalencia::LADO_ORIGINAL &&
+                            $equivalencia->load('plano_uc') &&
+                            $equivalencia->plano_uc?->id_plano == $planoInicial->id &&
+                            $equivalencia->makeHidden('plano_uc'); // unload plano_uc
+                    })->filter()->values()->toArray();
 
-                    $rules[] = $rule->equivalencias->toArray();
+                    // only returns the trues so the amount of them needs to match the origin so we know that this can be applied
+                    if (!empty($original_is_initial) &&
+                        count($original_is_initial) == count($rule->equivalencias->where('lado', Equivalencia::LADO_ORIGINAL))
+                    ) {
+                        $rules[] = $rule->equivalencias->toArray();
+                    }
+                    */
+
+                    $rules[] = $rule->equivalencias->load('plano_uc.uc')->toArray();
                 }
             }
 

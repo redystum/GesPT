@@ -85,48 +85,76 @@ class DatabaseSeeder extends Seeder
         ]);
 
         PlanoUc::insert([
-            ['id' => 1,'id_plano' => 1, 'id_uc' => 1], // p1
-            ['id' => 2,'id_plano' => 1, 'id_uc' => 2], // p2
-            ['id' => 3,'id_plano' => 1, 'id_uc' => 3], // pa
-            ['id' => 4,'id_plano' => 1, 'id_uc' => 4], // SI
-            ['id' => 5,'id_plano' => 1, 'id_uc' => 5], // MATA
-            ['id' => 6,'id_plano' => 1, 'id_uc' => 6], // MATB
+            ['id' => 1, 'id_plano' => 1, 'id_uc' => 1], // p1
+            ['id' => 2, 'id_plano' => 1, 'id_uc' => 2], // p2
+            ['id' => 3, 'id_plano' => 1, 'id_uc' => 3], // pa
+            ['id' => 4, 'id_plano' => 1, 'id_uc' => 4], // SI
+            ['id' => 5, 'id_plano' => 1, 'id_uc' => 5], // MATA
+            ['id' => 6, 'id_plano' => 1, 'id_uc' => 6], // MATB
 
-            ['id' => 7,'id_plano' => 2, 'id_uc' => 1], // p1
-            ['id' => 8,'id_plano' => 2, 'id_uc' => 2], // p2
-            ['id' => 9,'id_plano' => 2, 'id_uc' => 3], // pa
-            ['id' => 10,'id_plano' => 2, 'id_uc' => 4], // SI
-            ['id' => 11,'id_plano' => 2, 'id_uc' => 5], // MATA
+//            ['id' => 7, 'id_plano' => 2, 'id_uc' => 1], // p1
+//            ['id' => 8, 'id_plano' => 2, 'id_uc' => 2], // p2
+            ['id' => 9, 'id_plano' => 2, 'id_uc' => 3], // pa
+            ['id' => 10, 'id_plano' => 2, 'id_uc' => 4], // SI
+            ['id' => 11, 'id_plano' => 2, 'id_uc' => 5], // MATA
 
-            ['id' => 12,'id_plano' => 3, 'id_uc' => 7], // GP
-            ['id' => 13,'id_plano' => 3, 'id_uc' => 8], // MK
+            ['id' => 12, 'id_plano' => 3, 'id_uc' => 7], // GP
+            ['id' => 13, 'id_plano' => 3, 'id_uc' => 8], // MK
 
             // opcionais
-            ['id' => 14,'id_plano' => 4, 'id_uc' => 9], // OP1
-            ['id' => 15,'id_plano' => 4, 'id_uc' => 10], // OP2
+            ['id' => 14, 'id_plano' => 4, 'id_uc' => 9], // OP1
+            ['id' => 15, 'id_plano' => 4, 'id_uc' => 10], // OP2
         ]);
+
+        // ignore this because our scope is only one plan to other and not equivalências de estudante so the Ucs are not repeatable
+        if (false) {
+            /** @noinspection PhpUnreachableStatementInspection */
+            Equivalencia::insert([
+                // p1 + p2 = PA
+                ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => "Original"], // p1 plano1
+                ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
+                ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => "Final"], // PA plano2
+
+                // pa = p1 + p2 + matA
+                ['id_rule' => 2, 'id_plano_uc' => 3, 'lado' => "Original"], // PA plano1
+                ['id_rule' => 2, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
+                ['id_rule' => 2, 'id_plano_uc' => 8, 'lado' => "Final"], // p2 plano2
+                ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => "Final"], // matA plano2
+
+                // p2 = p1 + p2
+                ['id_rule' => 3, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
+                ['id_rule' => 3, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
+                ['id_rule' => 3, 'id_plano_uc' => 8, 'lado' => "Final"], // p2 plano2
+
+                // SI = p1
+                ['id_rule' => 4, 'id_plano_uc' => 4, 'lado' => "Original"], // SI plano1
+                ['id_rule' => 4, 'id_plano_uc' => null, 'lado' => "Original"], // custom
+                ['id_rule' => 4, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
+
+                // GP = OP1
+                ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => "Original"], // GP plano3
+                ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => "Final"], // OP1 plano4
+
+                // MK = OP2
+                ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => "Original"], // MK plano3
+                ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => "Final"], // OP2 plano4
+            ]);
+        }
 
         Equivalencia::insert([
             // p1 + p2 = PA
             ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => "Original"], // p1 plano1
             ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
-            ['id_rule' => 1, 'id_plano_uc' => 8, 'lado' => "Final"], // PA plano2
+            ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => "Final"], // PA plano2
 
-            // pa = p1 + p2 + matA
-            ['id_rule' => 2, 'id_plano_uc' => 3, 'lado' => "Original"], // PA plano1
-            ['id_rule' => 2, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
-            ['id_rule' => 2, 'id_plano_uc' => 8, 'lado' => "Final"], // p2 plano2
-            ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => "Final"], // matA plano2
+            // SI = SI + matA
+            ['id_rule' => 2, 'id_plano_uc' => 4, 'lado' => "Original"], // SI plano1
+            ['id_rule' => 2, 'id_plano_uc' => 10, 'lado' => "Final"], // SI plano2
+            ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => "Final"], // MATA plano2
 
-            // p2 = p1 + p2
-            ['id_rule' => 3, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
-            ['id_rule' => 3, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
-            ['id_rule' => 3, 'id_plano_uc' => 8, 'lado' => "Final"], // p2 plano2
-
-            // SI = p1
-            ['id_rule' => 4, 'id_plano_uc' => 4, 'lado' => "Original"], // SI plano1
-            ['id_rule' => 4, 'id_plano_uc' => null, 'lado' => "Original"], // custom
-            ['id_rule' => 4, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
+            // MATB = MATA
+            ['id_rule' => 3, 'id_plano_uc' => 6, 'lado' => "Original"], // MATB plano1
+            ['id_rule' => 3, 'id_plano_uc' => 11, 'lado' => "Final"], // MATA plano2
 
             // GP = OP1
             ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => "Original"], // GP plano3
@@ -136,6 +164,7 @@ class DatabaseSeeder extends Seeder
             ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => "Original"], // MK plano3
             ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => "Final"], // OP2 plano4
         ]);
+
 
         Opcoes::insert([
             // op1
