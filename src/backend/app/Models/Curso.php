@@ -17,7 +17,7 @@ class Curso extends Model
     protected $fillable = [
         'nome',
         'sigla',
-        'code',
+        'codigo',
         'id_curso_parente',
     ];
 
