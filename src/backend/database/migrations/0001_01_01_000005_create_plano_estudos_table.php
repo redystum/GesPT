@@ -19,6 +19,10 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
         });
+
+        Schema::table('plano_estudos', function (Blueprint $table) {
+            $table->unique(['ano', 'id_curso'], 'plano_estudos_ano_id_curso_unique');
+        });
     }
 
     /**
@@ -27,5 +31,9 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('plano_estudos');
+
+        Schema::table('plano_estudos', function (Blueprint $table) {
+            $table->dropUnique('plano_estudos_ano_id_curso_unique');
+        });
     }
 };
