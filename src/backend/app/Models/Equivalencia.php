@@ -11,8 +11,9 @@ class Equivalencia extends Model
 {
     use HasFactory, SoftDeletes;
 
-    const LADO_ORIGINAL = "Original";
-    const LADO_FINAL = "Final";
+    const LADO_ORIGINAL = 'Original';
+
+    const LADO_FINAL = 'Final';
 
     protected $table = 'equivalencias';
 

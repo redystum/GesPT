@@ -8,14 +8,10 @@ use App\Models\Estudante;
 use App\Models\OpcoesEstudante;
 use App\Models\PlanoEstudo;
 use App\Models\PlanoUc;
-use Hamcrest\Matcher;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use function Psy\debug;
 
 class HomeController extends Controller
 {
-
     // http://localhost:8000/api/home?estudante_id=1&plano_inicial=1&plano_final=2
     public function index(Request $request)
     {
@@ -40,7 +36,6 @@ class HomeController extends Controller
             ->with(['opcao', 'opcao.ucEscolhida'])
             ->get();
 
-
         $opFinal = OpcoesEstudante::where('id_estudante', $estudante->id)
             ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
             ->join('plano_ucs', 'opcoes.id_uc_opcional', '=', 'plano_ucs.id')
@@ -55,7 +50,7 @@ class HomeController extends Controller
                 ->values()->where('id_uc_opcional', $planoUc->id)
                 ->first()?->toArray();
 
-            if (!empty($op)) {
+            if (! empty($op)) {
                 $planoUc->opcao_escolhida = $op['uc_escolhida'];
             } else {
                 $planoUc->opcao_escolhida = null;
@@ -66,8 +61,7 @@ class HomeController extends Controller
             ->with('equivalencias')
             ->get();
 
-        $planoFinal->planoUcs->map(function ($planoUc) use ($planoInicial, $rules_in_plano, $planoFinal, $opFinal) {
-
+        $planoFinal->planoUcs->map(function ($planoUc) use ($rules_in_plano, $opFinal) {
 
             $rules = [];
             foreach ($rules_in_plano as $rule) {
@@ -75,9 +69,9 @@ class HomeController extends Controller
                     return $equivalencia->lado == Equivalencia::LADO_FINAL && $equivalencia->id_plano_uc == $planoUc->id;
                 })->filter()->values()->toArray();
 
-                if (!empty($have_uc)) {
+                if (! empty($have_uc)) {
 
-                    //! This is to verify if all the origins is the actual initial plan, but this is not necessary.... waste of time...
+                    // ! This is to verify if all the origins is the actual initial plan, but this is not necessary.... waste of time...
                     /*
                     $original_is_initial = $rule->equivalencias->map(function ($equivalencia) use ($planoInicial, $planoUc) {
                         return $equivalencia->lado == Equivalencia::LADO_ORIGINAL &&
@@ -98,7 +92,7 @@ class HomeController extends Controller
                 }
             }
 
-            if (!empty($rules)) {
+            if (! empty($rules)) {
                 $planoUc->equivalencias = $rules;
             } else {
                 $planoUc->equivalencias = null;
@@ -110,7 +104,7 @@ class HomeController extends Controller
                 ->values()->where('id_uc_opcional', $planoUc->id)
                 ->first()?->toArray();
 
-            if (!empty($op)) {
+            if (! empty($op)) {
                 $planoUc->opcao_escolhida = $op['uc_escolhida'];
             } else {
                 $planoUc->opcao_escolhida = null;
@@ -120,7 +114,6 @@ class HomeController extends Controller
         $response = [];
         $response['plano_inicial'] = $planoInicial->toArray();
         $response['plano_final'] = $planoFinal->toArray();
-
 
         // region compare plans
 
@@ -136,17 +129,16 @@ class HomeController extends Controller
                 $direct_equivalences[] = [
                     'uc' => $planoUc->uc->toArray(),
                     'inicial' => $eq->makeHidden('uc')->toArray(),
-                    'final' => $planoUc->makeHidden('uc')->toArray()
+                    'final' => $planoUc->makeHidden('uc')->toArray(),
                 ];
                 $uc_w_eq[] = $planoUc->id_uc;
             } else {
                 $direct_equivalences[] = [
                     'uc' => $planoUc->uc->toArray(),
                     'inicial' => null,
-                    'final' => $planoUc->makeHidden('uc')->toArray()
+                    'final' => $planoUc->makeHidden('uc')->toArray(),
                 ];
             }
-
 
         });
 
@@ -154,7 +146,7 @@ class HomeController extends Controller
             $direct_equivalences[] = [
                 'uc' => $planoUc->uc->toArray(),
                 'inicial' => $planoUc->makeHidden('uc')->toArray(),
-                'final' => null
+                'final' => null,
             ];
         });
         $response['direct_equivalences'] = $direct_equivalences;
@@ -173,7 +165,7 @@ class HomeController extends Controller
                     return $equivalencia->lado == Equivalencia::LADO_FINAL && $equivalencia->id_plano_uc == $planoUc->id;
                 })->filter()->values()->toArray();
 
-                if (!empty($have_uc)) {
+                if (! empty($have_uc)) {
                     return $rule->equivalencias->load('plano_uc.uc')->toArray();
                 }
             })->filter()->values();
@@ -183,14 +175,14 @@ class HomeController extends Controller
                     $equivalences[] = [
                         'uc' => $planoUc->uc->toArray(),
                         'inicial' => $d_eq->makeHidden('uc')->toArray(),
-                        'final' => $planoUc->makeHidden('uc')->toArray()
+                        'final' => $planoUc->makeHidden('uc')->toArray(),
                     ];
                     $uc_w_eq[] = $planoUc->id_uc;
                 } else {
                     $equivalences[] = [
                         'uc' => $planoUc->uc->toArray(),
                         'inicial' => null,
-                        'final' => $planoUc->makeHidden('uc')->toArray()
+                        'final' => $planoUc->makeHidden('uc')->toArray(),
                     ];
                 }
             }
@@ -200,7 +192,7 @@ class HomeController extends Controller
                 $inicial[] = $d_eq->makeHidden('uc')->toArray();
             }
 
-            $eq->each(function ($equivalencia) use ($planoUc, &$inicial, $planoInicial, &$uc_w_eq) {
+            $eq->each(function ($equivalencia) use (&$inicial, $planoInicial, &$uc_w_eq) {
                 $origins = collect($equivalencia)->where('lado', Equivalencia::LADO_ORIGINAL);
                 $origins->each(function ($origin) use (&$inicial, $planoInicial) {
                     $plano_uc = $origin['plano_uc'];
@@ -214,10 +206,10 @@ class HomeController extends Controller
             $equivalences[] = [
                 'uc' => $planoUc->uc->toArray(),
                 'inicial' => $inicial,
-                'final' => $planoUc->makeHidden('uc')->toArray()
+                'final' => $planoUc->makeHidden('uc')->toArray(),
             ];
 
-             if (!$eq->isEmpty() || $d_eq) {
+            if (! $eq->isEmpty() || $d_eq) {
                 $uc_w_eq[] = $planoUc->id_uc;
             }
 
@@ -227,7 +219,7 @@ class HomeController extends Controller
             $equivalences[] = [
                 'uc' => $planoUc->uc->toArray(),
                 'inicial' => $planoUc->makeHidden('uc')->toArray(),
-                'final' => null
+                'final' => null,
             ];
         });
         $response['equivalences'] = $equivalences;

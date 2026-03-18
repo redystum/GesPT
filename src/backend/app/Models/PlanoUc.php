@@ -33,4 +33,3 @@ class PlanoUc extends Model
         return $this->belongsTo(Uc::class, 'id_uc');
     }
 }
-

@@ -8,14 +8,10 @@ use App\Models\EquivalenciaRule;
 use App\Models\Estudante;
 use App\Models\Opcoes;
 use App\Models\OpcoesEstudante;
-use App\Models\Permissoes;
-use App\Models\PlanoUc;
 use App\Models\PlanoEstudo;
-use App\Models\Role;
-use App\Models\RolePermissoes;
+use App\Models\PlanoUc;
 use App\Models\Uc;
 use App\Models\User;
-use App\Models\UserPermissoes;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -48,31 +44,31 @@ class DatabaseSeeder extends Seeder
         ]);
 
         PlanoEstudo::insert([
-            ['ano' => '2015/16', 'id_curso' => 1,],
-            ['ano' => '2026/27', 'id_curso' => 1,],
-            ['ano' => '2015/16', 'id_curso' => 2,],
-            ['ano' => '2026/27', 'id_curso' => 2,],
+            ['ano' => '2015/16', 'id_curso' => 1],
+            ['ano' => '2026/27', 'id_curso' => 1],
+            ['ano' => '2015/16', 'id_curso' => 2],
+            ['ano' => '2026/27', 'id_curso' => 2],
         ]);
 
         Estudante::insert([
-            ['email' => 'joao@mail.pt', 'plano_estudo_id' => 1,],
-            ['email' => 'pedro@mail.pt', 'plano_estudo_id' => 1,],
-            ['email' => 'afonso@mail.pt', 'plano_estudo_id' => 3,],
+            ['email' => 'joao@mail.pt', 'plano_estudo_id' => 1],
+            ['email' => 'pedro@mail.pt', 'plano_estudo_id' => 1],
+            ['email' => 'afonso@mail.pt', 'plano_estudo_id' => 3],
         ]);
 
         Uc::insert([
-            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
-            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
-            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
-            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
-            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
-            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1,],
+            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1],
+            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1],
+            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1],
+            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1],
+            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1],
+            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1],
 
-            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
-            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
+            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2],
+            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2],
 
-            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
-            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2,],
+            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2],
+            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2],
         ]);
 
         EquivalenciaRule::insert([
@@ -87,13 +83,13 @@ class DatabaseSeeder extends Seeder
         PlanoUc::insert([
             ['id' => 1, 'id_plano' => 1, 'id_uc' => 1], // p1
             ['id' => 2, 'id_plano' => 1, 'id_uc' => 2], // p2
-//            ['id' => 3, 'id_plano' => 1, 'id_uc' => 3], // pa
+            //            ['id' => 3, 'id_plano' => 1, 'id_uc' => 3], // pa
             ['id' => 4, 'id_plano' => 1, 'id_uc' => 4], // SI
             ['id' => 5, 'id_plano' => 1, 'id_uc' => 5], // MATA
             ['id' => 6, 'id_plano' => 1, 'id_uc' => 6], // MATB
 
-//            ['id' => 7, 'id_plano' => 2, 'id_uc' => 1], // p1
-//            ['id' => 8, 'id_plano' => 2, 'id_uc' => 2], // p2
+            //            ['id' => 7, 'id_plano' => 2, 'id_uc' => 1], // p1
+            //            ['id' => 8, 'id_plano' => 2, 'id_uc' => 2], // p2
             ['id' => 8, 'id_plano' => 2, 'id_uc' => 7], // GP
             ['id' => 9, 'id_plano' => 2, 'id_uc' => 3], // pa
             ['id' => 10, 'id_plano' => 2, 'id_uc' => 4], // SI
@@ -112,60 +108,59 @@ class DatabaseSeeder extends Seeder
             /** @noinspection PhpUnreachableStatementInspection */
             Equivalencia::insert([
                 // p1 + p2 = PA
-                ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => "Original"], // p1 plano1
-                ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
-                ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => "Final"], // PA plano2
+                ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => 'Original'], // p1 plano1
+                ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => 'Original'], // p2 plano1
+                ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => 'Final'], // PA plano2
 
                 // pa = p1 + p2 + matA
-                ['id_rule' => 2, 'id_plano_uc' => 3, 'lado' => "Original"], // PA plano1
-                ['id_rule' => 2, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
-                ['id_rule' => 2, 'id_plano_uc' => 8, 'lado' => "Final"], // p2 plano2
-                ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => "Final"], // matA plano2
+                ['id_rule' => 2, 'id_plano_uc' => 3, 'lado' => 'Original'], // PA plano1
+                ['id_rule' => 2, 'id_plano_uc' => 7, 'lado' => 'Final'], // p1 plano2
+                ['id_rule' => 2, 'id_plano_uc' => 8, 'lado' => 'Final'], // p2 plano2
+                ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => 'Final'], // matA plano2
 
                 // p2 = p1 + p2
-                ['id_rule' => 3, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
-                ['id_rule' => 3, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
-                ['id_rule' => 3, 'id_plano_uc' => 8, 'lado' => "Final"], // p2 plano2
+                ['id_rule' => 3, 'id_plano_uc' => 2, 'lado' => 'Original'], // p2 plano1
+                ['id_rule' => 3, 'id_plano_uc' => 7, 'lado' => 'Final'], // p1 plano2
+                ['id_rule' => 3, 'id_plano_uc' => 8, 'lado' => 'Final'], // p2 plano2
 
                 // SI = p1
-                ['id_rule' => 4, 'id_plano_uc' => 4, 'lado' => "Original"], // SI plano1
-                ['id_rule' => 4, 'id_plano_uc' => null, 'lado' => "Original"], // custom
-                ['id_rule' => 4, 'id_plano_uc' => 7, 'lado' => "Final"], // p1 plano2
+                ['id_rule' => 4, 'id_plano_uc' => 4, 'lado' => 'Original'], // SI plano1
+                ['id_rule' => 4, 'id_plano_uc' => null, 'lado' => 'Original'], // custom
+                ['id_rule' => 4, 'id_plano_uc' => 7, 'lado' => 'Final'], // p1 plano2
 
                 // GP = OP1
-                ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => "Original"], // GP plano3
-                ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => "Final"], // OP1 plano4
+                ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => 'Original'], // GP plano3
+                ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => 'Final'], // OP1 plano4
 
                 // MK = OP2
-                ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => "Original"], // MK plano3
-                ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => "Final"], // OP2 plano4
+                ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => 'Original'], // MK plano3
+                ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => 'Final'], // OP2 plano4
             ]);
         }
 
         Equivalencia::insert([
             // p1 + p2 = PA
-            ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => "Original"], // p1 plano1
-            ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => "Original"], // p2 plano1
-            ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => "Final"], // PA plano2
+            ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => 'Original'], // p1 plano1
+            ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => 'Original'], // p2 plano1
+            ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => 'Final'], // PA plano2
 
             // SI = SI + matA
-            ['id_rule' => 2, 'id_plano_uc' => 4, 'lado' => "Original"], // SI plano1
-            ['id_rule' => 2, 'id_plano_uc' => 10, 'lado' => "Final"], // SI plano2
-            ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => "Final"], // MATA plano2
+            ['id_rule' => 2, 'id_plano_uc' => 4, 'lado' => 'Original'], // SI plano1
+            ['id_rule' => 2, 'id_plano_uc' => 10, 'lado' => 'Final'], // SI plano2
+            ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => 'Final'], // MATA plano2
 
             // MATB = MATA
-            ['id_rule' => 3, 'id_plano_uc' => 6, 'lado' => "Original"], // MATB plano1
-            ['id_rule' => 3, 'id_plano_uc' => 11, 'lado' => "Final"], // MATA plano2
+            ['id_rule' => 3, 'id_plano_uc' => 6, 'lado' => 'Original'], // MATB plano1
+            ['id_rule' => 3, 'id_plano_uc' => 11, 'lado' => 'Final'], // MATA plano2
 
             // GP = OP1
-            ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => "Original"], // GP plano3
-            ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => "Final"], // OP1 plano4
+            ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => 'Original'], // GP plano3
+            ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => 'Final'], // OP1 plano4
 
             // MK = OP2
-            ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => "Original"], // MK plano3
-            ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => "Final"], // OP2 plano4
+            ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => 'Original'], // MK plano3
+            ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => 'Final'], // OP2 plano4
         ]);
-
 
         Opcoes::insert([
             // op1
