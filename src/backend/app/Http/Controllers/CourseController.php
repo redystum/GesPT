@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\CursoResource;
 use App\Models\Curso;
 use Illuminate\Http\Request;
 
@@ -9,24 +10,17 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::query()
-            ->select('id', 'nome', 'sigla', 'codigo')
-            ->get();
+        $cursos = Curso::all();
 
         return response()->json([
-            'data' => $cursos,
+            'data' => CursoResource::collection($cursos),
         ], 200);
     }
 
-    public function show(Curso $curso)
+    public function show(Curso $course)
     {
         return response()->json([
-            'data' => [
-                'id' => $curso->id,
-                'nome' => $curso->nome,
-                'sigla' => $curso->sigla,
-                'codigo' => $curso->codigo,
-            ],
+            'data' => CursoResource::make($course),
         ], 200);
     }
 
@@ -38,43 +32,33 @@ class CourseController extends Controller
             'codigo' => ['required', 'string', 'max:10', 'unique:cursos,codigo'],
         ]);
 
-        $curso = Curso::create($validated);
+        $course = Curso::create($validated);
 
         return response()->json([
             'message' => 'Curso criado com sucesso!',
-            'data' => [
-                'id' => $curso->id,
-                'nome' => $curso->nome,
-                'sigla' => $curso->sigla,
-                'codigo' => $curso->codigo,
-            ],
+            'data' => CursoResource::make($course),
         ], 201);
     }
 
-    public function update(Request $request, Curso $curso)
+    public function update(Request $request, Curso $course)
     {
         $validated = $request->validate([
             'nome' => ['sometimes', 'string', 'max:255'],
-            'sigla' => ['sometimes', 'string', 'max:20', 'unique:cursos,sigla,' . $curso->id],
-            'codigo' => ['sometimes', 'string', 'max:10', 'unique:cursos,codigo,' . $curso->id],
+            'sigla' => ['sometimes', 'string', 'max:20', 'unique:cursos,sigla,' . $course->id],
+            'codigo' => ['sometimes', 'string', 'max:10', 'unique:cursos,codigo,' . $course->id],
         ]);
 
-        $curso->update($validated);
+        $course->update($validated);
 
         return response()->json([
             'message' => 'Curso atualizado com sucesso!',
-            'data' => [
-                'id' => $curso->id,
-                'nome' => $curso->nome,
-                'sigla' => $curso->sigla,
-                'codigo' => $curso->codigo,
-            ],
+            'data' => CursoResource::make($course),
         ], 200);
     }
 
-    public function destroy(Curso $curso)
+    public function destroy(Curso $course)
     {
-        $curso->delete();
+        $course->delete();
 
         return response()->json([
             'message' => 'Curso deletado com sucesso!',

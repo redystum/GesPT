@@ -12,8 +12,4 @@ Route::get('/user', function (Request $request) {
 Route::get('/home', [HomeController::class, 'index']);
 
 // Routes for courses
-Route::get('/course', [CourseController::class, 'index']);
-Route::get('/course/{curso}', [CourseController::class, 'show']);
-Route::post('/course', [CourseController::class, 'store']);
-Route::put('/course/{curso}', [CourseController::class, 'update']);
-Route::delete('/course/{curso}', [CourseController::class, 'destroy']);
+Route::apiResource('course', CourseController::class);
