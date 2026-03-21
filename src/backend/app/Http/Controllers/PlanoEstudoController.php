@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePlanoEstudoRequest;
+use App\Http\Requests\UpdatePlanoEstudoRequest;
 use App\Models\PlanoEstudo;
 use Illuminate\Http\Request;
 use App\Http\Resources\PlanoEstudoResource;
@@ -36,14 +38,9 @@ class PlanoEstudoController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(StorePlanoEstudoRequest $request)
     {
-        $validated = $request->validate([
-            'ano' => ['required', 'string', 'max:9'],
-            'id_curso' => ['required', 'integer', 'exists:cursos,id'],
-        ]);
-
-        $planosEstudo = PlanoEstudo::create($validated);
+        $planosEstudo = PlanoEstudo::create($request->validated());
 
         return response()->json([
             'message' => 'Plano de estudo criado com sucesso!',
@@ -51,14 +48,9 @@ class PlanoEstudoController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, PlanoEstudo $planosEstudo)
+    public function update(UpdatePlanoEstudoRequest $request, PlanoEstudo $planosEstudo)
     {
-        $validated = $request->validate([
-            'ano' => ['sometimes', 'string', 'max:9'],
-            'id_curso' => ['sometimes', 'integer', 'exists:cursos,id'],
-        ]);
-
-        $planosEstudo->update($validated);
+        $planosEstudo->update($request->validated());
 
         return response()->json([
             'message' => 'Plano de estudo atualizado com sucesso!',
