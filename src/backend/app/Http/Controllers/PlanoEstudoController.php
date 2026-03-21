@@ -17,18 +17,7 @@ class PlanoEstudoController extends Controller
             ->get();
 
         return response()->json([
-            'data' => $planos->map(function ($planosEstudo) {
-                return [
-                    'id' => $planosEstudo->id,
-                    'ano' => $planosEstudo->ano,
-                    'curso' => $planosEstudo->curso ? [
-                        'id' => $planosEstudo->curso->id,
-                        'nome' => $planosEstudo->curso->nome,
-                        'sigla' => $planosEstudo->curso->sigla,
-                        'codigo' => $planosEstudo->curso->codigo,
-                    ] : null,
-                ];
-            })->values(),
+            'data' => PlanoEstudoResource::collection($planos),
         ], 200);
     }
 
@@ -43,28 +32,7 @@ class PlanoEstudoController extends Controller
         ]);
 
         return response()->json([
-            'data' => [
-                'id' => $planosEstudo->id,
-                'ano' => $planosEstudo->ano,
-                'curso' => $planosEstudo->curso ? [
-                    'id' => $planosEstudo->curso->id,
-                    'nome' => $planosEstudo->curso->nome,
-                    'sigla' => $planosEstudo->curso->sigla,
-                    'codigo' => $planosEstudo->curso->codigo,
-                ] : null,
-                'ucs' => $planosEstudo->planoUcs
-                    ->filter(fn ($planoUc) => $planoUc->uc !== null) // keep only planoUcs that have a related uc
-                    ->map(function ($planoUc) {
-                        return [
-                            'id' => $planoUc->uc->id,
-                            'nome' => $planoUc->uc->nome,
-                            'sigla' => $planoUc->uc->sigla,
-                            'ects' => $planoUc->uc->ects,
-                            'opcional' => (bool) $planoUc->opcional,
-                        ];
-                    })
-                    ->values(),
-            ],
+            'data' => PlanoEstudoResource::make($planosEstudo),
         ], 200);
     }
 
@@ -86,8 +54,8 @@ class PlanoEstudoController extends Controller
     public function update(Request $request, PlanoEstudo $planosEstudo)
     {
         $validated = $request->validate([
-            'ano' => ['required', 'string', 'max:9'],
-            'id_curso' => ['required', 'integer', 'exists:cursos,id'],
+            'ano' => ['sometimes', 'string', 'max:9'],
+            'id_curso' => ['sometimes', 'integer', 'exists:cursos,id'],
         ]);
 
         $planosEstudo->update($validated);
