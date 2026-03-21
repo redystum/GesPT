@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PlanoEstudoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,3 +14,6 @@ Route::get('/home', [HomeController::class, 'index']);
 
 // Routes for courses
 Route::apiResource('course', CourseController::class);
+
+// Routes for Planos de Estudo
+Route::apiResource('plano-estudo', PlanoEstudoController::class);

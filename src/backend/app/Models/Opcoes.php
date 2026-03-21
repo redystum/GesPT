@@ -33,4 +33,9 @@ class Opcoes extends Model
     {
         return $this->hasMany(OpcoesEstudante::class, 'id_opcao');
     }
+
+    public function opcoes(): BelongsTo
+    {
+        return $this->belongsTo(PlanoUc::class, 'id_uc_opcional');
+    }
 }
