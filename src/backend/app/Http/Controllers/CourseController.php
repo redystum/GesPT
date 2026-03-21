@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCourseRequest;
+use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CursoResource;
 use App\Models\Curso;
 use Illuminate\Http\Request;
@@ -24,15 +26,9 @@ class CourseController extends Controller
         ], 200);
     }
 
-    public function store(Request $request)
+    public function store(StoreCourseRequest $request)
     {
-        $validated = $request->validate([
-            'nome' => ['required', 'string', 'max:255'],
-            'sigla' => ['required', 'string', 'max:20', 'unique:cursos,sigla'],
-            'codigo' => ['required', 'string', 'max:10', 'unique:cursos,codigo'],
-        ]);
-
-        $course = Curso::create($validated);
+        $course = Curso::create($request->validated());
 
         return response()->json([
             'message' => 'Curso criado com sucesso!',
@@ -40,15 +36,9 @@ class CourseController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Curso $curso)
+    public function update(UpdateCourseRequest $request, Curso $curso)
     {
-        $validated = $request->validate([
-            'nome' => ['sometimes', 'string', 'max:255'],
-            'sigla' => ['sometimes', 'string', 'max:20', 'unique:cursos,sigla,' . $curso->id],
-            'codigo' => ['sometimes', 'string', 'max:10', 'unique:cursos,codigo,' . $curso->id],
-        ]);
-
-        $curso->update($validated);
+        $curso->update($request->validated());
 
         return response()->json([
             'message' => 'Curso atualizado com sucesso!',
