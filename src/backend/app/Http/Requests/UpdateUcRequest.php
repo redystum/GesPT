@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UpdateUcRequest extends FormRequest
 {
@@ -21,9 +22,17 @@ class UpdateUcRequest extends FormRequest
      */
     public function rules(): array
     {
+        $uc = $this->route('uc'); // Get the Uc model instance from the route
+
         return [
             'nome' => ['sometimes', 'string', 'max:255'],
-            'sigla' => ['sometimes', 'string', 'max:20', 'unique:ucs,sigla,' . $this->route('uc')->id],
+            'sigla' => [
+                'sometimes', 
+                'string', 
+                'max:20', 
+                'unique:ucs,sigla,', 
+                Rule::unique('ucs', 'sigla')->ignore($uc),
+            ],
             'ects' => ['sometimes', 'integer', 'min:1'],
             'horas' => ['sometimes', 'integer', 'min:1'],
             'id_curso' => ['sometimes', 'integer', 'exists:cursos,id'],
