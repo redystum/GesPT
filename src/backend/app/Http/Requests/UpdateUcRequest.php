@@ -27,10 +27,9 @@ class UpdateUcRequest extends FormRequest
         return [
             'nome' => ['sometimes', 'string', 'max:255'],
             'sigla' => [
-                'sometimes', 
-                'string', 
-                'max:20', 
-                'unique:ucs,sigla,', 
+                'sometimes',
+                'string',
+                'max:20',
                 Rule::unique('ucs', 'sigla')->ignore($uc),
             ],
             'ects' => ['sometimes', 'integer', 'min:1'],
