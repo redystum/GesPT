@@ -101,6 +101,11 @@ class DatabaseSeeder extends Seeder
             // opcionais
             ['id' => 14, 'id_plano' => 4, 'id_uc' => 9], // OP1
             ['id' => 15, 'id_plano' => 4, 'id_uc' => 10], // OP2
+
+
+            // direct eq
+            ['id' => 16, 'id_plano' => 1, 'id_uc' => 9], // OP1
+            ['id' => 17, 'id_plano' => 2, 'id_uc' => 9], // OP2
         ]);
 
         // ignore this because our scope is only one plan to other and not equivalências de estudante so the Ucs are not repeatable

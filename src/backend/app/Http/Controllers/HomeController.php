@@ -19,6 +19,7 @@ class HomeController extends Controller
             'estudante_id' => 'required|integer|exists:estudantes,id',
             'plano_inicial' => 'required|integer|exists:plano_estudos,id',
             'plano_final' => 'required|integer|exists:plano_estudos,id',
+            'dd' => 'nullable|bool'
         ]);
 
         $planoInicial = PlanoEstudo::where('id', $request->plano_inicial)
@@ -194,7 +195,7 @@ class HomeController extends Controller
 
             $eq->each(function ($equivalencia) use (&$inicial, $planoInicial, &$uc_w_eq) {
                 $origins = collect($equivalencia)->where('lado', Equivalencia::LADO_ORIGINAL);
-                $origins->each(function ($origin) use (&$inicial, $planoInicial) {
+                $origins->each(function ($origin) use (&$inicial, $planoInicial, &$uc_w_eq) {
                     $plano_uc = $origin['plano_uc'];
                     $uc_w_eq[] = $plano_uc['id_uc'] ?? null;
                     if ($plano_uc && $plano_uc['id_plano'] == $planoInicial->id) {
@@ -218,7 +219,7 @@ class HomeController extends Controller
         $planoInicial->planoUcs->whereNotIn('id_uc', $uc_w_eq)->each(function ($planoUc) use (&$equivalences) {
             $equivalences[] = [
                 'uc' => $planoUc->uc->toArray(),
-                'inicial' => $planoUc->makeHidden('uc')->toArray(),
+                'inicial' => [$planoUc->makeHidden('uc')->toArray()],
                 'final' => null,
             ];
         });
@@ -227,6 +228,8 @@ class HomeController extends Controller
         // endregion
 
         // endregion
-        dd($response);
+        if ($request->dd)
+            dd($response);
+        return response()->json($response);
     }
 }
