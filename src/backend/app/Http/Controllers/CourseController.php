@@ -12,7 +12,10 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $curso = Curso::all();
+        $curso = Curso::query()
+            ->select('id', 'nome', 'sigla', 'codigo')
+            ->orderByDesc('id')
+            ->get();
 
         return response()->json([
             'data' => CursoResource::collection($curso),
