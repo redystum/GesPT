@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PlanoEstudo;
 use Illuminate\Http\Request;
+use App\Http\Resources\PlanoEstudoResource;
 
 class PlanoEstudoController extends Controller
 {
@@ -78,11 +79,7 @@ class PlanoEstudoController extends Controller
 
         return response()->json([
             'message' => 'Plano de estudo criado com sucesso!',
-            'data' => [
-                'id' => $planoEstudo->id,
-                'ano' => $planoEstudo->ano,
-                'id_curso' => $planoEstudo->id_curso,
-            ],
+            'data' => PlanoEstudoResource::make($planoEstudo),
         ], 201);
     }
 
@@ -97,11 +94,7 @@ class PlanoEstudoController extends Controller
 
         return response()->json([
             'message' => 'Plano de estudo atualizado com sucesso!',
-            'data' => [
-                'id' => $planoEstudo->id,
-                'ano' => $planoEstudo->ano,
-                'id_curso' => $planoEstudo->id_curso,
-            ],
+            'data' => PlanoEstudoResource::make($planoEstudo),
         ], 201);
     }
 
