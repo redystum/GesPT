@@ -10,17 +10,17 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $cursos = Curso::all();
+        $curso = Curso::all();
 
         return response()->json([
-            'data' => CursoResource::collection($cursos),
+            'data' => CursoResource::collection($curso),
         ], 200);
     }
 
-    public function show(Curso $course)
+    public function show(Curso $curso)
     {
         return response()->json([
-            'data' => CursoResource::make($course),
+            'data' => CursoResource::make($curso),
         ], 200);
     }
 
@@ -40,25 +40,25 @@ class CourseController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, Curso $course)
+    public function update(Request $request, Curso $curso)
     {
         $validated = $request->validate([
             'nome' => ['sometimes', 'string', 'max:255'],
-            'sigla' => ['sometimes', 'string', 'max:20', 'unique:cursos,sigla,' . $course->id],
-            'codigo' => ['sometimes', 'string', 'max:10', 'unique:cursos,codigo,' . $course->id],
+            'sigla' => ['sometimes', 'string', 'max:20', 'unique:cursos,sigla,' . $curso->id],
+            'codigo' => ['sometimes', 'string', 'max:10', 'unique:cursos,codigo,' . $curso->id],
         ]);
 
-        $course->update($validated);
+        $curso->update($validated);
 
         return response()->json([
             'message' => 'Curso atualizado com sucesso!',
-            'data' => CursoResource::make($course),
+            'data' => CursoResource::make($curso),
         ], 200);
     }
 
-    public function destroy(Curso $course)
+    public function destroy(Curso $curso)
     {
-        $course->delete();
+        $curso->delete();
 
         return response()->json([
             'message' => 'Curso deletado com sucesso!',

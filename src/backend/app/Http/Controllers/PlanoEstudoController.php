@@ -17,24 +17,24 @@ class PlanoEstudoController extends Controller
             ->get();
 
         return response()->json([
-            'data' => $planos->map(function ($planoEstudos) {
+            'data' => $planos->map(function ($planosEstudo) {
                 return [
-                    'id' => $planoEstudos->id,
-                    'ano' => $planoEstudos->ano,
-                    'curso' => $planoEstudos->curso ? [
-                        'id' => $planoEstudos->curso->id,
-                        'nome' => $planoEstudos->curso->nome,
-                        'sigla' => $planoEstudos->curso->sigla,
-                        'codigo' => $planoEstudos->curso->codigo,
+                    'id' => $planosEstudo->id,
+                    'ano' => $planosEstudo->ano,
+                    'curso' => $planosEstudo->curso ? [
+                        'id' => $planosEstudo->curso->id,
+                        'nome' => $planosEstudo->curso->nome,
+                        'sigla' => $planosEstudo->curso->sigla,
+                        'codigo' => $planosEstudo->curso->codigo,
                     ] : null,
                 ];
             })->values(),
         ], 200);
     }
 
-    public function show(PlanoEstudo $planoEstudo)
+    public function show(PlanoEstudo $planosEstudo)
     {
-        $planoEstudo->load([
+        $planosEstudo->load([
             'curso:id,nome,sigla,codigo',
             'planoUcs' => fn ($q) => $q
                 ->select('id', 'id_plano', 'id_uc')
@@ -44,15 +44,15 @@ class PlanoEstudoController extends Controller
 
         return response()->json([
             'data' => [
-                'id' => $planoEstudo->id,
-                'ano' => $planoEstudo->ano,
-                'curso' => $planoEstudo->curso ? [
-                    'id' => $planoEstudo->curso->id,
-                    'nome' => $planoEstudo->curso->nome,
-                    'sigla' => $planoEstudo->curso->sigla,
-                    'codigo' => $planoEstudo->curso->codigo,
+                'id' => $planosEstudo->id,
+                'ano' => $planosEstudo->ano,
+                'curso' => $planosEstudo->curso ? [
+                    'id' => $planosEstudo->curso->id,
+                    'nome' => $planosEstudo->curso->nome,
+                    'sigla' => $planosEstudo->curso->sigla,
+                    'codigo' => $planosEstudo->curso->codigo,
                 ] : null,
-                'ucs' => $planoEstudo->planoUcs
+                'ucs' => $planosEstudo->planoUcs
                     ->filter(fn ($planoUc) => $planoUc->uc !== null) // keep only planoUcs that have a related uc
                     ->map(function ($planoUc) {
                         return [
@@ -75,32 +75,32 @@ class PlanoEstudoController extends Controller
             'id_curso' => ['required', 'integer', 'exists:cursos,id'],
         ]);
 
-        $planoEstudo = PlanoEstudo::create($validated);
+        $planosEstudo = PlanoEstudo::create($validated);
 
         return response()->json([
             'message' => 'Plano de estudo criado com sucesso!',
-            'data' => PlanoEstudoResource::make($planoEstudo),
+            'data' => PlanoEstudoResource::make($planosEstudo),
         ], 201);
     }
 
-    public function update(Request $request, PlanoEstudo $planoEstudo)
+    public function update(Request $request, PlanoEstudo $planosEstudo)
     {
         $validated = $request->validate([
             'ano' => ['required', 'string', 'max:9'],
             'id_curso' => ['required', 'integer', 'exists:cursos,id'],
         ]);
 
-        $planoEstudo->update($validated);
+        $planosEstudo->update($validated);
 
         return response()->json([
             'message' => 'Plano de estudo atualizado com sucesso!',
-            'data' => PlanoEstudoResource::make($planoEstudo),
-        ], 201);
+            'data' => PlanoEstudoResource::make($planosEstudo),
+        ], 200);
     }
 
-    public function destroy(PlanoEstudo $planoEstudo)
+    public function destroy(PlanoEstudo $planosEstudo)
     {
-        $planoEstudo->delete();
+        $planosEstudo->delete();
 
         return response()->json([
             'message' => 'Plano de estudo deletado com sucesso!',
