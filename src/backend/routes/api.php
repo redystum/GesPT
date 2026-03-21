@@ -13,7 +13,7 @@ Route::get('/user', function (Request $request) {
 Route::get('/home', [HomeController::class, 'index']);
 
 // Routes for courses
-Route::apiResource('course', CourseController::class);
+Route::apiResource('cursos', CourseController::class);
 
 // Routes for Planos de Estudo
-Route::apiResource('plano-estudo', PlanoEstudoController::class);
+Route::apiResource('planos-estudo', PlanoEstudoController::class);
