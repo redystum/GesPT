@@ -34,7 +34,7 @@ class UnidadeCurricularController extends Controller
 
     public function store(StoreUcRequest $request)
     {
-        $uc = Uc::create($request->validate());
+        $uc = Uc::create($request->validated());
 
         return response()->json([
             'message' => 'Unidade curricular criada com sucesso!',
@@ -44,7 +44,7 @@ class UnidadeCurricularController extends Controller
 
     public function update(UpdateUcRequest $request, Uc $uc)
     {
-        $uc->update($request->validate());
+        $uc->update($request->validated());
 
         return response()->json([
             'message' => 'Unidade curricular atualizada com sucesso!',

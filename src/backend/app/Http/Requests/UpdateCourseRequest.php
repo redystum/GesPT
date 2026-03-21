@@ -30,14 +30,12 @@ class UpdateCourseRequest extends FormRequest
                 'sometimes', 
                 'string', 
                 'max:20', 
-                'unique:cursos,sigla,',
                 Rule::unique('cursos', 'sigla')->ignore($curso),
             ],
             'codigo' => [
                 'sometimes', 
                 'string', 
                 'max:10', 
-                'unique:cursos,codigo,',
                 Rule::unique('cursos', 'codigo')->ignore($curso),
             ],
         ];

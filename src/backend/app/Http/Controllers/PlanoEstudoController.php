@@ -30,7 +30,7 @@ class PlanoEstudoController extends Controller
             'planoUcs' => fn ($q) => $q
                 ->select('id', 'id_plano', 'id_uc')
                 ->withExists(['opcoes as opcional']), // add opcional attribute to each planoUc
-            'planoUcs.uc:id,nome,sigla,ects,id_curso',
+            'planoUcs.uc:id,nome,sigla,ects,horas,id_curso',
         ]);
 
         return response()->json([
