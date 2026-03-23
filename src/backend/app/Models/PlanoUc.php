@@ -19,10 +19,6 @@ class PlanoUc extends Model
         'id_uc',
     ];
 
-    protected $casts = [
-        'opcional' => 'boolean',
-    ];
-
     public function planoEstudo(): BelongsTo
     {
         return $this->belongsTo(PlanoEstudo::class, 'id_plano');
@@ -32,7 +28,7 @@ class PlanoUc extends Model
     {
         return $this->belongsTo(Uc::class, 'id_uc');
     }
-    
+
     public function opcoes(): HasMany
     {
         return $this->hasMany(Opcoes::class, 'id_uc_opcional');
