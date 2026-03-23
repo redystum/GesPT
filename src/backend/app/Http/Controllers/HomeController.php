@@ -186,7 +186,12 @@ class HomeController extends Controller
                         'inicial' => null,
                         'final' => $planoUc->makeHidden('uc')->toArray(),
                     ];
+                    $uc_w_eq[] = $planoUc->id_uc;
                 }
+            }
+
+            if (in_array($planoUc->uc->id, $uc_w_eq)) {
+                return;
             }
 
             $inicial = [];
@@ -206,21 +211,15 @@ class HomeController extends Controller
                 });
             });
 
-            if (in_array($planoUc->uc->id, $uc_w_eq)) {
-                return;
-            }
-
             $equivalences[] = [
                 'uc' => $planoUc->uc->toArray(),
                 'inicial' => $inicial,
                 'final' => $planoUc->makeHidden('uc')->toArray(),
             ];
 
-
             if (!$eq->isEmpty() || $d_eq) {
                 $uc_w_eq[] = $planoUc->id_uc;
             }
-
         });
 
         $planoInicial->planoUcs->whereNotIn('id_uc', $uc_w_eq)->each(function ($planoUc) use (&$equivalences) {
