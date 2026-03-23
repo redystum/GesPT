@@ -19,11 +19,6 @@ class Opcoes extends Model
         'id_uc',
     ];
 
-    public function planoCadeira(): BelongsTo
-    {
-        return $this->belongsTo(PlanoCadeira::class, 'id_uc_opcional');
-    }
-
     public function ucEscolhida(): BelongsTo
     {
         return $this->belongsTo(Uc::class, 'id_uc');
@@ -34,7 +29,7 @@ class Opcoes extends Model
         return $this->hasMany(OpcoesEstudante::class, 'id_opcao');
     }
 
-    public function opcoes(): BelongsTo
+    public function planoUc(): BelongsTo
     {
         return $this->belongsTo(PlanoUc::class, 'id_uc_opcional');
     }

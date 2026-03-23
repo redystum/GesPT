@@ -18,10 +18,12 @@ Route::get('/home', [HomeController::class, 'index']);
 Route::apiResource('cursos', CourseController::class);
 
 // Routes for Planos de Estudo
-Route::apiResource('planos-estudo', PlanoEstudoController::class);
+Route::apiResource('planos-estudo', PlanoEstudoController::class)
+    ->parameters(['planos-estudo' => 'planoEstudo']);
 
 // Routes for UCs
 Route::apiResource('ucs', UnidadeCurricularController::class);
 
 // Routes for Opções
-Route::apiResource('opcoes', OpcoesController::class);
+Route::apiResource('opcoes', OpcoesController::class)
+    ->parameters(['opcoes' => 'opcoao']);

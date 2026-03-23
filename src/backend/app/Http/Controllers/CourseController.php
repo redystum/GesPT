@@ -12,13 +12,13 @@ class CourseController extends Controller
 {
     public function index()
     {
-        $curso = Curso::query()
+        $cursos = Curso::query()
             ->select('id', 'nome', 'sigla', 'codigo')
             ->orderByDesc('id')
             ->get();
 
         return response()->json([
-            'data' => CursoResource::collection($curso),
+            'data' => CursoResource::collection($cursos),
         ], 200);
     }
 
@@ -31,11 +31,11 @@ class CourseController extends Controller
 
     public function store(StoreCourseRequest $request)
     {
-        $course = Curso::create($request->validated());
+        $curso = Curso::create($request->validated());
 
         return response()->json([
             'message' => 'Curso criado com sucesso!',
-            'data' => CursoResource::make($course),
+            'data' => CursoResource::make($curso),
         ], 201);
     }
 
