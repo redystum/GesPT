@@ -18,31 +18,6 @@ async function fetchData() {
   }
 }
 
-function groupEquivalences(items) {
-  const grouped = new Map()
-
-  items.forEach(item => {
-    const ucId = item.uc?.id
-    if (!grouped.has(ucId)) {
-      grouped.set(ucId, {
-        uc: item.uc,
-        iniciais: []
-      })
-    }
-
-    // Add inicial value(s) to the group
-    if (item.inicial) {
-      if (Array.isArray(item.inicial)) {
-        item.inicial.forEach(init => {
-          grouped.get(ucId).iniciais.push(init)
-        })
-      }
-    }
-  })
-
-  return Array.from(grouped.values())
-}
-
 onMounted(fetchData)
 watch([estudante_id, plano_inicial, plano_final], fetchData)
 </script>
@@ -67,14 +42,41 @@ watch([estudante_id, plano_inicial, plano_final], fetchData)
     <table class="min-w-full table-auto border-collapse border dark:border-neutral-700">
       <thead class="bg-neutral-100 dark:bg-neutral-800">
         <tr>
-          <th class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 text-left dark:text-white">Inicial</th>
-          <th class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 text-left dark:text-white">Final</th>
+          <th
+            class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 text-left dark:text-white"
+          >
+            Inicial
+          </th>
+          <th
+            class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 text-left dark:text-white"
+          >
+            Final
+          </th>
         </tr>
       </thead>
       <tbody>
-        <tr v-for="(group, index) in groupEquivalences(equivalences)" :key="group.uc.id" :class="index % 2 === 0 ? 'bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-700' : 'bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700'">
-          <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">{{ group.iniciais.length === 0 ? 'N/A' : group.iniciais.map(item => item.uc?.nome || item.nome).join(', ') }}</td>
-          <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">{{ group.uc.nome }}</td>
+        <tr
+          v-for="(item, index) in equivalences"
+          :key="index"
+          :class="
+            index % 2 === 0
+              ? 'bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+              : 'bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+          "
+        >
+          <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">
+            {{
+              item.inicial?.map((item) => item.uc?.nome || item.nome).join(', ') ?? 'N/A'
+            }}
+          </td>
+          <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">
+            <!--            {{-->
+            <!--              item.final?.length == 0-->
+            <!--                ? 'N/A'-->
+            <!--                : (item.final?.map((item) => item.uc?.nome || item.nome).join(', ') ?? 'N/A')-->
+            <!--            }}-->
+            {{ item.uc?.nome ?? 'N/A' }}
+          </td>
         </tr>
       </tbody>
     </table>
