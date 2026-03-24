@@ -1,7 +1,7 @@
 name: GPI Staging Deploy
 run-name: Deploy to Staging
 # uncomment to enable
-# on: [push]
+on: [push]
 
 jobs:
   Deploy_Frontend:
