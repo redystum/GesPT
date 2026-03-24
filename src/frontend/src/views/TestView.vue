@@ -20,12 +20,20 @@ async function fetchData() {
 
 function formatFinal(item) {
   if (!item) return 'N/A'
+  if (!item['final']) return 'N/A'
 
   if (item['final']['opcao_escolhida']) {
     return item['uc']['nome'] + ' -> ' + item['final']['opcao_escolhida']['nome']
   }
 
   return item.uc?.nome
+}
+
+function formatInicial(item) {
+  if (!item) return 'N/A'
+  if (!item['inicial']) return 'N/A'
+
+  return item.inicial.map((item) => item.uc?.nome || item.nome).join(', ') ?? 'N/A'
 }
 
 onMounted(fetchData)
@@ -49,11 +57,18 @@ watch([estudante_id, plano_inicial, plano_final], fetchData)
       <option v-for="n in 4" :key="n" :value="n">{{ n }}</option>
     </select>
 
-    <button class="ml-4! px-2 p-1 border border-neutral-700 rounded cursor-pointer" @click="() =>{
-      estudante_id = 3;
-      plano_inicial = 3;
-      plano_final = 4
-    }">See options example</button>
+    <button
+      class="ml-4! px-2 p-1 border border-neutral-700 rounded cursor-pointer"
+      @click="
+        () => {
+          estudante_id = 3
+          plano_inicial = 3
+          plano_final = 4
+        }
+      "
+    >
+      See options example
+    </button>
 
     <table class="min-w-full table-auto border-collapse border dark:border-neutral-700">
       <thead class="bg-neutral-100 dark:bg-neutral-800">
@@ -81,7 +96,7 @@ watch([estudante_id, plano_inicial, plano_final], fetchData)
           "
         >
           <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">
-            {{ item.inicial?.map((item) => item.uc?.nome || item.nome).join(', ') ?? 'N/A' }}
+            {{ formatInicial(item) }}
           </td>
           <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">
             <!--            {{-->

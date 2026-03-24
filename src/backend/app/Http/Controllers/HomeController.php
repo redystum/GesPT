@@ -206,7 +206,9 @@ class HomeController extends Controller
                     $plano_uc = $origin['plano_uc'];
                     $uc_w_eq[] = $plano_uc['id_uc'] ?? null;
                     if ($plano_uc && $plano_uc['id_plano'] == $planoInicial->id) {
-                        $inicial[] = collect($plano_uc)->except('plano')->toArray();
+                        $_eq = collect($plano_uc)->except('plano')->toArray();
+                        $d_eq_w_uc = [...$_eq, 'uc' => $plano_uc['uc']];
+                        $inicial[] = $d_eq_w_uc;
                     }
                 });
             });
