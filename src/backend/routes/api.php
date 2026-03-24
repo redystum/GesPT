@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\EquivalencesController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlanoEstudoController;
 use App\Http\Controllers\UnidadeCurricularController;
@@ -13,7 +14,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::get('/home', [HomeController::class, 'index']);
+Route::get('/home', [EquivalencesController::class, 'index']);
 
 // Routes for courses
 Route::apiResource('cursos', CourseController::class);

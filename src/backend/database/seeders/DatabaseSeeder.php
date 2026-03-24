@@ -117,7 +117,7 @@ class DatabaseSeeder extends Seeder
             ['id' => 2, 'id_plano' => 1, 'id_uc' => 2], // p2
             //            ['id' => 3, 'id_plano' => 1, 'id_uc' => 3], // pa
             ['id' => 4, 'id_plano' => 1, 'id_uc' => 4], // SI
-            ['id' => 5, 'id_plano' => 1, 'id_uc' => 5], // MATA
+            ['id' => 5, 'id_plano' => 1, 'id_uc' => 5], // MATA // Este pode ser eliminado, mas ao existir vai fazer ligação direta e adicionado ás equivalências com as outras
             ['id' => 6, 'id_plano' => 1, 'id_uc' => 6], // MATB
 
             //            ['id' => 7, 'id_plano' => 2, 'id_uc' => 1], // p1
