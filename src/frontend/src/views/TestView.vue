@@ -11,7 +11,7 @@ async function fetchData() {
   try {
     const response = await fetch(url)
     let data = await response.json()
-    equivalences.value = data.equivalences
+    equivalences.value = data.data
     console.log(equivalences)
   } catch (error) {
     console.error(error)
@@ -23,10 +23,10 @@ function formatFinal(item) {
   if (!item['final']) return 'N/A'
 
   if (item['final']['opcao_escolhida']) {
-    return item['uc']['nome'] + ' -> ' + item['final']['opcao_escolhida']['nome']
+    return item['final']['uc']['nome'] + ' -> ' + item['final']['opcao_escolhida']['nome']
   }
 
-  return item.uc?.nome
+  return item['final']['uc']['nome'] ?? 'N/A'
 }
 
 function formatInicial(item) {
