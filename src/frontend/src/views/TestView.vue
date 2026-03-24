@@ -33,7 +33,24 @@ function formatInicial(item) {
   if (!item) return 'N/A'
   if (!item['inicial']) return 'N/A'
 
-  return item.inicial.map((item) => item.uc?.nome || item.nome).join(', ') ?? 'N/A'
+  let result = []
+
+  for (const inicial of item['inicial']) {
+    if (inicial['uc']) {
+      if (inicial['opcao_escolhida']) {
+        console.log('aa', inicial['opcao_escolhida'])
+        result.push(inicial['uc']['nome'] + ' -> ' + inicial['opcao_escolhida']['nome'])
+      } else {
+        console.log('bb', inicial['uc']['nome'])
+        result.push(inicial['uc']['nome'] ?? 'N/A')
+      }
+    } else {
+      console.log('bb', 'N/A')
+      result.push('N/A')
+    }
+  }
+
+  return result.length > 0 ? result.join(', ') : 'N/A'
 }
 
 onMounted(fetchData)
