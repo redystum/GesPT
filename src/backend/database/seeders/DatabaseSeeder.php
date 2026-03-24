@@ -8,6 +8,7 @@ use App\Models\EquivalenciaRule;
 use App\Models\Estudante;
 use App\Models\Opcoes;
 use App\Models\OpcoesEstudante;
+use App\Models\Permissoes;
 use App\Models\PlanoEstudo;
 use App\Models\PlanoUc;
 use App\Models\Uc;
@@ -32,6 +33,37 @@ class DatabaseSeeder extends Seeder
         // TODO: aqui é suposto ter todas as Permições possiveis para o admin as puder usar
         //  ex: can_create_plano, can_create_estudante, can_update_equivalencias, etc...
 
+
+        Permissoes::insert([
+            // --- User Management (Internal Control) ---
+            ['nome' => 'Adicionar Utilizadores', 'permissao' => 'can_create_users', 'descricao' => 'Permite adicionar utilizadores ao sistema'],
+            ['nome' => 'Remover Utilizadores', 'permissao' => 'can_delete_users', 'descricao' => 'Permite remover permanentemente utilizadores'],
+            ['nome' => 'Bloquear Utilizadores', 'permissao' => 'can_block_users', 'descricao' => 'Permite suspender o acesso de um utilizador'],
+            ['nome' => 'Gerir Cargos', 'permissao' => 'can_manage_roles', 'descricao' => 'Permite Criar, editar e eliminar cargos'],
+            ['nome' => 'Atribuir Cargos', 'permissao' => 'can_give_roles', 'descricao' => 'Permite atribuir cargos a utilizadores'],
+            ['nome' => 'Atribuir permissões individuais', 'permissao' => 'can_give_permitions', 'descricao' => 'Permite dar permissões específicas a utilizadores'],
+
+            // --- Cursos & UCs ---
+            ['nome' => 'Gerir Cursos', 'permissao' => 'can_manage_cursos', 'descricao' => 'Permite criar, editar e eliminar cursos'],
+            ['nome' => 'Gerir Unidades Curriculares', 'permissao' => 'can_manage_ucs', 'descricao' => 'Permite gerir as cadeiras (UCs) do sistema'],
+
+            // --- Planos de Estudo ---
+            ['nome' => 'Criar Planos de Estudo', 'permissao' => 'can_create_planos', 'descricao' => 'Permite criar novos planos de estudo'],
+            ['nome' => 'Editar Planos de Estudo', 'permissao' => 'can_edit_planos', 'descricao' => 'Permite alterar a estrutura de planos existentes'],
+            ['nome' => 'Visualizar Planos', 'permissao' => 'can_view_planos', 'descricao' => 'Permite consultar a lista de planos e cadeiras'],
+
+            // --- Estudantes & Opções ---
+            ['nome' => 'Gerir Estudantes', 'permissao' => 'can_manage_estudantes', 'descricao' => 'Permite associar estudantes a planos'],
+            ['nome' => 'Validar Opções', 'permissao' => 'can_validate_options', 'descricao' => 'Permite validar as escolhas de opcionais dos alunos'],
+
+            // --- Equivalências ---
+            ['nome' => 'Criar Equivalências', 'permissao' => 'can_create_equivalencias', 'descricao' => 'Permite criar regras de equivalência entre planos'],
+            ['nome' => 'Editar Equivalências', 'permissao' => 'can_edit_equivalencias', 'descricao' => 'Permite alterar regras de equivalência'],
+            ['nome' => 'Eliminar Equivalências', 'permissao' => 'can_delete_equivalencias', 'descricao' => 'Permite remover regras de equivalência'],
+
+            // --- Configurações de Sistema ---
+            ['nome' => 'Visualizar Logs', 'permissao' => 'can_view_logs', 'descricao' => 'Permite ver o histórico de alterações no sistema'],
+        ]);
         if (app()->isProduction()) {
             return;
         }
