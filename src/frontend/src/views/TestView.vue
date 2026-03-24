@@ -1,0 +1,132 @@
+<script setup>
+import { ref, onMounted, watch } from 'vue'
+
+const estudante_id = ref(1)
+const plano_inicial = ref(1)
+const plano_final = ref(2)
+const equivalences = ref([])
+
+async function fetchData() {
+  const url = `http://localhost:8000/api/home?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
+  try {
+    const response = await fetch(url)
+    let data = await response.json()
+    equivalences.value = data.data
+    console.log(equivalences)
+  } catch (error) {
+    console.error(error)
+  }
+}
+
+function formatFinal(item) {
+  if (!item) return 'N/A'
+  if (!item['final']) return 'N/A'
+
+  if (item['final']['opcao_escolhida']) {
+    return item['final']['uc']['nome'] + ' -> ' + item['final']['opcao_escolhida']['nome']
+  }
+
+  return item['final']['uc']['nome'] ?? 'N/A'
+}
+
+function formatInicial(item) {
+  if (!item) return 'N/A'
+  if (!item['inicial']) return 'N/A'
+
+  let result = []
+
+  for (const inicial of item['inicial']) {
+    if (inicial['uc']) {
+      if (inicial['opcao_escolhida']) {
+        console.log('aa', inicial['opcao_escolhida'])
+        result.push(inicial['uc']['nome'] + ' -> ' + inicial['opcao_escolhida']['nome'])
+      } else {
+        console.log('bb', inicial['uc']['nome'])
+        result.push(inicial['uc']['nome'] ?? 'N/A')
+      }
+    } else {
+      console.log('bb', 'N/A')
+      result.push('N/A')
+    }
+  }
+
+  return result.length > 0 ? result.join(', ') : 'N/A'
+}
+
+onMounted(fetchData)
+watch([estudante_id, plano_inicial, plano_final], fetchData)
+</script>
+
+<template>
+  <div>
+    <label>Estudante ID:</label>
+    <select v-model="estudante_id">
+      <option v-for="n in 3" :key="n" :value="n">{{ n }}</option>
+    </select>
+
+    <label>Plano Inicial:</label>
+    <select v-model="plano_inicial">
+      <option v-for="n in 4" :key="n" :value="n">{{ n }}</option>
+    </select>
+
+    <label>Plano Final:</label>
+    <select v-model="plano_final">
+      <option v-for="n in 4" :key="n" :value="n">{{ n }}</option>
+    </select>
+
+    <button
+      class="ml-4! px-2 p-1 border border-neutral-700 rounded cursor-pointer"
+      @click="
+        () => {
+          estudante_id = 3
+          plano_inicial = 3
+          plano_final = 4
+        }
+      "
+    >
+      See options example
+    </button>
+
+    <table class="min-w-full table-auto border-collapse border dark:border-neutral-700">
+      <thead class="bg-neutral-100 dark:bg-neutral-800">
+        <tr>
+          <th
+            class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 text-left dark:text-white"
+          >
+            Inicial
+          </th>
+          <th
+            class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 text-left dark:text-white"
+          >
+            Final
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr
+          v-for="(item, index) in equivalences"
+          :key="index"
+          :class="
+            index % 2 === 0
+              ? 'bg-white dark:bg-neutral-900 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+              : 'bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-50 dark:hover:bg-neutral-700'
+          "
+        >
+          <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">
+            {{ formatInicial(item) }}
+          </td>
+          <td class="border border-neutral-300 dark:border-neutral-700 px-4 py-2 dark:text-white">
+            <!--            {{-->
+            <!--              item.final?.length == 0-->
+            <!--                ? 'N/A'-->
+            <!--                : (item.final?.map((item) => item.uc?.nome || item.nome).join(', ') ?? 'N/A')-->
+            <!--            }}-->
+            {{ formatFinal(item) }}
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</template>
+
+<style scoped></style>
