@@ -149,7 +149,7 @@ class EquivalencesController extends Controller
         $planoInicial->planoUcs->whereNotIn('id_uc', $uc_w_eq)->each(function ($planoUc) use (&$equivalences) {
             $equivalences[] = [
                 'uc' => $planoUc->uc->toArray(),
-                'inicial' => [$planoUc->makeHidden('uc')->toArray()],
+                'inicial' => [$planoUc->toArray()],
                 'final' => null,
             ];
         });
