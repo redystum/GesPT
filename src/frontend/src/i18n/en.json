@@ -1,0 +1,10 @@
+{
+  "login": {
+    "welcome": "Welcome back",
+    "message": "Sign in using IPLeiria Login",
+    "email": "Institutional Email",
+    "password": "Password",
+    "submit": "Sign in",
+    "forgot": "Forgot password?"
+  }
+}
