@@ -57,4 +57,17 @@ jobs:
           username: "${{ vars.STAGING_VM_USER }}"
           key: ${{ secrets.SSHKEY }}
           passphrase: ${{ secrets.SSHPASS }}
-          script: "cd /var/www/${{ vars.PROJECT }}/backend/ && composer update && composer dump-autoload"
+          script: |
+            cd /var/www/${{ vars.PROJECT }}/backend/
+            composer install --no-interaction --prefer-dist --optimize-autoloader
+      - name: Migrate and seed database
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: "${{ vars.STAGING_VM }}"
+          username: "${{ vars.STAGING_VM_USER }}"
+          key: ${{ secrets.SSHKEY }}
+          passphrase: ${{ secrets.SSHPASS }}
+          script: |
+            cd /var/www/${{ vars.PROJECT }}/backend/
+            php artisan migrate --force
+            php artisan db:seed --force
