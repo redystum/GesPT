@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
     {
 
         // ----- Persistent data -----
+        // TODO: colocar toda a data persistente noutro ficheiro para rodar apenas esse no server sem usar o isProduction()
         User::create([
             'name' => 'Admin',
             'email' => 'admin@gespt.local',
@@ -33,7 +34,29 @@ class DatabaseSeeder extends Seeder
         // TODO: aqui é suposto ter todas as Permições possiveis para o admin as puder usar
         //  ex: can_create_plano, can_create_estudante, can_update_equivalencias, etc...
 
+        if (app()->isProduction()) {
+            return;
+        }
 
+
+        // TODO: replace insert to updateOrCreate so it does not break the db ex:
+        /*
+         $permissoes = [
+                ['nome' => 'Adicionar Utilizadores', 'permissao' => 'can_create_users', 'descricao' => 'Permite adicionar utilizadores ao sistema'],
+                ['nome' => 'Remover Utilizadores', 'permissao' => 'can_delete_users', 'descricao' => 'Permite remover permanentemente utilizadores'],
+                // ... add all your other arrays here ...
+            ];
+
+            foreach ($permissoes as $p) {
+                Permissoes::updateOrCreate(
+                    ['permissao' => $p['permissao']], // Unique key to check
+                    [
+                        'nome' => $p['nome'],
+                        'descricao' => $p['descricao']
+                    ]
+                );
+            }
+         */
         Permissoes::insert([
             // --- User Management (Internal Control) ---
             ['nome' => 'Adicionar Utilizadores', 'permissao' => 'can_create_users', 'descricao' => 'Permite adicionar utilizadores ao sistema'],
@@ -64,9 +87,7 @@ class DatabaseSeeder extends Seeder
             // --- Configurações de Sistema ---
             ['nome' => 'Visualizar Logs', 'permissao' => 'can_view_logs', 'descricao' => 'Permite ver o histórico de alterações no sistema'],
         ]);
-        if (app()->isProduction()) {
-            return;
-        }
+
 
         // ----- Sample data -----
 
