@@ -24,15 +24,7 @@ class DatabaseSeeder extends Seeder
     {
 
         // ----- Persistent data -----
-        // TODO: colocar toda a data persistente noutro ficheiro para rodar apenas esse no server sem usar o isProduction()
-        User::firstOrCreate(
-            ['email' => 'admin@gespt.local'],
-            [
-                'name' => 'Admin',
-                'email' => 'admin@gespt.local',
-                'password' => bcrypt('admin123'),
-            ]
-        );
+
 
         // TODO: aqui é suposto ter todas as Permições possiveis para o admin as puder usar
         //  ex: can_create_plano, can_create_estudante, can_update_equivalencias, etc...

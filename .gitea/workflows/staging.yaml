@@ -70,4 +70,4 @@ jobs:
           script: |
             cd /var/www/${{ vars.PROJECT }}/backend/
             php artisan migrate --force
-            php artisan db:seed --force
+            php artisan db:seed --class=InitialSetupSeeder --force
