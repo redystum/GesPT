@@ -29,6 +29,10 @@ class DatabaseSeeder extends Seeder
         // TODO: aqui é suposto ter todas as Permições possiveis para o admin as puder usar
         //  ex: can_create_plano, can_create_estudante, can_update_equivalencias, etc...
 
+        $this->call([
+            InitialSetupSeeder::class
+        ]);
+
         if (app()->isProduction()) {
             return;
         }
@@ -87,8 +91,8 @@ class DatabaseSeeder extends Seeder
         // ----- Sample data -----
 
         Curso::insert([
-            ['nome' => 'Engenharia Informática', 'sigla' => 'EI', 'codigo' => '9119'],
-            ['nome' => 'Gestão', 'sigla' => 'GT', 'codigo' => '9120'],
+            ['nome' => 'Engenharia Informática', 'sigla' => 'EI', 'codigo' => '9119', 'name' => 'Computer Engineering'],
+            ['nome' => 'Gestão', 'sigla' => 'GT', 'codigo' => '9120', 'name' => 'Management'],
         ]);
 
         PlanoEstudo::insert([

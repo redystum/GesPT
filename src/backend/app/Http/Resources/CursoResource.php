@@ -14,11 +14,19 @@ class CursoResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'nome' => $this->nome,
+            'name' => $this->name,
             'sigla' => $this->sigla,
             'codigo' => $this->codigo,
         ];
+
+
+        if ($this->relationLoaded('planoEstudos') && $this->planoEstudos->count() > 0) {
+            $data['planos_estudo'] = PlanoEstudoResource::collection($this->planoEstudos);
+        }
+
+        return $data;
     }
 }

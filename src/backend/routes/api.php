@@ -32,3 +32,13 @@ Route::apiResource('opcoes', OpcoesController::class)
 
 // Routes for Users
 Route::apiResource('users', UserController::class);
+
+Route::any('/', function () {
+    $routes = collect(Route::getRoutes())->map(function ($route) {
+        return [
+            'uri' => $route->uri(),
+            'methods' => $route->methods(),
+        ];
+    });
+    return response()->json($routes);
+});

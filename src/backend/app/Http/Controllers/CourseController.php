@@ -10,11 +10,25 @@ use Illuminate\Http\Request;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
+        $request->validate([
+            'with_planos_estudo' => 'bool',
+            'search' => 'nullable|string',
+        ]);
+
+
         $cursos = Curso::query()
-            ->select('id', 'nome', 'sigla', 'codigo')
             ->orderByDesc('id')
+            ->when($request->with_planos_estudo, function ($query) {
+                $query->with('planoEstudos');
+            })
+            ->when($request->search, function ($query, $search) {
+                $query->where('nome', 'like', "%{$search}%")
+                    ->orwhere('name', 'like', "%{$search}%")
+                    ->orWhere('sigla', 'like', "%{$search}%")
+                    ->orWhere('codigo', 'like', "%{$search}%");
+            })
             ->get();
 
         return response()->json([

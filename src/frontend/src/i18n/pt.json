@@ -6,5 +6,12 @@
     "password": "Password",
     "submit": "Entrar",
     "forgot": "Esqueci da password?"
+  },
+  "home": {
+    "planos": "Planos",
+    "title": "Cursos e os seus planos",
+    "subtitle": "Escolha um curso ou plano de estudo associado para ver os seus detalhes",
+    "search": "Nome, sigla ou código de curso",
+    "no_results": "Nenhum curso encontrado"
   }
 }

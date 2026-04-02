@@ -30,6 +30,13 @@ library.add(fas, far, fab)
 
 const app = createApp(App)
 
+const API_BASE_URL = import.meta.env.VITE_API_SERVER_URL
+const API_URL = import.meta.env.VITE_API_PATH_URL
+
+
+app.provide('apiBaseURL', API_BASE_URL)
+app.provide('apiURL', API_URL)
+
 app.use(createPinia())
 app.use(router)
 app.use(i18n)
