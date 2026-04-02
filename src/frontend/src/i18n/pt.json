@@ -13,5 +13,9 @@
     "subtitle": "Escolha um curso ou plano de estudo associado para ver os seus detalhes",
     "search": "Nome, sigla ou código de curso",
     "no_results": "Nenhum curso encontrado"
+  },
+  "compare": {
+    "no_inicial": "Sem antecedente",
+    "no_final": "Uc descontinuada"
   }
 }

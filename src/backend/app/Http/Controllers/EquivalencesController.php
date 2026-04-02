@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class EquivalencesController extends Controller
 {
     // http://localhost:8000/api/home?estudante_id=1&plano_inicial=1&plano_final=2
-    public function index(Request $request)
+    public function compare(Request $request)
     {
         $request->validate([
             'estudante_id' => 'required|integer|exists:estudantes,id',
@@ -92,12 +92,12 @@ class EquivalencesController extends Controller
                 if ($direct_eq) {
                     $equivalences[] = [
                         'inicial' => [$direct_eq->toArray()],
-                        'final' => $planoUc->toArray(),
+                        'final' => [$planoUc->toArray()],
                     ];
                 } else {
                     $equivalences[] = [
                         'inicial' => null,
-                        'final' => $planoUc->toArray(),
+                        'final' => [$planoUc->toArray()],
                     ];
                 }
                 $uc_w_eq[] = $planoUc->id_uc;
@@ -125,7 +125,7 @@ class EquivalencesController extends Controller
 
             $equivalences[] = [
                 'inicial' => $inicial,
-                'final' => $planoUc->toArray(),
+                'final' => [$planoUc->toArray()],
             ];
 
             if (!$eq->isEmpty() || $direct_eq) {

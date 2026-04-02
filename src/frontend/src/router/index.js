@@ -7,7 +7,9 @@ const router = createRouter({
     { path: '/', name: 'home', component: HomeView },
     { path: '/login', name: 'login', component: () => import('../views/LoginView.vue') },
     { path: '/admin', name: 'admin', component: () => import('../views/AdminView.vue') },
-    { path: '/compare', name: 'compare', component: () => import('../views/ComparingView.vue') },
+    { path: '/plano/:id', name: 'compare', component: () => import('../views/PlanoView.vue') },
+    { path: '/compare/', name: 'compare', component: () => import('../views/ComparingView.vue') },
+    { path: '/compare/:id', name: 'compare_plan', component: () => import('../views/ComparingView.vue') },
     { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') }
   ]
 })
