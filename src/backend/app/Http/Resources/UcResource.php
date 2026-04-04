@@ -18,6 +18,7 @@ class UcResource extends JsonResource
         return [
             'id' => $this->id,
             'nome' => $this->nome,
+            'name' => $this->name,
             'sigla' => $this->sigla,
             'ects' => $this->ects,
             'horas' => $this->horas,
