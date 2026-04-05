@@ -140,15 +140,25 @@ class EquivalencesController extends Controller
             ];
         });
 
+        // just to normalize this because it does not take that much time and it's much simpler
+        $eqs = [];
+        foreach ($equivalences as $e) {
+            $eqs[] = [
+                'inicial' => $e['inicial'] && count($e['inicial']) > 0 ? $e['inicial'] : null,
+                'final' => $e['final'] && count($e['final']) > 0 ? $e['final'] : null,
+            ];
+        }
+        unset($equivalences);
+
         if ($request->dd)
-            dd($equivalences);
+            dd($eqs);
 
         return response()->json([
             'plans' => [
                 'initial' => PlanoEstudo::find($request->plano_inicial),
                 'final' => PlanoEstudo::find($request->plano_final),
             ],
-            'data' => $equivalences
+            'data' => $eqs
         ]);
     }
 }

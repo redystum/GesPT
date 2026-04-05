@@ -156,7 +156,7 @@
           <div
             v-for="(part, idx) in item.final"
             :key="part?.data ? part.data.id : 'no-final-' + index + '-' + idx"
-            class="p-6 flex-1 flex justify-between items-start hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors"
+            class="p-6 flex-1 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors"
             :class="{
               'border-b-2 border-neutral-200 dark:border-neutral-700': idx < item.final.length - 1,
               'bg-red-300/40 dark:bg-red-900/10 items-center!': !part.data
