@@ -144,6 +144,10 @@ class EquivalencesController extends Controller
             dd($equivalences);
 
         return response()->json([
+            'plans' => [
+                'initial' => PlanoEstudo::find($request->plano_inicial),
+                'final' => PlanoEstudo::find($request->plano_final),
+            ],
             'data' => $equivalences
         ]);
     }

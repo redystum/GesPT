@@ -4,17 +4,21 @@
     <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
       <div>
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-          Plan Comparison
+          {{ $t('compare.title') }}
         </h1>
         <p class="text-neutral-500 dark:text-neutral-400">
-          Technical cross-analysis: Legacy vs Proposed Structure
+          {{ $t('compare.subtitle') }}
         </p>
       </div>
+
+      <!--   TODO: remove this:   -->
       <div
         class="flex flex-wrap items-center gap-4 bg-white dark:bg-neutral-900 p-4 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800"
       >
         <div class="flex items-center gap-2">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Estudante:</label>
+          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider"
+            >Estudante:</label
+          >
           <select
             v-model="estudante_id"
             class="text-sm border border-neutral-300 dark:border-neutral-700 bg-transparent rounded p-1 dark:text-white"
@@ -24,7 +28,9 @@
         </div>
 
         <div class="flex items-center gap-2">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Inicial:</label>
+          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider"
+            >Inicial:</label
+          >
           <select
             v-model="plano_inicial"
             class="text-sm border border-neutral-300 dark:border-neutral-700 bg-transparent rounded p-1 dark:text-white"
@@ -56,6 +62,7 @@
           See Example
         </button>
       </div>
+      <!--  TODO: til here    -->
     </div>
 
     <!-- Stats Grid -->
@@ -87,15 +94,19 @@
     </div>
 
     <!-- Comparison Table -->
-    <div class="bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-xl overflow-hidden">
+    <div
+      class="bg-white dark:bg-neutral-900 border border-neutral-400 dark:border-neutral-700 rounded-xl overflow-hidden"
+    >
       <div
-        class="grid grid-cols-2 text-xs font-bold text-neutral-500 uppercase tracking-wider border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/50"
+        class="grid grid-cols-2 text-xs font-bold text-white uppercase tracking-wider border-b-2 border-neutral-400 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50"
       >
-        <div class="p-4 border-r border-neutral-200 dark:border-neutral-800 flex justify-between items-center">
-          <span>Plano Inicial</span><span class="text-neutral-400">Legacy</span>
+        <div
+          class="p-4 border-r-2 border-neutral-400 dark:border-neutral-700 flex justify-between items-center"
+        >
+          <span>{{ initial_plan_date }}</span>
         </div>
         <div class="p-4 flex justify-between items-center">
-          <span>Plano Final</span><span class="text-teal-600 dark:text-teal-400">Proposed</span>
+          <span>{{ final_plan_date }}</span>
         </div>
       </div>
 
@@ -103,29 +114,40 @@
       <div
         v-for="(item, index) in equivalences"
         :key="index"
-        class="grid grid-cols-2 border-b border-neutral-200 dark:border-neutral-800"
+        class="grid grid-cols-2 border-b-2 border-neutral-400 dark:border-neutral-700"
       >
-        <div class="flex flex-col border-r border-neutral-200 dark:border-neutral-800">
+        <div class="flex flex-col border-r-2 border-neutral-400 dark:border-neutral-700">
           <div
             v-for="(part, idx) in item.inicial"
             :key="part?.data ? part.data.id : 'no-inicial-' + index + '-' + idx"
             class="p-6 flex-1 flex flex-col justify-center hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors"
             :class="{
-              'border-b border-neutral-100 dark:border-neutral-800': idx < item.inicial.length - 1,
-              'opacity-50 bg-neutral-50 dark:bg-neutral-900/50': !part.data
+              'border-b-2 border-neutral-200 dark:border-neutral-800':
+                idx < item.inicial.length - 1,
+              'bg-neutral-400/30 dark:bg-neutral-800/60': !part.data
             }"
           >
             <div v-if="part.data">
-              <p class="font-bold text-neutral-900 dark:text-white flex items-center flex-wrap gap-2">
+              <p
+                class="font-bold text-neutral-900 dark:text-white flex items-center flex-wrap gap-2"
+              >
                 <span>{{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}</span>
-                <span v-if="part.data.opcao_escolhida" class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded text-xs font-semibold">
-                  {{ locale === 'pt' ? part.data.opcao_escolhida.nome : part.data.opcao_escolhida.name }}
+                <span
+                  v-if="part.data.opcao_escolhida"
+                  class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
+                >
+                  -
+                  {{
+                    locale === 'pt'
+                      ? part.data.opcao_escolhida.nome
+                      : part.data.opcao_escolhida.name
+                  }}
                 </span>
               </p>
               <p class="text-xs text-neutral-500 mt-1">ECTS: {{ part.data.uc.ects }}</p>
             </div>
             <div v-else class="flex items-center">
-              <span class="text-xs italic text-neutral-400">{{ part.text }}</span>
+              <span class="text-sm italic text-black dark:text-neutral-400">{{ part.text }}</span>
             </div>
           </div>
         </div>
@@ -136,33 +158,35 @@
             :key="part?.data ? part.data.id : 'no-final-' + index + '-' + idx"
             class="p-6 flex-1 flex justify-between items-start hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors"
             :class="{
-              'border-b border-neutral-100 dark:border-neutral-800': idx < item.final.length - 1,
-              'bg-red-50/30 dark:bg-red-900/10 items-center': !part.data
+              'border-b-2 border-neutral-200 dark:border-neutral-700': idx < item.final.length - 1,
+              'bg-red-300/40 dark:bg-red-900/10 items-center!': !part.data
             }"
           >
             <div v-if="part.data">
-              <p class="font-bold text-neutral-900 dark:text-white flex items-center flex-wrap gap-2">
+              <p
+                class="font-bold text-neutral-900 dark:text-white flex items-center flex-wrap gap-2"
+              >
                 <span>{{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}</span>
-                <span v-if="part.data.opcao_escolhida" class="bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 px-2 py-0.5 rounded text-xs font-semibold">
-                  {{ locale === 'pt' ? part.data.opcao_escolhida.nome : part.data.opcao_escolhida.name }}
+                <span
+                  v-if="part.data.opcao_escolhida"
+                  class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
+                >
+                  -
+                  {{
+                    locale === 'pt'
+                      ? part.data.opcao_escolhida.nome
+                      : part.data.opcao_escolhida.name
+                  }}
                 </span>
               </p>
               <p class="text-xs text-neutral-500 mt-1">ECTS: {{ part.data.uc.ects }}</p>
             </div>
-            <div v-else class="flex items-center w-full">
-              <span class="text-[10px] font-bold text-red-700 dark:text-red-400 uppercase">{{ part.text }}</span>
+            <div v-else class="flex items-center">
+              <span class="text-sm italic text-red-700 dark:text-red-400">{{ part.text }}</span>
             </div>
-
-            <span v-if="part.data && !item.inicial.some(i => i.data)" class="bg-teal-800 text-white px-2 py-1 text-[10px] font-bold rounded self-start ml-2">NEW</span>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="mt-6 flex gap-6 text-xs font-bold text-neutral-500 uppercase">
-      <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-teal-600"></span> Equivalence</div>
-      <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-red-600"></span> Discontinued</div>
-      <div class="flex items-center gap-2"><span class="w-2 h-2 rounded-full bg-slate-800 dark:bg-neutral-400"></span> Structural Shift</div>
     </div>
   </div>
 </template>
@@ -179,6 +203,8 @@ const plano_inicial = ref(1)
 const plano_final = ref(2)
 const data = ref([])
 const equivalences = ref([])
+const initial_plan_date = ref('')
+const final_plan_date = ref('')
 
 async function fetchData() {
   const url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
@@ -186,6 +212,8 @@ async function fetchData() {
     const response = await fetch(url)
     let data_ = await response.json()
     data.value = data_.data
+    initial_plan_date.value = data_.plans.initial.ano
+    final_plan_date.value = data_.plans.final.ano
     formatData()
   } catch (error) {
     console.error(error)
