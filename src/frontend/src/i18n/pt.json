@@ -18,8 +18,11 @@
     "title": "Comparar planos de estudo",
     "subtitle": "Selecione os planos de estudo que deseja comparar",
     "no_inicial": "Sem antecedente",
-    "no_final": "Uc descontinuada",
+    "no_final": "UC descontinuada",
     "student": "Aluno",
-    "course": "Curso"
+    "course": "Curso",
+    "no_antecedente": "Sem antecedentes",
+    "descontinuadas": "UC descontinuadas",
+    "equivalences": "Equivalências"
   }
 }

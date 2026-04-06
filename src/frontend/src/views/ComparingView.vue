@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-screen-2xl mx-auto px-6 py-10 animate-fade-in-up">
     <!-- Header Section -->
-    <div class="flex flex-col justify-between items-start mb-8 gap-6">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
       <div>
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
           {{ $t('compare.title') }}
@@ -47,25 +47,29 @@
       <div class="simple-card p-5 flex justify-between items-center">
         <div>
           <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
-            Total Variance
+            {{ $t('compare.no_antecedente') }}
           </p>
-          <p class="text-2xl font-bold text-neutral-900 dark:text-white">0 ECTS</p>
+          <p class="text-2xl font-bold text-neutral-900 dark:text-white">
+            {{ statsNoAntecedente }}
+          </p>
         </div>
       </div>
       <div class="simple-card p-5 flex justify-between items-center">
         <div>
-          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
-            Equivalence Rate
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
+            {{ $t('compare.descontinuadas') }}
           </p>
-          <p class="text-2xl font-bold text-neutral-900 dark:text-white">84%</p>
+          <p class="text-2xl font-bold text-neutral-900 dark:text-white">
+            {{ statsDescontinuadas }}
+          </p>
         </div>
       </div>
       <div class="simple-card p-5 flex justify-between items-center">
         <div>
-          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
-            New Modules
+          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
+            {{ $t('compare.equivalences') }}
           </p>
-          <p class="text-2xl font-bold text-neutral-900 dark:text-white">12</p>
+          <p class="text-2xl font-bold text-neutral-900 dark:text-white">{{ statsEquivalences }}</p>
         </div>
       </div>
     </div>
@@ -94,9 +98,6 @@
           class="p-4 flex flex-wrap gap-2 justify-between items-center text-neutral-900 dark:text-white"
         >
           <div class="flex items-center gap-3 w-full sm:w-auto">
-            <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider"
-              >Final:</label
-            >
             <select
               v-model="plano_final"
               class="text-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg px-3 py-1.5 text-neutral-900 dark:text-white outline-none shadow-sm cursor-pointer pr-8 bg-size-[12px_12px] bg-position-[right_10px_center] bg-no-repeat"
@@ -197,7 +198,7 @@ import { ref, onMounted, watch, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 
-const { t, locale } = useI18n()
+const { locale } = useI18n()
 const route = useRoute()
 const API = inject('apiURL')
 
@@ -210,6 +211,23 @@ const cursos = ref([])
 const equivalences = ref([])
 const initial_plan_date = ref('')
 const final_plan_date = ref('')
+
+const statsNoAntecedente = computed(() => {
+  return equivalences.value.filter((item) => !item.inicial.some((p) => p.data)).length
+})
+
+const statsDescontinuadas = computed(() => {
+  return equivalences.value.filter((item) => !item.final.some((p) => p.data)).length
+})
+
+// how many initials with more than 1 item
+const statsEquivalences = computed(() => {
+  return equivalences.value.filter((item) => {
+    const initialCount = item.inicial.filter((p) => p.data).length
+    const finalCount = item.final.filter((p) => p.data).length
+    return initialCount > 0 && finalCount > 0 && (initialCount > 1 || finalCount > 1)
+  }).length
+})
 
 const planos_disponiveis = computed(() => {
   const curso = cursos.value.find((c) => c.id === curso_id.value)
