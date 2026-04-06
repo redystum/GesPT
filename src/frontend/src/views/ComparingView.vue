@@ -1,7 +1,7 @@
 <template>
   <div class="max-w-screen-2xl mx-auto px-6 py-10 animate-fade-in-up">
     <!-- Header Section -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+    <div class="flex flex-col justify-between items-start mb-8 gap-6">
       <div>
         <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
           {{ $t('compare.title') }}
@@ -11,58 +11,35 @@
         </p>
       </div>
 
-      <!--   TODO: remove this:   -->
       <div
         class="flex flex-wrap items-center gap-4 bg-white dark:bg-neutral-900 p-4 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800"
       >
-        <div class="flex items-center gap-2">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider"
-            >Estudante:</label
-          >
+        <div class="flex flex-col min-w-37.5">
+          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1 block">{{
+            $t('compare.student')
+          }}</label>
           <select
             v-model="estudante_id"
-            class="text-sm border border-neutral-300 dark:border-neutral-700 bg-transparent rounded p-1 dark:text-white"
+            class="w-full text-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-lg px-3 py-2 text-neutral-900 dark:text-white outline-none transition-all shadow-sm cursor-pointer"
           >
-            <option v-for="n in 3" :key="n" :value="n">{{ n }}</option>
+            <option v-for="n in 3" :key="n" :value="n">Estudante {{ n }}</option>
           </select>
         </div>
 
-        <div class="flex items-center gap-2">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider"
-            >Inicial:</label
-          >
+        <div class="flex flex-col min-w-50">
+          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1 block">{{
+            $t('compare.course')
+          }}</label>
           <select
-            v-model="plano_inicial"
-            class="text-sm border border-neutral-300 dark:border-neutral-700 bg-transparent rounded p-1 dark:text-white"
+            v-model="curso_id"
+            class="w-full text-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-lg px-3 py-2 text-neutral-900 dark:text-white outline-none transition-all shadow-sm cursor-pointer"
           >
-            <option v-for="n in 4" :key="n" :value="n">{{ n }}</option>
+            <option v-for="c in cursos" :key="c.id" :value="c.id">
+              {{ locale === 'pt' ? c.nome : c.name }}
+            </option>
           </select>
         </div>
-
-        <div class="flex items-center gap-2">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider">Final:</label>
-          <select
-            v-model="plano_final"
-            class="text-sm border border-neutral-300 dark:border-neutral-700 bg-transparent rounded p-1 dark:text-white"
-          >
-            <option v-for="n in 4" :key="n" :value="n">{{ n }}</option>
-          </select>
-        </div>
-
-        <button
-          class="text-xs border border-neutral-700 rounded px-3 py-1.5 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 font-medium transition-colors"
-          @click="
-            () => {
-              estudante_id = 3
-              plano_inicial = 3
-              plano_final = 4
-            }
-          "
-        >
-          See Example
-        </button>
       </div>
-      <!--  TODO: til here    -->
     </div>
 
     <!-- Stats Grid -->
@@ -95,18 +72,38 @@
 
     <!-- Comparison Table -->
     <div
+      v-if="curso_id && plano_inicial && plano_final"
       class="bg-white dark:bg-neutral-900 border border-neutral-400 dark:border-neutral-700 rounded-xl overflow-hidden"
     >
       <div
         class="grid grid-cols-2 text-xs font-bold text-white uppercase tracking-wider border-b-2 border-neutral-400 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50"
       >
         <div
-          class="p-4 border-r-2 border-neutral-400 dark:border-neutral-700 flex justify-between items-center"
+          class="p-4 border-r-2 border-neutral-400 dark:border-neutral-700 flex flex-wrap gap-2 justify-between items-center text-neutral-900 dark:text-white"
         >
-          <span>{{ initial_plan_date }}</span>
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <select
+              v-model="plano_inicial"
+              class="text-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg px-3 py-1.5 text-neutral-900 dark:text-white outline-none shadow-sm cursor-pointer pr-8 bg-size-[12px_12px] bg-position-[right_10px_center] bg-no-repeat"
+            >
+              <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
+            </select>
+          </div>
         </div>
-        <div class="p-4 flex justify-between items-center">
-          <span>{{ final_plan_date }}</span>
+        <div
+          class="p-4 flex flex-wrap gap-2 justify-between items-center text-neutral-900 dark:text-white"
+        >
+          <div class="flex items-center gap-3 w-full sm:w-auto">
+            <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider"
+              >Final:</label
+            >
+            <select
+              v-model="plano_final"
+              class="text-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg px-3 py-1.5 text-neutral-900 dark:text-white outline-none shadow-sm cursor-pointer pr-8 bg-size-[12px_12px] bg-position-[right_10px_center] bg-no-repeat"
+            >
+              <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -147,7 +144,9 @@
               <p class="text-xs text-neutral-500 mt-1">ECTS: {{ part.data.uc.ects }}</p>
             </div>
             <div v-else class="flex items-center">
-              <span class="text-sm italic text-black dark:text-neutral-400">{{ part.text }}</span>
+              <span class="text-sm italic text-black dark:text-neutral-400">{{
+                $t('compare.no_inicial')
+              }}</span>
             </div>
           </div>
         </div>
@@ -182,7 +181,9 @@
               <p class="text-xs text-neutral-500 mt-1">ECTS: {{ part.data.uc.ects }}</p>
             </div>
             <div v-else class="flex items-center">
-              <span class="text-sm italic text-red-700 dark:text-red-400">{{ part.text }}</span>
+              <span class="text-sm italic text-red-700 dark:text-red-400">{{
+                $t('compare.no_final')
+              }}</span>
             </div>
           </div>
         </div>
@@ -192,21 +193,63 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, inject } from 'vue'
+import { ref, onMounted, watch, inject, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 const { t, locale } = useI18n()
+const route = useRoute()
 const API = inject('apiURL')
 
 const estudante_id = ref(1)
-const plano_inicial = ref(1)
-const plano_final = ref(2)
+const curso_id = ref(null)
+const plano_inicial = ref(null)
+const plano_final = ref(null)
 const data = ref([])
+const cursos = ref([])
 const equivalences = ref([])
 const initial_plan_date = ref('')
 const final_plan_date = ref('')
 
+const planos_disponiveis = computed(() => {
+  const curso = cursos.value.find((c) => c.id === curso_id.value)
+  return curso ? curso.planos_estudo : []
+})
+
+async function fetchCursos() {
+  try {
+    const response = await fetch(`${API}/cursos?with_planos_estudo=1`)
+    const res = await response.json()
+    cursos.value = res.data
+    if (cursos.value.length > 0) {
+      if (route.query.course && cursos.value.some((c) => c.id == route.query.course)) {
+        curso_id.value = Number(route.query.course)
+      } else {
+        curso_id.value = null
+      }
+
+      if (planos_disponiveis.value.length > 0 && curso_id.value) {
+        if (route.query.plan && planos_disponiveis.value.some((p) => p.id == route.query.plan)) {
+          plano_inicial.value = Number(route.query.plan)
+        } else {
+          plano_inicial.value = null
+        }
+
+        if (plano_inicial.value && planos_disponiveis.value.length > 1) {
+          const outro_plano = planos_disponiveis.value.find((p) => p.id !== plano_inicial.value)
+          plano_final.value = outro_plano ? outro_plano.id : null
+        } else {
+          plano_final.value = null
+        }
+      }
+    }
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 async function fetchData() {
+  if (!plano_inicial.value || !plano_final.value) return
   const url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
   try {
     const response = await fetch(url)
@@ -247,7 +290,6 @@ function format_part(item, side) {
   if (!item[side]) {
     return [
       {
-        text: t('compare.no_' + side),
         data: null
       }
     ]
@@ -262,7 +304,6 @@ function format_part(item, side) {
       })
     } else {
       result.push({
-        text: t('compare.no_' + side),
         data: null
       })
     }
@@ -271,6 +312,18 @@ function format_part(item, side) {
   return result
 }
 
-onMounted(fetchData)
+onMounted(async () => {
+  await fetchCursos()
+  await fetchData()
+})
 watch([estudante_id, plano_inicial, plano_final], fetchData)
+watch(curso_id, () => {
+  if (planos_disponiveis.value.length > 0) {
+    plano_inicial.value = planos_disponiveis.value[0].id
+    plano_final.value =
+      planos_disponiveis.value.length > 1
+        ? planos_disponiveis.value[1].id
+        : planos_disponiveis.value[0].id
+  }
+})
 </script>
