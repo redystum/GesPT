@@ -1,193 +1,135 @@
 <template>
-  <div class="max-w-screen-2xl mx-auto px-6 py-10 animate-fade-in-up">
-    <!-- Header Section -->
-    <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-8 gap-4">
+  <div class="page-container page-section animate-fade-in-up">
+    <div class="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <h1 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">
-          {{ $t('compare.title') }}
-        </h1>
-        <p class="text-neutral-500 dark:text-neutral-400">
-          {{ $t('compare.subtitle') }}
-        </p>
+        <p class="section-kicker">{{ $t('compare.kicker') }}</p>
+        <h1 class="page-title mt-2">{{ $t('compare.title') }}</h1>
+        <p class="page-subtitle">{{ $t('compare.subtitle') }}</p>
       </div>
 
-      <div
-        class="flex flex-wrap items-center gap-4 bg-white dark:bg-neutral-900 p-4 rounded-xl shadow-sm border border-neutral-200 dark:border-neutral-800"
-      >
-        <div class="flex flex-col min-w-37.5">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1 block">{{
-            $t('compare.student')
-          }}</label>
-          <select
-            v-model="estudante_id"
-            class="w-full text-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-lg px-3 py-2 text-neutral-900 dark:text-white outline-none transition-all shadow-sm cursor-pointer"
-          >
-            <option v-for="n in 3" :key="n" :value="n">Estudante {{ n }}</option>
-          </select>
-        </div>
+      <section class="simple-card w-full p-5 lg:w-auto">
+        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+          <div class="min-w-56">
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+              {{ $t('compare.student') }}
+            </label>
+            <select v-model="estudante_id" class="simple-select">
+              <option v-for="n in 3" :key="n" :value="n">{{ $t('compare.student') }} {{ n }}</option>
+            </select>
+          </div>
 
-        <div class="flex flex-col min-w-50">
-          <label class="text-xs font-bold text-neutral-500 uppercase tracking-wider mb-1 block">{{
-            $t('compare.course')
-          }}</label>
-          <select
-            v-model="curso_id"
-            class="w-full text-sm border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-neutral-800 rounded-lg px-3 py-2 text-neutral-900 dark:text-white outline-none transition-all shadow-sm cursor-pointer"
-          >
-            <option v-for="c in cursos" :key="c.id" :value="c.id">
-              {{ locale === 'pt' ? c.nome : c.name }}
-            </option>
-          </select>
-        </div>
-      </div>
-    </div>
-
-    <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="simple-card p-5 flex justify-between items-center">
-        <div>
-          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
-            {{ $t('compare.no_antecedente') }}
-          </p>
-          <p class="text-2xl font-bold text-neutral-900 dark:text-white">
-            {{ statsNoAntecedente }}
-          </p>
-        </div>
-      </div>
-      <div class="simple-card p-5 flex justify-between items-center">
-        <div>
-          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
-            {{ $t('compare.descontinuadas') }}
-          </p>
-          <p class="text-2xl font-bold text-neutral-900 dark:text-white">
-            {{ statsDescontinuadas }}
-          </p>
-        </div>
-      </div>
-      <div class="simple-card p-5 flex justify-between items-center">
-        <div>
-          <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-wider mb-1">
-            {{ $t('compare.equivalences') }}
-          </p>
-          <p class="text-2xl font-bold text-neutral-900 dark:text-white">{{ statsEquivalences }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Comparison Table -->
-    <div
-      v-if="curso_id && plano_inicial && plano_final"
-      class="bg-white dark:bg-neutral-900 border border-neutral-400 dark:border-neutral-700 rounded-xl overflow-hidden"
-    >
-      <div
-        class="grid grid-cols-2 text-xs font-bold text-white uppercase tracking-wider border-b-2 border-neutral-400 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/50"
-      >
-        <div
-          class="p-4 border-r-2 border-neutral-400 dark:border-neutral-700 flex flex-wrap gap-2 justify-between items-center text-neutral-900 dark:text-white"
-        >
-          <div class="flex items-center gap-3 w-full sm:w-auto">
-            <select
-              v-model="plano_inicial"
-              class="text-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg px-3 py-1.5 text-neutral-900 dark:text-white outline-none shadow-sm cursor-pointer pr-8 bg-size-[12px_12px] bg-position-[right_10px_center] bg-no-repeat"
-            >
-              <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
+          <div class="min-w-56">
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+              {{ $t('compare.course') }}
+            </label>
+            <select v-model="curso_id" class="simple-select">
+              <option v-for="c in cursos" :key="c.id" :value="c.id">
+                {{ locale === 'pt' ? c.nome : c.name }}
+              </option>
             </select>
           </div>
         </div>
-        <div
-          class="p-4 flex flex-wrap gap-2 justify-between items-center text-neutral-900 dark:text-white"
-        >
-          <div class="flex items-center gap-3 w-full sm:w-auto">
-            <select
-              v-model="plano_final"
-              class="text-sm border border-neutral-300 dark:border-neutral-600 bg-white dark:bg-neutral-800 rounded-lg px-3 py-1.5 text-neutral-900 dark:text-white outline-none shadow-sm cursor-pointer pr-8 bg-size-[12px_12px] bg-position-[right_10px_center] bg-no-repeat"
-            >
-              <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
-            </select>
-          </div>
+      </section>
+    </div>
+
+    <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+      <article class="simple-card p-5">
+        <p class="section-kicker">{{ $t('compare.no_antecedente') }}</p>
+        <p class="mt-2 text-3xl font-bold">{{ statsNoAntecedente }}</p>
+      </article>
+
+      <article class="simple-card p-5">
+        <p class="section-kicker">{{ $t('compare.descontinuadas') }}</p>
+        <p class="mt-2 text-3xl font-bold">{{ statsDescontinuadas }}</p>
+      </article>
+
+      <article class="simple-card p-5">
+        <p class="section-kicker">{{ $t('compare.equivalences') }}</p>
+        <p class="mt-2 text-3xl font-bold">{{ statsEquivalences }}</p>
+      </article>
+    </div>
+
+    <section v-if="isReady" class="compare-table">
+      <div class="compare-table-header grid grid-cols-1 p-4 sm:grid-cols-2 sm:gap-4">
+        <div class="space-y-1">
+          <label class="section-kicker">{{ $t('compare.initial_plan') }}</label>
+          <select v-model="plano_inicial" class="simple-select">
+            <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
+          </select>
+        </div>
+
+        <div class="space-y-1">
+          <label class="section-kicker">{{ $t('compare.target_plan') }}</label>
+          <select v-model="plano_final" class="simple-select">
+            <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
+          </select>
         </div>
       </div>
 
-      <!-- Item from equivalences -->
+      <div v-if="equivalences.length === 0" class="state-box m-4">
+        <div>
+          <p class="font-semibold text-[color:var(--text)]">{{ $t('states.empty_title') }}</p>
+          <p class="text-sm text-[color:var(--muted)]">{{ $t('compare.empty_hint') }}</p>
+        </div>
+      </div>
+
       <div
         v-for="(item, index) in equivalences"
         :key="index"
-        class="grid grid-cols-2 border-b-2 border-neutral-400 dark:border-neutral-700"
+        class="compare-row grid grid-cols-1 sm:grid-cols-2"
       >
-        <div class="flex flex-col border-r-2 border-neutral-400 dark:border-neutral-700">
+        <div class="border-b-2 border-[color:var(--border-strong)] sm:border-b-0 sm:border-r-2 sm:border-r-[color:var(--border-strong)]">
           <div
             v-for="(part, idx) in item.inicial"
             :key="part?.data ? part.data.id : 'no-inicial-' + index + '-' + idx"
-            class="p-6 flex-1 flex flex-col justify-center hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors"
-            :class="{
-              'border-b-2 border-neutral-200 dark:border-neutral-800':
-                idx < item.inicial.length - 1,
-              'bg-neutral-400/30 dark:bg-neutral-800/60': !part.data
-            }"
+            class="p-5"
+            :class="dividerClass(item, 'inicial', idx, item.inicial.length)"
           >
-            <div v-if="part.data">
-              <p
-                class="font-bold text-neutral-900 dark:text-white flex items-center flex-wrap gap-2"
-              >
-                <span>{{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}</span>
+            <template v-if="part.data">
+              <p class="font-semibold">
+                {{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}
                 <span
                   v-if="part.data.opcao_escolhida"
-                  class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
+                  class="ml-2 text-sm font-medium text-[color:var(--primary)]"
                 >
-                  -
-                  {{
-                    locale === 'pt'
-                      ? part.data.opcao_escolhida.nome
-                      : part.data.opcao_escolhida.name
-                  }}
+                  {{ locale === 'pt' ? part.data.opcao_escolhida.nome : part.data.opcao_escolhida.name }}
                 </span>
               </p>
-              <p class="text-xs text-neutral-500 mt-1">ECTS: {{ part.data.uc.ects }}</p>
-            </div>
-            <div v-else class="flex items-center">
-              <span class="text-sm italic text-black dark:text-neutral-400">{{
-                $t('compare.no_inicial')
-              }}</span>
-            </div>
+              <p class="mt-1 text-xs text-[color:var(--muted)]">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
+            </template>
+            <p v-else class="text-sm italic text-[color:var(--muted)]">{{ $t('compare.no_inicial') }}</p>
           </div>
         </div>
 
-        <div class="flex flex-col">
+        <div>
           <div
             v-for="(part, idx) in item.final"
             :key="part?.data ? part.data.id : 'no-final-' + index + '-' + idx"
-            class="p-6 flex-1 flex justify-between items-center hover:bg-neutral-50 dark:hover:bg-neutral-800/30 transition-colors"
-            :class="{
-              'border-b-2 border-neutral-200 dark:border-neutral-700': idx < item.final.length - 1,
-              'bg-red-300/40 dark:bg-red-900/10 items-center!': !part.data
-            }"
+            class="p-5"
+            :class="dividerClass(item, 'final', idx, item.final.length)"
           >
-            <div v-if="part.data">
-              <p
-                class="font-bold text-neutral-900 dark:text-white flex items-center flex-wrap gap-2"
-              >
-                <span>{{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}</span>
+            <template v-if="part.data">
+              <p class="font-semibold">
+                {{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}
                 <span
                   v-if="part.data.opcao_escolhida"
-                  class="text-indigo-600 dark:text-indigo-400 text-sm font-medium"
+                  class="ml-2 text-sm font-medium text-[color:var(--primary)]"
                 >
-                  -
-                  {{
-                    locale === 'pt'
-                      ? part.data.opcao_escolhida.nome
-                      : part.data.opcao_escolhida.name
-                  }}
+                  {{ locale === 'pt' ? part.data.opcao_escolhida.nome : part.data.opcao_escolhida.name }}
                 </span>
               </p>
-              <p class="text-xs text-neutral-500 mt-1">ECTS: {{ part.data.uc.ects }}</p>
-            </div>
-            <div v-else class="flex items-center">
-              <span class="text-sm italic text-red-700 dark:text-red-400">{{
-                $t('compare.no_final')
-              }}</span>
-            </div>
+              <p class="mt-1 text-xs text-[color:var(--muted)]">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
+            </template>
+            <p v-else class="text-sm italic text-[color:#b91c1c] dark:text-[color:#fca5a5]">{{ $t('compare.no_final') }}</p>
           </div>
         </div>
+      </div>
+    </section>
+
+    <div v-else class="state-box">
+      <div>
+        <p class="font-semibold text-[color:var(--text)]">{{ $t('compare.select_prompt_title') }}</p>
+        <p class="text-sm text-[color:var(--muted)]">{{ $t('compare.select_prompt_subtitle') }}</p>
       </div>
     </div>
   </div>
@@ -195,7 +137,7 @@
 
 <script setup>
 import { ref, onMounted, watch, inject, computed } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useI18n } from '@/i18n'
 import { useRoute } from 'vue-router'
 
 const { locale } = useI18n()
@@ -209,8 +151,8 @@ const plano_final = ref(null)
 const data = ref([])
 const cursos = ref([])
 const equivalences = ref([])
-const initial_plan_date = ref('')
-const final_plan_date = ref('')
+
+const isReady = computed(() => Boolean(curso_id.value && plano_inicial.value && plano_final.value))
 
 const statsNoAntecedente = computed(() => {
   return equivalences.value.filter((item) => !item.inicial.some((p) => p.data)).length
@@ -220,7 +162,6 @@ const statsDescontinuadas = computed(() => {
   return equivalences.value.filter((item) => !item.final.some((p) => p.data)).length
 })
 
-// how many initials with more than 1 item
 const statsEquivalences = computed(() => {
   return equivalences.value.filter((item) => {
     const initialCount = item.inicial.filter((p) => p.data).length
@@ -239,25 +180,20 @@ async function fetchCursos() {
     const response = await fetch(`${API}/cursos?with_planos_estudo=1`)
     const res = await response.json()
     cursos.value = res.data
+
     if (cursos.value.length > 0) {
       if (route.query.course && cursos.value.some((c) => c.id == route.query.course)) {
         curso_id.value = Number(route.query.course)
-      } else {
-        curso_id.value = null
       }
 
       if (planos_disponiveis.value.length > 0 && curso_id.value) {
         if (route.query.plan && planos_disponiveis.value.some((p) => p.id == route.query.plan)) {
           plano_inicial.value = Number(route.query.plan)
-        } else {
-          plano_inicial.value = null
         }
 
         if (plano_inicial.value && planos_disponiveis.value.length > 1) {
-          const outro_plano = planos_disponiveis.value.find((p) => p.id !== plano_inicial.value)
-          plano_final.value = outro_plano ? outro_plano.id : null
-        } else {
-          plano_final.value = null
+          const outroPlano = planos_disponiveis.value.find((p) => p.id !== plano_inicial.value)
+          plano_final.value = outroPlano ? outroPlano.id : null
         }
       }
     }
@@ -268,13 +204,13 @@ async function fetchCursos() {
 
 async function fetchData() {
   if (!plano_inicial.value || !plano_final.value) return
+
   const url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
+
   try {
     const response = await fetch(url)
-    let data_ = await response.json()
-    data.value = data_.data
-    initial_plan_date.value = data_.plans.initial.ano
-    final_plan_date.value = data_.plans.final.ano
+    const payload = await response.json()
+    data.value = payload.data
     formatData()
   } catch (error) {
     console.error(error)
@@ -282,58 +218,52 @@ async function fetchData() {
 }
 
 function formatData() {
-  equivalences.value = data.value.map((item) => {
-    let data = {
-      inicial: format_part(item, 'inicial'),
-      final: format_part(item, 'final')
-    }
-
-    if (!data.inicial.data) {
-      data.final.no_inicial = true
-    }
-
-    if (!data.final.data) {
-      data.inicial.no_final = true
-    }
-
-    return data
-  })
+  equivalences.value = data.value.map((item) => ({
+    inicial: formatPart(item, 'inicial'),
+    final: formatPart(item, 'final')
+  }))
 }
 
-function format_part(item, side) {
+function formatPart(item, side) {
   if (side !== 'inicial' && side !== 'final') {
     throw new Error('Invalid side')
   }
 
   if (!item[side]) {
-    return [
-      {
-        data: null
-      }
-    ]
+    return [{ data: null }]
   }
 
-  let result = []
+  return item[side].map((entry) => ({
+    data: entry.uc ? entry : null
+  }))
+}
 
-  for (const inicial of item[side]) {
-    if (inicial['uc']) {
-      result.push({
-        data: inicial
-      })
-    } else {
-      result.push({
-        data: null
-      })
-    }
+function mappingCount(item, side) {
+  return item[side].filter((part) => part.data).length
+}
+
+function shouldUseDashedDivider(item, side) {
+  const otherSide = side === 'inicial' ? 'final' : 'inicial'
+  return mappingCount(item, side) > 1 && mappingCount(item, otherSide) === 1
+}
+
+function dividerClass(item, side, idx, listLength) {
+  if (idx >= listLength - 1) {
+    return ''
   }
 
-  return result
+  if (shouldUseDashedDivider(item, side)) {
+    return 'border-b-2 border-dashed border-[color:var(--border-strong)]'
+  }
+
+  return 'border-b border-[color:var(--border-strong)]'
 }
 
 onMounted(async () => {
   await fetchCursos()
   await fetchData()
 })
+
 watch([estudante_id, plano_inicial, plano_final], fetchData)
 watch(curso_id, () => {
   if (planos_disponiveis.value.length > 0) {

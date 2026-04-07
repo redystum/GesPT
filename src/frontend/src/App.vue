@@ -1,11 +1,8 @@
 <template>
-  <div
-    :class="{ dark: isDark }"
-    class="min-h-screen flex flex-col font-sans transition-colors duration-200 bg-neutral-50 dark:bg-neutral-950 text-neutral-900 dark:text-neutral-100"
-  >
+  <div class="app-frame">
     <NavComponent />
 
-    <main class="flex-grow z-10 relative">
+    <main class="flex-1 z-10">
       <router-view v-slot="{ Component }">
         <transition name="fade" mode="out-in">
           <component :is="Component" />
@@ -13,26 +10,22 @@
       </router-view>
     </main>
 
-    <footer
-      class="border-t border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-950 py-8 mt-auto text-sm text-neutral-500 dark:text-neutral-400"
-    >
-      <div
-        class="max-w-screen-2xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-4"
-      >
-        <div>
-          <p class="font-bold text-neutral-900 dark:text-neutral-100 mb-1">The Academic Curator</p>
-          <p>© 2024. All rights reserved.</p>
-        </div>
-        <div class="flex gap-6">
-          <a href="#" class="hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >Terms</a
-          >
-          <a href="#" class="hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >Privacy</a
-          >
-          <a href="#" class="hover:text-neutral-900 dark:hover:text-white transition-colors"
-            >Support</a
-          >
+    <footer class="mt-auto border-t border-[color:var(--border)] bg-[color:var(--surface)]">
+      <div class="page-container py-7 sm:py-8">
+        <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+          <div class="space-y-2">
+            <p class="text-base font-semibold">{{ $t('brand.name') }} · {{ $t('brand.institution') }}</p>
+            <p class="max-w-xl text-sm text-[color:var(--muted)]">{{ $t('footer.description') }}</p>
+            <p class="text-xs text-[color:var(--muted)]">
+              © {{ currentYear }} {{ $t('brand.name') }}. {{ $t('footer.rights') }}
+            </p>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-5">
+            <a href="#" class="footer-link">{{ $t('footer.terms') }}</a>
+            <a href="#" class="footer-link">{{ $t('footer.privacy') }}</a>
+            <a href="#" class="footer-link">{{ $t('footer.support') }}</a>
+          </div>
         </div>
       </div>
     </footer>
@@ -40,12 +33,22 @@
 </template>
 
 <script setup>
+import { computed, watchEffect } from 'vue'
+import { useI18n } from '@/i18n'
 import NavComponent from '@/components/Navbar/NavComponent.vue'
+
+const { t } = useI18n()
+const currentYear = computed(() => new Date().getFullYear())
+
+watchEffect(() => {
+  document.title = t('brand.app_title')
+})
 </script>
+
 <style>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s ease;
+  transition: opacity 0.25s ease;
 }
 
 .fade-enter-from,
