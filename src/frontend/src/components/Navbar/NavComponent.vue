@@ -26,7 +26,7 @@
               class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
-              <span class="text-sm leading-none">{{ isDark ? '☀' : '☾' }}</span>
+              <font-awesome-icon :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']" class="text-sm" />
             </button>
           </div>
         </div>
@@ -59,7 +59,7 @@
               class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
-              <span class="text-sm leading-none">{{ isDark ? '☀' : '☾' }}</span>
+              <font-awesome-icon :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']" class="text-sm" />
             </button>
 
             <div class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-xs font-semibold text-[color:var(--muted)]">

@@ -87,12 +87,9 @@
           >
             <template v-if="part.data">
               <p class="font-semibold">
-                {{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}
-                <span
-                  v-if="part.data.opcao_escolhida"
-                  class="ml-2 text-sm font-medium text-[color:var(--primary)]"
-                >
-                  {{ locale === 'pt' ? part.data.opcao_escolhida.nome : part.data.opcao_escolhida.name }}
+                {{ part.data.uc.nome }}
+                <span v-if="part.data.opcao_escolhida" class="text-[color:var(--primary)] font-medium">
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" /> {{ part.data.opcao_escolhida.nome }}
                 </span>
               </p>
               <p class="mt-1 text-xs text-[color:var(--muted)]">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
@@ -110,12 +107,9 @@
           >
             <template v-if="part.data">
               <p class="font-semibold">
-                {{ locale === 'pt' ? part.data.uc.nome : part.data.uc.name }}
-                <span
-                  v-if="part.data.opcao_escolhida"
-                  class="ml-2 text-sm font-medium text-[color:var(--primary)]"
-                >
-                  {{ locale === 'pt' ? part.data.opcao_escolhida.nome : part.data.opcao_escolhida.name }}
+                {{ part.data.uc.nome }}
+                <span v-if="part.data.opcao_escolhida" class="text-[color:var(--primary)] font-medium">
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" /> {{ part.data.opcao_escolhida.nome }}
                 </span>
               </p>
               <p class="mt-1 text-xs text-[color:var(--muted)]">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>

@@ -11,7 +11,7 @@
         <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
           <div class="relative w-full sm:w-80">
             <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--muted)]">
-              ⌕
+              <font-awesome-icon :icon="['fas', 'search']" />
             </span>
             <input
               type="text"
@@ -23,7 +23,7 @@
           </div>
 
           <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap">
-            <span class="text-base leading-none">+</span>
+            <font-awesome-icon :icon="['fas', 'plus']" class="text-base leading-none" />
             {{ $t('home.new_course') }}
           </button>
         </div>
@@ -31,17 +31,17 @@
     </section>
 
     <div v-if="loading" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
-      <span class="mt-0.5 animate-pulse">•</span>
+      <font-awesome-icon :icon="['fas', 'circle-notch']" spin class="mt-0.5" />
       <p>{{ $t('common.loading') }}</p>
     </div>
 
     <div v-else-if="error" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 border-red-600/30 bg-red-600/10 text-red-500 mb-6">
-      <span class="mt-0.5">!</span>
+      <font-awesome-icon :icon="['fas', 'exclamation-circle']" class="mt-0.5" />
       <p>{{ error }}</p>
     </div>
 
     <div v-else-if="courses.length === 0" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
-      <span class="mt-0.5">i</span>
+      <font-awesome-icon :icon="['fas', 'info-circle']" class="mt-0.5" />
       <div>
         <p class="font-semibold text-[color:var(--text)]">{{ $t('states.empty_title') }}</p>
         <p class="text-sm text-[color:var(--muted)]">{{ $t('home.empty_hint') }}</p>

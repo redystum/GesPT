@@ -28,11 +28,10 @@
           <div class="space-y-6 xl:col-span-1">
             <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6">
               <h2 class="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-[color:var(--muted)]">
-                {{ $t('admin.validation_rule') }}
+                <font-awesome-icon :icon="['fas', 'keyboard']" class="text-xs" /> {{ $t('admin.rule_title') }}
               </h2>
-
               <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
-                {{ $t('admin.regex_pattern') }}
+                {{ $t('admin.rule_pattern_label') }}
               </label>
               <input
                 type="text"
@@ -76,14 +75,13 @@
                 <h2 class="text-lg font-semibold">{{ $t('admin.whitelist_title') }}</h2>
                 <p class="text-sm text-[color:var(--muted)]">{{ $t('admin.whitelist_subtitle') }}</p>
               </div>
-
               <div class="flex w-full gap-3 sm:w-auto">
                 <input
                   type="text"
-                  :placeholder="$t('admin.filter_rules')"
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 text-sm sm:w-52"
+                  :placeholder="$t('admin.whitelist_search')"
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 sm:w-64"
                 />
-                <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap">{{ $t('common.add_entry') }}</button>
+                <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap"><font-awesome-icon :icon="['fas', 'plus']" class="text-sm leading-none" />{{ $t('common.add_entry') }}</button>
               </div>
             </div>
 
@@ -107,7 +105,7 @@
                     </td>
                     <td class="text-right">
                       <button class="text-sm font-medium text-[color:var(--muted)] transition-colors hover:text-[color:var(--primary)]">
-                        {{ $t('admin.edit') }}
+                        <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" class="text-xs" />
                       </button>
                     </td>
                   </tr>
@@ -121,7 +119,7 @@
                     </td>
                     <td class="text-right">
                       <button class="text-sm font-medium text-[color:var(--muted)] transition-colors hover:text-[color:var(--primary)]">
-                        {{ $t('admin.edit') }}
+                        <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" class="text-xs" />
                       </button>
                     </td>
                   </tr>
@@ -133,10 +131,10 @@
               <span>{{ $t('admin.table_count') }}</span>
               <div class="flex items-center gap-3">
                 <button class="transition-colors hover:text-[color:var(--text)]" disabled>
-                  {{ $t('common.previous') }}
+                  <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-[10px]" /> {{ $t('common.previous') }}
                 </button>
                 <button class="transition-colors hover:text-[color:var(--text)]">
-                  {{ $t('common.next_page') }}
+                  {{ $t('common.next') }} <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-[10px]" />
                 </button>
               </div>
             </div>
