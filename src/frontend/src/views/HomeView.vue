@@ -1,112 +1,99 @@
 <template>
-  <div class="max-w-screen-2xl mx-auto px-6 py-8 animate-fade-in-up">
-    <!-- Header -->
-    <div class="flex flex-col lg:flex-row justify-between items-start lg:items-end mb-8 gap-6">
-      <div class="shrink-0">
-        <h1 class="text-3xl font-bold text-neutral-900 dark:text-white mb-2 tracking-tight">
-          {{ $t('home.title') }}
-        </h1>
-        <p class="text-neutral-500 dark:text-neutral-400 text-sm">
-          {{ $t('home.subtitle') }}
-        </p>
-      </div>
-
-      <!-- Action Bar -->
-      <div class="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-        <div class="relative w-full sm:w-72">
-          <input
-            type="text"
-            :placeholder="$t('home.search')"
-            class="simple-input w-full py-2 pr-4 border border-neutral-300 dark:border-neutral-700 rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition shadow-sm"
-            style="padding-left: 2.5rem;"
-            v-model="search_input"
-            @input="search"
-          />
-          <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <i class="fas fa-search text-neutral-400"></i>
-          </div>
+  <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up">
+    <section class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-[#1a1a1a] transition-colors duration-150 p-6 sm:p-8 mb-8">
+      <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+        <div class="max-w-3xl">
+          <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('home.kicker') }}</p>
+          <h1 class="text-2xl sm:text-3xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 mt-2">{{ $t('home.title') }}</h1>
+          <p class="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">{{ $t('home.subtitle') }}</p>
         </div>
 
-        <button class="simple-button flex items-center justify-center gap-2 w-full sm:w-auto whitespace-nowrap shadow-sm">
-          <i class="fas fa-plus"></i>
-          New Course
-        </button>
+        <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
+          <div class="relative w-full sm:w-80">
+            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
+              <font-awesome-icon :icon="['fas', 'search']" />
+            </span>
+            <input
+              type="text"
+              :placeholder="$t('home.search')"
+              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 pl-9"
+              v-model="searchInput"
+              @input="search"
+            />
+          </div>
+
+          <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap">
+            <font-awesome-icon :icon="['fas', 'plus']" class="text-base leading-none" />
+            {{ $t('home.new_course') }}
+          </button>
+        </div>
       </div>
+    </section>
+
+    <div v-if="loading" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+      <font-awesome-icon :icon="['fas', 'circle-notch']" spin class="mt-0.5" />
+      <p>{{ $t('common.loading') }}</p>
     </div>
 
-    <!-- Loading State -->
-    <div v-if="loading" class="text-center py-12 text-neutral-500">
-      <i class="fas fa-spinner fa-spin text-2xl mb-4"></i>
-      <p>Loading...</p>
-    </div>
-
-    <!-- Error State -->
-    <div v-else-if="error" class="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-lg mb-6 flex items-center gap-3 border border-red-200 dark:border-red-800/50">
-      <i class="fas fa-exclamation-circle text-xl"></i>
+    <div v-else-if="error" class="flex items-start gap-3 rounded-md border  dark:border-neutral-800 dark:bg-neutral-800/50 px-4 py-3 text-sm  dark:text-red-400 border-neutral-100 bg-neutral-600/10 text-red-500 mb-6">
+      <font-awesome-icon :icon="['fas', 'exclamation-circle']" class="mt-0.5" />
       <p>{{ error }}</p>
     </div>
 
-    <!-- Empty State -->
-    <div v-else-if="courses.length === 0" class="text-center py-12 text-neutral-500 bg-neutral-50 dark:bg-neutral-800/50 rounded-lg border border-neutral-200 dark:border-neutral-800">
-      <i class="fas fa-search text-3xl mb-4 text-neutral-400"></i>
-      <p class="text-lg">{{ $t('home.no_results') }}</p>
+    <div v-else-if="courses.length === 0" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+      <font-awesome-icon :icon="['fas', 'info-circle']" class="mt-0.5" />
+      <div>
+        <p class="font-semibold">{{ $t('states.empty_title') }}</p>
+        <p class="text-sm">{{ $t('home.empty_hint') }}</p>
+      </div>
     </div>
 
-    <!-- Grid -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-      <div
+    <div v-else class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+      <article
         v-for="course in courses"
         :key="course.id"
-        class="simple-card p-6 flex flex-col hover:border-neutral-300 dark:hover:border-neutral-700"
-        style="animation: fade-in-up 0.3s ease-out backwards"
-        :style="{ animationDelay: `${(course.id % 4) * 50}ms` }"
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-[#1a1a1a] transition-colors duration-150 hover:border-neutral-300 dark:hover:border-neutral-700 p-6 flex flex-col"
+        style="animation: fade-in-up 0.45s ease-out backwards"
+        :style="{ animationDelay: `${(course.id % 4) * 55}ms` }"
       >
-        <router-link :to="`/cursos/${course.id}`" class="mb-4 cursor-pointer">
-          <div class="flex justify-between items-start mb-4">
-            <span
-              class="px-2 py-0.5 text-xs font-medium rounded bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400"
-            >
-              {{ course.sigla }} - {{ course.codigo }}
-            </span>
+        <router-link :to="{ path: '/compare', query: { course: course.id } }" class="mb-3 block">
+          <div class="mb-3 flex items-start justify-between gap-2">
+            <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ course.sigla }} · {{ course.codigo }}</span>
           </div>
 
-          <h3 class="font-bold text-neutral-900 dark:text-white text-lg leading-tight mb-2">
+          <h3 class="text-lg font-bold leading-tight">
             {{ locale === 'pt' ? course.nome : course.name }}
           </h3>
         </router-link>
 
-        <div class="mb-6 grow line-clamp-2 grid grid-cols-2 gap-6">
+        <div class="mb-4 flex flex-wrap gap-2">
           <router-link
             v-for="plano in course.planos_estudo"
-            :to="`/planos/${plano.id}`"
+            :to="{ path: '/compare', query: { course: course.id, plan: plano.id } }"
             :key="plano.id"
-            class="text-sm text-neutral-500 dark:text-neutral-400 hover:underline"
+            class="inline-flex items-center rounded-md border border-neutral-600 px-2.5 py-1 text-xs font-medium transition-colors duration-150 hover:text-[color:var(--primary)]"
           >
             {{ plano.ano }}
           </router-link>
         </div>
 
-        <div
-          class="flex items-center justify-between text-xs text-neutral-500 dark:text-neutral-400 border-t border-neutral-100 dark:border-neutral-800 pt-4 mt-auto"
-        >
-          <span class="flex items-center gap-1.5 font-medium">
-            {{ course.planos_estudo.length }} {{ $t('home.planos') }}
-          </span>
+        <div class="border-t border-neutral-600 pt-3 text-sm text-neutral-500">
+          {{ course.planos_estudo.length }} {{ $t('home.planos') }}
         </div>
-      </div>
+      </article>
     </div>
   </div>
 </template>
 
 <script setup>
 import { inject, ref } from 'vue'
-import { useI18n } from 'vue-i18n'
+import { useI18n } from '@/i18n'
 
 const { locale } = useI18n()
-let API = inject('apiURL')
+const API = inject('apiURL')
 
 const courses = ref([])
-const search_input = ref("")
+const searchInput = ref('')
 const loading = ref(true)
 const error = ref(null)
 let searchTimeout = null
@@ -128,28 +115,29 @@ fetch(`${API}/cursos?with_planos_estudo=1`)
   })
 
 function search() {
-    if (searchTimeout) {
-      clearTimeout(searchTimeout)
-    }
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
 
-    searchTimeout = setTimeout(() => {
-      loading.value = true
-      error.value = null
-      fetch(`${API}/cursos?search=${search_input.value}&with_planos_estudo=1`)
-        .then((response) => {
-          if (!response.ok) throw new Error('Failed to load courses')
-          return response.json()
-        })
-        .then((data) => {
-          courses.value = data.data
-        })
-        .catch((err) => {
-          console.error('Error fetching courses:', err)
-          error.value = err.message || 'An error occurred while fetching courses.'
-        })
-        .finally(() => {
-          loading.value = false
-        })
-    }, 500)
+  searchTimeout = setTimeout(() => {
+    loading.value = true
+    error.value = null
+
+    fetch(`${API}/cursos?search=${searchInput.value}&with_planos_estudo=1`)
+      .then((response) => {
+        if (!response.ok) throw new Error('Failed to load courses')
+        return response.json()
+      })
+      .then((data) => {
+        courses.value = data.data
+      })
+      .catch((err) => {
+        console.error('Error fetching courses:', err)
+        error.value = err.message || 'An error occurred while fetching courses.'
+      })
+      .finally(() => {
+        loading.value = false
+      })
+  }, 450)
 }
 </script>

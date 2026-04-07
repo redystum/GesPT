@@ -1,14 +1,12 @@
-@import "tailwindcss";
-
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
-
 @theme {
-  --animate-fade-in-up: fade-in-up 0.3s ease-out backwards;
-
+  --animate-fade-in-up: fade-in-up 0.45s ease-out backwards;
   @keyframes fade-in-up {
     0% {
       opacity: 0;
-      transform: translateY(10px);
+      transform: translateY(14px);
     }
     100% {
       opacity: 1;
@@ -16,24 +14,23 @@
     }
   }
 }
-
 @layer base {
+  html,
+  body,
+  #app {
+    min-height: 100%;
+  }
   body {
-    @apply antialiased bg-neutral-50 text-neutral-900 dark:bg-neutral-950 dark:text-neutral-100 transition-colors duration-200;
+    @apply antialiased transition-colors duration-200 text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-950;
+    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
   }
-}
-
-@layer utilities {
-  .simple-card {
-    @apply bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-lg shadow-sm transition-all duration-200;
-  }
-  .simple-input {
-    @apply w-full bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 focus:border-neutral-900 dark:focus:border-white focus:ring-1 focus:ring-neutral-900 dark:focus:ring-white outline-none transition-all duration-200 rounded-md px-3 py-2 text-sm;
-  }
-  .simple-button {
-    @apply inline-flex items-center justify-center bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-200 text-white font-medium transition-colors duration-200 rounded-md px-4 py-2 text-sm shadow-sm;
-  }
-  .simple-button-outline {
-    @apply inline-flex items-center justify-center bg-white dark:bg-neutral-900 text-neutral-700 dark:text-neutral-300 border border-neutral-300 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-800 font-medium transition-colors duration-200 rounded-md px-4 py-2 text-sm shadow-sm;
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Source Sans 3', 'Segoe UI', sans-serif;
+    letter-spacing: -0.01em;
   }
 }
