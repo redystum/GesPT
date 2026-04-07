@@ -1,20 +1,20 @@
 <template>
-  <header class="header-shell">
-    <div class="page-container py-3 sm:py-4">
+  <header class="sticky top-0 z-50 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+    <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex items-center justify-between gap-4">
           <router-link to="/" class="flex items-center gap-3">
-            <span class="brand-mark">GP</span>
-            <div class="brand-label">
-              <p class="brand-title">{{ $t('brand.name') }}</p>
-              <p class="brand-subtitle">{{ $t('brand.institution') }}</p>
+            <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100">GP</span>
+            <div class="leading-tight">
+              <p class="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100">{{ $t('brand.name') }}</p>
+              <p class="text-[0.68rem] sm:text-xs uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400">{{ $t('brand.institution') }}</p>
             </div>
           </router-link>
 
           <div class="flex items-center gap-2 lg:hidden">
             <button
               @click="toggleLanguage"
-              class="icon-button"
+              class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800"
               :aria-label="$t('nav.language_toggle')"
             >
               <span class="text-xs">Aa</span>
@@ -23,7 +23,7 @@
 
             <button
               @click="toggleTheme"
-              class="icon-button w-9 px-0"
+              class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
               <span class="text-sm leading-none">{{ isDark ? '☀' : '☾' }}</span>
@@ -37,8 +37,8 @@
               v-for="link in navLinks"
               :key="link.path"
               :to="link.path"
-              class="nav-link"
-              active-class="nav-link-active"
+              class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+              active-class="text-neutral-900 dark:text-neutral-100 bg-neutral-200 dark:bg-neutral-800"
             >
               {{ link.name }}
             </router-link>
@@ -47,7 +47,7 @@
           <div class="hidden items-center gap-2 lg:flex">
             <button
               @click="toggleLanguage"
-              class="icon-button"
+              class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800"
               :aria-label="$t('nav.language_toggle')"
             >
               <span class="text-xs">Aa</span>
@@ -56,7 +56,7 @@
 
             <button
               @click="toggleTheme"
-              class="icon-button w-9 px-0"
+              class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
               <span class="text-sm leading-none">{{ isDark ? '☀' : '☾' }}</span>

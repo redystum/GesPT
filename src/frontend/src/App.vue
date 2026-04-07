@@ -1,5 +1,5 @@
 <template>
-  <div class="app-frame">
+  <div class="relative min-h-screen flex flex-col overflow-x-hidden text-neutral-900 dark:text-neutral-100 bg-neutral-50 dark:bg-neutral-950">
     <NavComponent />
 
     <main class="flex-1 z-10">
@@ -11,7 +11,7 @@
     </main>
 
     <footer class="mt-auto border-t border-[color:var(--border)] bg-[color:var(--surface)]">
-      <div class="page-container py-7 sm:py-8">
+      <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-7 sm:py-8">
         <div class="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
           <div class="space-y-2">
             <p class="text-base font-semibold">{{ $t('brand.name') }} · {{ $t('brand.institution') }}</p>
@@ -22,9 +22,9 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-5">
-            <a href="#" class="footer-link">{{ $t('footer.terms') }}</a>
-            <a href="#" class="footer-link">{{ $t('footer.privacy') }}</a>
-            <a href="#" class="footer-link">{{ $t('footer.support') }}</a>
+            <a href="#" class="text-sm transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">{{ $t('footer.terms') }}</a>
+            <a href="#" class="text-sm transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">{{ $t('footer.privacy') }}</a>
+            <a href="#" class="text-sm transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100">{{ $t('footer.support') }}</a>
           </div>
         </div>
       </div>

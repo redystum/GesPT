@@ -52,7 +52,7 @@
 
     <!-- Stats Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-      <div class="simple-card p-5 flex justify-between items-center">
+      <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5 flex justify-between items-center">
         <div>
           <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
             Total Variance
@@ -60,7 +60,7 @@
           <p class="text-2xl font-bold text-neutral-900 dark:text-white">0 ECTS</p>
         </div>
       </div>
-      <div class="simple-card p-5 flex justify-between items-center">
+      <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5 flex justify-between items-center">
         <div>
           <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
             Equivalence Rate
@@ -68,7 +68,7 @@
           <p class="text-2xl font-bold text-neutral-900 dark:text-white">84%</p>
         </div>
       </div>
-      <div class="simple-card p-5 flex justify-between items-center">
+      <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5 flex justify-between items-center">
         <div>
           <p class="text-xs text-neutral-500 dark:text-neutral-400 uppercase tracking-widest mb-1">
             New Modules
@@ -79,7 +79,7 @@
     </div>
 
     <!-- Comparison Table -->
-    <div class="simple-card overflow-hidden">
+    <div class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 overflow-hidden">
       <div
         class="grid grid-cols-2 text-xs font-semibold text-neutral-500 dark:text-neutral-400 border-b border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50"
       >

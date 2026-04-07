@@ -1,32 +1,32 @@
 <template>
-  <div class="page-container page-section animate-fade-in-up">
+  <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up">
     <div class="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div>
-        <p class="section-kicker">{{ $t('admin.kicker') }}</p>
-        <h1 class="page-title mt-2">{{ $t('admin.title') }}</h1>
-        <p class="page-subtitle">{{ $t('admin.subtitle') }}</p>
+        <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('admin.kicker') }}</p>
+        <h1 class="text-2xl sm:text-3xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 mt-2">{{ $t('admin.title') }}</h1>
+        <p class="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">{{ $t('admin.subtitle') }}</p>
       </div>
 
       <div class="flex flex-wrap items-center gap-3">
-        <button class="simple-button-outline">{{ $t('common.discard') }}</button>
-        <button class="simple-button">{{ $t('admin.save_configuration') }}</button>
+        <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800">{{ $t('common.discard') }}</button>
+        <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300">{{ $t('admin.save_configuration') }}</button>
       </div>
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-[16rem,1fr]">
-      <aside class="simple-card p-4 sm:p-5">
+      <aside class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-4 sm:p-5">
         <nav class="space-y-1.5">
-          <a href="#" class="nav-link w-full">{{ $t('admin.menu_dashboard') }}</a>
-          <a href="#" class="nav-link w-full">{{ $t('admin.menu_curriculum') }}</a>
-          <a href="#" class="nav-link nav-link-active w-full">{{ $t('admin.menu_auth') }}</a>
-          <a href="#" class="nav-link w-full">{{ $t('admin.menu_audit') }}</a>
+          <a href="#" class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full">{{ $t('admin.menu_dashboard') }}</a>
+          <a href="#" class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full">{{ $t('admin.menu_curriculum') }}</a>
+          <a href="#" class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-900 dark:text-neutral-100 bg-neutral-200 dark:bg-neutral-800 w-full">{{ $t('admin.menu_auth') }}</a>
+          <a href="#" class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full">{{ $t('admin.menu_audit') }}</a>
         </nav>
       </aside>
 
       <section class="space-y-6">
         <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
           <div class="space-y-6 xl:col-span-1">
-            <article class="simple-card p-6">
+            <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6">
               <h2 class="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-[color:var(--muted)]">
                 {{ $t('admin.validation_rule') }}
               </h2>
@@ -37,18 +37,18 @@
               <input
                 type="text"
                 value="^[a-zA-Z0-9._%+-]+@ipleiria\.pt$"
-                class="simple-input mb-4 font-mono text-xs"
+                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 mb-4 font-mono text-xs"
               />
 
-              <div class="subtle-panel mb-4 text-xs text-[color:var(--muted)]">
+              <div class="rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 mb-4 text-xs text-[color:var(--muted)]">
                 <span class="font-semibold text-[color:var(--text)]">{{ $t('admin.rule_behavior_label') }}</span>
                 {{ $t('admin.rule_behavior') }}
               </div>
 
-              <button class="simple-button-outline w-full text-xs">{{ $t('admin.test_pattern') }}</button>
+              <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full text-xs">{{ $t('admin.test_pattern') }}</button>
             </article>
 
-            <article class="simple-card p-6">
+            <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6">
               <h2 class="mb-4 text-sm font-semibold uppercase tracking-[0.15em] text-[color:var(--muted)]">
                 {{ $t('admin.system_policies') }}
               </h2>
@@ -56,21 +56,21 @@
               <div class="space-y-4 text-sm">
                 <div class="flex items-center justify-between border-b border-[color:var(--border)] pb-4">
                   <span>{{ $t('admin.policy_mfa') }}</span>
-                  <span class="status-pill">{{ $t('admin.status_active') }}</span>
+                  <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ $t('admin.status_active') }}</span>
                 </div>
                 <div class="flex items-center justify-between border-b border-[color:var(--border)] pb-4">
                   <span>{{ $t('admin.policy_sso') }}</span>
-                  <span class="status-pill">{{ $t('admin.status_connected') }}</span>
+                  <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ $t('admin.status_connected') }}</span>
                 </div>
                 <div class="flex items-center justify-between">
                   <span>{{ $t('admin.policy_bruteforce') }}</span>
-                  <span class="status-pill">{{ $t('admin.status_pending') }}</span>
+                  <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ $t('admin.status_pending') }}</span>
                 </div>
               </div>
             </article>
           </div>
 
-          <article class="simple-card overflow-hidden xl:col-span-2">
+          <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 overflow-hidden xl:col-span-2">
             <div class="flex flex-col gap-4 border-b border-[color:var(--border)] p-5 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h2 class="text-lg font-semibold">{{ $t('admin.whitelist_title') }}</h2>
@@ -81,14 +81,14 @@
                 <input
                   type="text"
                   :placeholder="$t('admin.filter_rules')"
-                  class="simple-input text-sm sm:w-52"
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 text-sm sm:w-52"
                 />
-                <button class="simple-button whitespace-nowrap">{{ $t('common.add_entry') }}</button>
+                <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap">{{ $t('common.add_entry') }}</button>
               </div>
             </div>
 
             <div class="overflow-x-auto">
-              <table class="data-table min-w-[620px]">
+              <table class="w-full border-collapse text-left min-w-[620px]">
                 <thead>
                   <tr>
                     <th>{{ $t('admin.table_identifier') }}</th>
@@ -103,7 +103,7 @@
                       <p class="text-xs text-[color:var(--muted)]">{{ $t('admin.verified_domain') }}</p>
                     </td>
                     <td>
-                      <span class="status-pill">{{ $t('admin.role_faculty') }}</span>
+                      <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ $t('admin.role_faculty') }}</span>
                     </td>
                     <td class="text-right">
                       <button class="text-sm font-medium text-[color:var(--muted)] transition-colors hover:text-[color:var(--primary)]">
@@ -117,7 +117,7 @@
                       <p class="text-xs text-[color:var(--muted)]">{{ $t('admin.individual_account') }}</p>
                     </td>
                     <td>
-                      <span class="status-pill">{{ $t('admin.role_admin') }}</span>
+                      <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ $t('admin.role_admin') }}</span>
                     </td>
                     <td class="text-right">
                       <button class="text-sm font-medium text-[color:var(--muted)] transition-colors hover:text-[color:var(--primary)]">
