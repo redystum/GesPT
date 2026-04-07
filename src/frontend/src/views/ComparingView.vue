@@ -1,28 +1,50 @@
 <template>
-  <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up">
+  <div
+    class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up"
+  >
     <div class="mb-8 flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
       <div>
-        <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('compare.kicker') }}</p>
-        <h1 class="text-2xl sm:text-3xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 mt-2">{{ $t('compare.title') }}</h1>
-        <p class="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">{{ $t('compare.subtitle') }}</p>
+        <p
+          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+        >
+          {{ $t('compare.kicker') }}
+        </p>
+        <h1
+          class="text-2xl sm:text-3xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 mt-2"
+        >
+          {{ $t('compare.title') }}
+        </h1>
+        <p class="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">
+          {{ $t('compare.subtitle') }}
+        </p>
       </div>
 
-      <section class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 w-full p-5 lg:w-auto">
+      <section
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 w-full p-5 lg:w-auto"
+      >
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
           <div class="min-w-56">
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em]">
               {{ $t('compare.student') }}
             </label>
-            <select v-model="estudante_id" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20">
-              <option v-for="n in 3" :key="n" :value="n">{{ $t('compare.student') }} {{ n }}</option>
+            <select
+              v-model="estudante_id"
+              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
+            >
+              <option v-for="n in 3" :key="n" :value="n">
+                {{ $t('compare.student') }} {{ n }}
+              </option>
             </select>
           </div>
 
           <div class="min-w-56">
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-[color:var(--muted)]">
+            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em]">
               {{ $t('compare.course') }}
             </label>
-            <select v-model="curso_id" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20">
+            <select
+              v-model="curso_id"
+              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
+            >
               <option v-for="c in cursos" :key="c.id" :value="c.id">
                 {{ locale === 'pt' ? c.nome : c.name }}
               </option>
@@ -33,97 +55,142 @@
     </div>
 
     <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-      <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5">
-        <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('compare.no_antecedente') }}</p>
+      <article
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5"
+      >
+        <p
+          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+        >
+          {{ $t('compare.no_antecedente') }}
+        </p>
         <p class="mt-2 text-3xl font-bold">{{ statsNoAntecedente }}</p>
       </article>
 
-      <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5">
-        <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('compare.descontinuadas') }}</p>
+      <article
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5"
+      >
+        <p
+          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+        >
+          {{ $t('compare.descontinuadas') }}
+        </p>
         <p class="mt-2 text-3xl font-bold">{{ statsDescontinuadas }}</p>
       </article>
 
-      <article class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5">
-        <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('compare.equivalences') }}</p>
+      <article
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5"
+      >
+        <p
+          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+        >
+          {{ $t('compare.equivalences') }}
+        </p>
         <p class="mt-2 text-3xl font-bold">{{ statsEquivalences }}</p>
       </article>
     </div>
 
-    <section v-if="isReady" class="overflow-hidden rounded-md border-2 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a]">
-      <div class="border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 grid grid-cols-1 p-4 sm:grid-cols-2 sm:gap-4">
+    <section
+      v-if="isReady"
+      class="overflow-hidden rounded-md border-2 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a]"
+    >
+      <div
+        class="border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 grid grid-cols-1 p-4 sm:grid-cols-2 sm:gap-4"
+      >
         <div class="space-y-1">
-          <label class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('compare.initial_plan') }}</label>
-          <select v-model="plano_inicial" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20">
+          <label
+            class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+            >{{ $t('compare.initial_plan') }}</label
+          >
+          <select
+            v-model="plano_inicial"
+            class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
+          >
             <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
           </select>
         </div>
 
         <div class="space-y-1">
-          <label class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('compare.target_plan') }}</label>
-          <select v-model="plano_final" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20">
+          <label
+            class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+            >{{ $t('compare.target_plan') }}</label
+          >
+          <select
+            v-model="plano_final"
+            class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
+          >
             <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
           </select>
         </div>
       </div>
 
-      <div v-if="equivalences.length === 0" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 m-4">
+      <div
+        v-if="equivalences.length === 0"
+        class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 m-4"
+      >
         <div>
-          <p class="font-semibold text-[color:var(--text)]">{{ $t('states.empty_title') }}</p>
-          <p class="text-sm text-[color:var(--muted)]">{{ $t('compare.empty_hint') }}</p>
+          <p class="font-semibold">{{ $t('states.empty_title') }}</p>
+          <p class="text-sm">{{ $t('compare.empty_hint') }}</p>
         </div>
       </div>
 
       <div
         v-for="(item, index) in equivalences"
         :key="index"
-        class="border-b-2 border-neutral-300 dark:border-neutral-700 grid grid-cols-1 sm:grid-cols-2"
+        class="border-b-2 border-neutral-500 dark:border-neutral-600 grid grid-cols-1 sm:grid-cols-2"
       >
-        <div class="border-b-2 border-[color:var(--border-strong)] sm:border-b-0 sm:border-r-2 sm:border-r-[color:var(--border-strong)]">
+        <div class="border-b-0 border-r-2 border-r-neutral-500 flex flex-col justify-center">
           <div
             v-for="(part, idx) in item.inicial"
             :key="part?.data ? part.data.id : 'no-inicial-' + index + '-' + idx"
-            class="p-5"
+            class="p-5 border-b-neutral-400 dark:border-b-neutral-600"
             :class="dividerClass(item, 'inicial', idx, item.inicial.length)"
           >
             <template v-if="part.data">
               <p class="font-semibold">
                 {{ part.data.uc.nome }}
-                <span v-if="part.data.opcao_escolhida" class="text-[color:var(--primary)] font-medium">
-                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" /> {{ part.data.opcao_escolhida.nome }}
+                <span v-if="part.data.opcao_escolhida" class="font-medium">
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
+                  {{ part.data.opcao_escolhida.nome }}
                 </span>
               </p>
-              <p class="mt-1 text-xs text-[color:var(--muted)]">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
+              <p class="mt-1 text-xs">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
             </template>
-            <p v-else class="text-sm italic text-[color:var(--muted)]">{{ $t('compare.no_inicial') }}</p>
+            <p v-else class="text-sm italic">{{ $t('compare.no_inicial') }}</p>
           </div>
         </div>
 
-        <div>
+        <div class="flex flex-col justify-center">
           <div
             v-for="(part, idx) in item.final"
             :key="part?.data ? part.data.id : 'no-final-' + index + '-' + idx"
-            class="p-5"
+            class="p-5 border-neutral-300"
             :class="dividerClass(item, 'final', idx, item.final.length)"
           >
             <template v-if="part.data">
               <p class="font-semibold">
                 {{ part.data.uc.nome }}
-                <span v-if="part.data.opcao_escolhida" class="text-[color:var(--primary)] font-medium">
-                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" /> {{ part.data.opcao_escolhida.nome }}
+                <span v-if="part.data.opcao_escolhida" class="font-medium">
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
+                  {{ part.data.opcao_escolhida.nome }}
                 </span>
               </p>
-              <p class="mt-1 text-xs text-[color:var(--muted)]">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
+              <p class="mt-1 text-xs">{{ $t('compare.ects') }}: {{ part.data.uc.ects }}</p>
             </template>
-            <p v-else class="text-sm italic text-[color:#b91c1c] dark:text-[color:#fca5a5]">{{ $t('compare.no_final') }}</p>
+            <p v-else class="text-sm italic text-[#b91c1c] dark:text-[#fca5a5]">
+              {{ $t('compare.no_final') }}
+            </p>
           </div>
         </div>
       </div>
     </section>
 
-    <div v-else class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400">
+    <div
+      v-else
+      class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400"
+    >
       <div>
-        <p class="font-semibold text-[color:var(--text)]">{{ $t('compare.select_prompt_title') }}</p>
-        <p class="text-sm text-[color:var(--muted)]">{{ $t('compare.select_prompt_subtitle') }}</p>
+        <p class="font-semibold">{{ $t('compare.select_prompt_title') }}</p>
+        <p class="text-sm">{{ $t('compare.select_prompt_subtitle') }}</p>
       </div>
     </div>
   </div>
@@ -247,10 +314,10 @@ function dividerClass(item, side, idx, listLength) {
   }
 
   if (shouldUseDashedDivider(item, side)) {
-    return 'border-b-2 border-dashed border-[color:var(--border-strong)]'
+    return 'border-b-2 border-dashed'
   }
 
-  return 'border-b border-[color:var(--border-strong)]'
+  return 'border-b'
 }
 
 onMounted(async () => {

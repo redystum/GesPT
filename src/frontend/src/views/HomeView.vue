@@ -1,6 +1,6 @@
 <template>
   <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up">
-    <section class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6 sm:p-8 mb-8">
+    <section class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-[#1a1a1a] transition-colors duration-150 p-6 sm:p-8 mb-8">
       <div class="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
         <div class="max-w-3xl">
           <p class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400">{{ $t('home.kicker') }}</p>
@@ -10,7 +10,7 @@
 
         <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
           <div class="relative w-full sm:w-80">
-            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[color:var(--muted)]">
+            <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
               <font-awesome-icon :icon="['fas', 'search']" />
             </span>
             <input
@@ -35,7 +35,7 @@
       <p>{{ $t('common.loading') }}</p>
     </div>
 
-    <div v-else-if="error" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 border-red-600/30 bg-red-600/10 text-red-500 mb-6">
+    <div v-else-if="error" class="flex items-start gap-3 rounded-md border  dark:border-neutral-800 dark:bg-neutral-800/50 px-4 py-3 text-sm  dark:text-red-400 border-neutral-100 bg-neutral-600/10 text-red-500 mb-6">
       <font-awesome-icon :icon="['fas', 'exclamation-circle']" class="mt-0.5" />
       <p>{{ error }}</p>
     </div>
@@ -43,8 +43,8 @@
     <div v-else-if="courses.length === 0" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
       <font-awesome-icon :icon="['fas', 'info-circle']" class="mt-0.5" />
       <div>
-        <p class="font-semibold text-[color:var(--text)]">{{ $t('states.empty_title') }}</p>
-        <p class="text-sm text-[color:var(--muted)]">{{ $t('home.empty_hint') }}</p>
+        <p class="font-semibold">{{ $t('states.empty_title') }}</p>
+        <p class="text-sm">{{ $t('home.empty_hint') }}</p>
       </div>
     </div>
 
@@ -52,7 +52,7 @@
       <article
         v-for="course in courses"
         :key="course.id"
-        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 hover:border-neutral-300 dark:hover:border-neutral-700 p-6 flex flex-col"
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-[#1a1a1a] transition-colors duration-150 hover:border-neutral-300 dark:hover:border-neutral-700 p-6 flex flex-col"
         style="animation: fade-in-up 0.45s ease-out backwards"
         :style="{ animationDelay: `${(course.id % 4) * 55}ms` }"
       >
@@ -71,13 +71,13 @@
             v-for="plano in course.planos_estudo"
             :to="{ path: '/compare', query: { course: course.id, plan: plano.id } }"
             :key="plano.id"
-            class="inline-flex items-center rounded-md border border-[color:var(--border)] px-2.5 py-1 text-xs font-medium text-[color:var(--text)] transition-colors duration-150 hover:text-[color:var(--primary)]"
+            class="inline-flex items-center rounded-md border border-neutral-600 px-2.5 py-1 text-xs font-medium transition-colors duration-150 hover:text-[color:var(--primary)]"
           >
             {{ plano.ano }}
           </router-link>
         </div>
 
-        <div class="border-t border-[color:var(--border)] pt-3 text-sm text-[color:var(--muted)]">
+        <div class="border-t border-neutral-600 pt-3 text-sm text-neutral-500">
           {{ course.planos_estudo.length }} {{ $t('home.planos') }}
         </div>
       </article>

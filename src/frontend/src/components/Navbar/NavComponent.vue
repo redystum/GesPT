@@ -1,13 +1,24 @@
 <template>
-  <header class="sticky top-0 z-50 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900">
+  <header
+    class="sticky top-0 z-50 border-b border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900"
+  >
     <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex items-center justify-between gap-4">
           <router-link to="/" class="flex items-center gap-3">
-            <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100">GP</span>
+            <span
+              class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100"
+              >GP</span
+            >
             <div class="leading-tight">
-              <p class="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100">{{ $t('brand.name') }}</p>
-              <p class="text-[0.68rem] sm:text-xs uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400">{{ $t('brand.institution') }}</p>
+              <p class="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100">
+                {{ $t('brand.name') }}
+              </p>
+              <p
+                class="text-[0.68rem] sm:text-xs uppercase tracking-[0.16em] text-neutral-500 dark:text-neutral-400"
+              >
+                {{ $t('brand.institution') }}
+              </p>
             </div>
           </router-link>
 
@@ -26,7 +37,10 @@
               class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
-              <font-awesome-icon :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']" class="text-sm" />
+              <font-awesome-icon
+                :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']"
+                class="text-sm"
+              />
             </button>
           </div>
         </div>
@@ -50,7 +64,9 @@
               class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800"
               :aria-label="$t('nav.language_toggle')"
             >
-              <span class="text-xs">Aa</span>
+              <span class="text-xs">
+                <font-awesome-icon icon="fa-solid fa-language" class="mr-1" />
+              </span>
               <span>{{ locale.toUpperCase() }}</span>
             </button>
 
@@ -59,10 +75,15 @@
               class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
-              <font-awesome-icon :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']" class="text-sm" />
+              <font-awesome-icon
+                :icon="isDark ? ['fas', 'sun'] : ['fas', 'moon']"
+                class="text-sm"
+              />
             </button>
 
-            <div class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-xs font-semibold text-[color:var(--muted)]">
+            <div
+              class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-xs font-semibold text-[color:var(--muted)]"
+            >
               IP
             </div>
           </div>

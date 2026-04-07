@@ -1,3 +1,4 @@
+import '@fortawesome/fontawesome-free/css/all.min.css'
 import './assets/main.css'
 
 import { createApp } from 'vue'
@@ -10,8 +11,10 @@ import en from './i18n/en.json'
 import pt from './i18n/pt.json'
 import { initializeTheme } from './composables/useTheme'
 import { library } from '@fortawesome/fontawesome-svg-core'
+import { fas } from '@fortawesome/free-solid-svg-icons'
+import { far } from '@fortawesome/free-regular-svg-icons'
+import { fab } from '@fortawesome/free-brands-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faSearch, faPlus, faSun, faMoon, faKeyboard, faEllipsisVertical, faExclamationCircle, faInfoCircle, faTimes, faCheck, faCircle, faCircleNotch, faChevronLeft, faChevronRight, faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
 const LOCALE_STORAGE_KEY = 'gespt.locale'
 const storedLocale = localStorage.getItem(LOCALE_STORAGE_KEY)
@@ -48,7 +51,7 @@ app.use(createPinia())
 app.use(router)
 app.use(i18n)
 
-library.add(faSearch, faPlus, faSun, faMoon, faKeyboard, faEllipsisVertical, faExclamationCircle, faInfoCircle, faTimes, faCheck, faCircle, faCircleNotch, faChevronLeft, faChevronRight, faArrowRight)
+library.add(fas, far, fab)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 

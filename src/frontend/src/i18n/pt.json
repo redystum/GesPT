@@ -84,7 +84,10 @@
     "role_faculty": "Docente",
     "role_admin": "Administrador",
     "edit": "Editar",
-    "table_count": "A mostrar 2 de 1.284 registos"
+    "table_count": "A mostrar 2 de 1.284 registos",
+    "whitelist_search": "Pesquisar por nome ou email",
+    "rule_title": "Regras de validação de autenticação",
+    "rule_pattern_label": "Padrão regex de validação"
   },
   "compare": {
     "kicker": "Análise Curricular",
