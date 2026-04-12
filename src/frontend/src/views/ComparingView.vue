@@ -105,6 +105,7 @@
             v-model="plano_inicial"
             class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
           >
+            <option :value="null" disabled>&mdash;</option>
             <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
           </select>
         </div>
@@ -118,13 +119,14 @@
             v-model="plano_final"
             class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
           >
+            <option :value="null" disabled>&mdash;</option>
             <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
           </select>
         </div>
       </div>
 
       <div
-        v-if="equivalences.length === 0"
+        v-if="equivalences.length === 0 && plano_inicial && plano_final"
         class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 m-4"
       >
         <div>
@@ -216,7 +218,7 @@
                 </div>
               </div>
             </template>
-            <p v-else class="text-sm italic text-[#b91c1c] dark:text-[#fca5a5]">
+            <p v-else-if="plano_final" class="text-sm italic text-[#b91c1c] dark:text-[#fca5a5]">
               {{ $t('compare.no_final') }}
             </p>
           </div>
@@ -253,7 +255,7 @@ const data = ref([])
 const cursos = ref([])
 const equivalences = ref([])
 
-const isReady = computed(() => Boolean(curso_id.value && plano_inicial.value && plano_final.value))
+const isReady = computed(() => Boolean(curso_id.value))
 
 const statsNoAntecedente = computed(() => {
   return equivalences.value.filter((item) => !item.inicial.some((p) => p.data)).length
@@ -291,11 +293,6 @@ async function fetchCursos() {
         if (route.query.plan && planos_disponiveis.value.some((p) => p.id == route.query.plan)) {
           plano_inicial.value = Number(route.query.plan)
         }
-
-        if (plano_inicial.value && planos_disponiveis.value.length > 1) {
-          const outroPlano = planos_disponiveis.value.find((p) => p.id !== plano_inicial.value)
-          plano_final.value = outroPlano ? outroPlano.id : null
-        }
       }
     }
   } catch (error) {
@@ -304,9 +301,17 @@ async function fetchCursos() {
 }
 
 async function fetchData() {
-  if (!plano_inicial.value || !plano_final.value) return
+  if (!plano_inicial.value) {
+    equivalences.value = []
+    data.value = []
+    return
+  }
 
-  const url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
+  let url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
+
+  if (!plano_final.value){
+    url = url.split('&plano_final=')[0]
+  }
 
   try {
     const response = await fetch(url)
@@ -366,13 +371,11 @@ onMounted(async () => {
 })
 
 watch([estudante_id, plano_inicial, plano_final], fetchData)
-watch(curso_id, () => {
-  if (planos_disponiveis.value.length > 0) {
-    plano_inicial.value = planos_disponiveis.value[0].id
-    plano_final.value =
-      planos_disponiveis.value.length > 1
-        ? planos_disponiveis.value[1].id
-        : planos_disponiveis.value[0].id
+watch(curso_id, (newVal, oldVal) => {
+  if (oldVal !== null) {
+    plano_inicial.value = null
+    plano_final.value = null
   }
 })
 </script>
+

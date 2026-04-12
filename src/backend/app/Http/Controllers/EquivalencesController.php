@@ -17,7 +17,7 @@ class EquivalencesController extends Controller
         $request->validate([
             'estudante_id' => 'required|integer|exists:estudantes,id',
             'plano_inicial' => 'required|integer|exists:plano_estudos,id',
-            'plano_final' => 'required|integer|exists:plano_estudos,id',
+            'plano_final' => 'nullable|integer|exists:plano_estudos,id',
             'dd' => 'nullable|bool'
         ]);
 
@@ -35,13 +35,6 @@ class EquivalencesController extends Controller
             ->with(['opcao', 'opcao.ucEscolhida'])
             ->get();
 
-        $opFinal = OpcoesEstudante::where('id_estudante', $request->estudante_id)
-            ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
-            ->join('plano_ucs', 'opcoes.id_uc_opcional', '=', 'plano_ucs.id')
-            ->where('plano_ucs.id_plano', $planoFinal->id)
-            ->with(['opcao', 'opcao.ucEscolhida'])
-            ->get();
-
         $planoInicial->planoUcs->each(function ($planoUc) use ($opInicial) {
             $op = $opInicial
                 ->pluck('opcao')
@@ -55,6 +48,36 @@ class EquivalencesController extends Controller
                 $planoUc->opcao_escolhida = null;
             }
         });
+
+        if (!$planoFinal) {
+            $eqs = [];
+            foreach ($planoInicial->planoUcs as $planoUc) {
+                $arr = $planoUc->toArray();
+                $arr['observacao'] = null;
+                $eqs[] = [
+                    'inicial' => [$arr],
+                    'final' => null,
+                ];
+            }
+
+            if ($request->dd)
+                dd($eqs);
+
+            return response()->json([
+                'plans' => [
+                    'initial' => $planoInicial,
+                    'final' => null,
+                ],
+                'data' => $eqs
+            ]);
+        }
+
+        $opFinal = OpcoesEstudante::where('id_estudante', $request->estudante_id)
+            ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
+            ->join('plano_ucs', 'opcoes.id_uc_opcional', '=', 'plano_ucs.id')
+            ->where('plano_ucs.id_plano', $planoFinal->id)
+            ->with(['opcao', 'opcao.ucEscolhida'])
+            ->get();
 
         $rules_in_plano = EquivalenciaRule::where('id_plano', $planoFinal->id)
             ->with('equivalencias.plano_uc.uc')
