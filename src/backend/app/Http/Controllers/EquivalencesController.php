@@ -90,14 +90,20 @@ class EquivalencesController extends Controller
 
             if ($eq->isEmpty()) {
                 if ($direct_eq) {
+                    $dir_arr = $direct_eq->toArray();
+                    $dir_arr['observacao'] = null;
+                    $final_arr = $planoUc->toArray();
+                    $final_arr['observacao'] = null;
                     $equivalences[] = [
-                        'inicial' => [$direct_eq->toArray()],
-                        'final' => [$planoUc->toArray()],
+                        'inicial' => [$dir_arr],
+                        'final' => [$final_arr],
                     ];
                 } else {
+                    $final_arr = $planoUc->toArray();
+                    $final_arr['observacao'] = null;
                     $equivalences[] = [
                         'inicial' => null,
-                        'final' => [$planoUc->toArray()],
+                        'final' => [$final_arr],
                     ];
                 }
                 $uc_w_eq[] = $planoUc->id_uc;
@@ -109,23 +115,36 @@ class EquivalencesController extends Controller
 
             $inicial = [];
             if ($direct_eq) {
-                $inicial[] = $direct_eq->toArray();
+                $dir_arr = $direct_eq->toArray();
+                $dir_arr['observacao'] = null;
+                $inicial[] = $dir_arr;
             }
 
-            $eq->each(function ($equivalencia) use (&$inicial, $planoInicial, &$uc_w_eq) {
+            $finalUcArray = $planoUc->toArray();
+            $finalUcArray['observacao'] = null;
+
+            $eq->each(function ($equivalencia) use (&$inicial, $planoInicial, &$uc_w_eq, &$finalUcArray, $planoUc) {
+                collect($equivalencia)->where('lado', Equivalencia::LADO_FINAL)->where('id_plano_uc', $planoUc->id)->each(function ($item) use (&$finalUcArray) {
+                    if (!empty($item['observacao'])) {
+                        $finalUcArray['observacao'] = $item['observacao'];
+                    }
+                });
+
                 $origins = collect($equivalencia)->where('lado', Equivalencia::LADO_ORIGINAL);
                 $origins->each(function ($origin) use (&$inicial, $planoInicial, &$uc_w_eq) {
                     $plano_uc = $origin['plano_uc'];
                     $uc_w_eq[] = $plano_uc['id_uc'] ?? null;
                     if ($plano_uc && $plano_uc['id_plano'] == $planoInicial->id) {
-                        $inicial[] = collect($plano_uc)->except('plano')->toArray();
+                        $arr = collect($plano_uc)->except('plano')->toArray();
+                        $arr['observacao'] = $origin['observacao'] ?? null;
+                        $inicial[] = $arr;
                     }
                 });
             });
 
             $equivalences[] = [
                 'inicial' => $inicial,
-                'final' => [$planoUc->toArray()],
+                'final' => [$finalUcArray],
             ];
 
             if (!$eq->isEmpty() || $direct_eq) {
@@ -134,8 +153,10 @@ class EquivalencesController extends Controller
         });
 
         $planoInicial->planoUcs->whereNotIn('id_uc', $uc_w_eq)->each(function ($planoUc) use (&$equivalences) {
+            $arr = $planoUc->toArray();
+            $arr['observacao'] = null;
             $equivalences[] = [
-                'inicial' => [$planoUc->toArray()],
+                'inicial' => [$arr],
                 'final' => null,
             ];
         });

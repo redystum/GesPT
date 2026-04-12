@@ -109,18 +109,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Uc::insert([
-            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming I'],
-            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming II'],
-            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Advanced Programming'],
-            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Information Systems'],
-            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics A'],
-            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics B'],
+            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming I', 'semestre' => 1],
+            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming II', 'semestre' => 1],
+            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Advanced Programming', 'semestre' => 1],
+            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Information Systems', 'semestre' => 1],
+            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics A', 'semestre' => 1],
+            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics B', 'semestre' => 1],
 
-            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Project Management'],
-            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Marketing'],
+            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Project Management', 'semestre' => 1],
+            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Marketing', 'semestre' => 1],
 
-            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 1'],
-            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 2'],
+            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 1', 'semestre' => 2],
+            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 2', 'semestre' => 2],
         ]);
 
         EquivalenciaRule::insert([
@@ -197,26 +197,26 @@ class DatabaseSeeder extends Seeder
 
         Equivalencia::insert([
             // p1 + p2 = PA
-            ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => 'Original'], // p1 plano1
-            ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => 'Original'], // p2 plano1
-            ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => 'Final'], // PA plano2
+            ['id_rule' => 1, 'id_plano_uc' => 1, 'lado' => 'Original', 'observacao' => "aaaaaa"], // p1 plano1
+            ['id_rule' => 1, 'id_plano_uc' => 2, 'lado' => 'Original', 'observacao' => null], // p2 plano1
+            ['id_rule' => 1, 'id_plano_uc' => 9, 'lado' => 'Final', 'observacao' => 'alguma observação importante aqui'], // PA plano2
 
             // SI = SI + matA
-            ['id_rule' => 2, 'id_plano_uc' => 4, 'lado' => 'Original'], // SI plano1
-            ['id_rule' => 2, 'id_plano_uc' => 10, 'lado' => 'Final'], // SI plano2
-            ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => 'Final'], // MATA plano2
+            ['id_rule' => 2, 'id_plano_uc' => 4, 'lado' => 'Original', 'observacao' => null], // SI plano1
+            ['id_rule' => 2, 'id_plano_uc' => 10, 'lado' => 'Final', 'observacao' => null], // SI plano2
+            ['id_rule' => 2, 'id_plano_uc' => 11, 'lado' => 'Final', 'observacao' => 'Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata'], // MATA plano2
 
             // MATB = MATA
-            ['id_rule' => 3, 'id_plano_uc' => 6, 'lado' => 'Original'], // MATB plano1
-            ['id_rule' => 3, 'id_plano_uc' => 11, 'lado' => 'Final'], // MATA plano2
+            ['id_rule' => 3, 'id_plano_uc' => 6, 'lado' => 'Original', 'observacao' => null], // MATB plano1
+            ['id_rule' => 3, 'id_plano_uc' => 11, 'lado' => 'Final', 'observacao' => null], // MATA plano2
 
             // GP = OP1
-            ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => 'Original'], // GP plano3
-            ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => 'Final'], // OP1 plano4
+            ['id_rule' => 5, 'id_plano_uc' => 12, 'lado' => 'Original', 'observacao' => null], // GP plano3
+            ['id_rule' => 5, 'id_plano_uc' => 14, 'lado' => 'Final', 'observacao' => 'alguma observação importante aqui'], // OP1 plano4
 
             // MK = OP2
-            ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => 'Original'], // MK plano3
-            ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => 'Final'], // OP2 plano4
+            ['id_rule' => 6, 'id_plano_uc' => 13, 'lado' => 'Original', 'observacao' => null], // MK plano3
+            ['id_rule' => 6, 'id_plano_uc' => 15, 'lado' => 'Final', 'observacao' => null], // OP2 plano4
         ]);
 
         Opcoes::insert([
