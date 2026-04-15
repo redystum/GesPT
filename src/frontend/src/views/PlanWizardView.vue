@@ -45,13 +45,20 @@
         <div
           v-if="index < steps.length - 1"
           class="w-8 h-px ml-2"
-          :class="isStepCompleted(index + 1) ? 'bg-green-500 dark:bg-green-400' : 'bg-neutral-300 dark:bg-neutral-700'"
+          :class="
+            isStepCompleted(index + 1)
+              ? 'bg-green-500 dark:bg-green-400'
+              : 'bg-neutral-300 dark:bg-neutral-700'
+          "
         ></div>
       </div>
     </div>
 
     <!-- Main Content Grid -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div
+      class="grid grid-cols-1 lg:grid-cols-3 gap-8"
+      :class="currentStep === 4 ? 'lg:grid-cols-4!' : ''"
+    >
       <div
         class="lg:col-span-2 rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] p-6 sm:p-8"
       >
@@ -65,7 +72,9 @@
           />
         </template>
         <template v-else>
-          <div class="rounded-md border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 text-sm text-amber-800 dark:text-amber-300">
+          <div
+            class="rounded-md border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 text-sm text-amber-800 dark:text-amber-300"
+          >
             This step is locked. Complete the required previous step to unlock it.
           </div>
         </template>
@@ -103,7 +112,7 @@
       </div>
 
       <!-- Summary -->
-      <div class="space-y-6">
+      <div class="space-y-6" :class="currentStep === 4 ? 'lg:col-span-2' : ''">
         <div
           class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
         >
@@ -149,6 +158,12 @@
             </div>
           </div>
         </div>
+        <div
+          class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
+          v-if="currentStep === 4"
+        >
+          <CompareTable :equivalences="planPreview" :plano_final="true" />
+        </div>
       </div>
     </div>
   </div>
@@ -162,11 +177,31 @@ import CourseStep from '../components/wizard/CourseStep.vue'
 import PlanStep from '../components/wizard/PlanStep.vue'
 import UcStep from '../components/wizard/UcStep.vue'
 import EquivalenceStep from '../components/wizard/EquivalenceStep.vue'
+import CompareTable from '@/components/CompareTable.vue'
 
 const store = usePlanWizardStore()
 const { wizardData } = storeToRefs(store)
 
 const currentStep = ref(1)
+const planPreview = ref([])
+
+watch(wizardData, () => {
+  planPreview.value = wizardData.value.ucs.map((uc) => ({
+    inicial: [
+      {
+        data: null
+      }
+    ],
+    final: [
+      {
+        data: {
+          uc: uc
+        }
+      }
+    ]
+  }))
+  console.log('Updated plan preview based on wizard data:', planPreview.value)
+}, { deep: true })
 
 const isStepUnlocked = (stepNumber) => Boolean(steps.value[stepNumber - 1]?.rule)
 
@@ -205,7 +240,6 @@ const nextDisabledReason = computed(() => {
 
   return ''
 })
-
 
 const steps = computed(() => [
   { label: 'Course', key: 'course', component: CourseStep, rule: true },

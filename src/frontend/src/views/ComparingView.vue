@@ -135,95 +135,10 @@
         </div>
       </div>
 
-      <div
-        v-for="(item, index) in equivalences"
-        :key="index"
-        class="border-b-2 border-neutral-500 dark:border-neutral-600 grid grid-cols-2"
-      >
-        <div class="border-b-0 border-r-2 border-r-neutral-500 flex flex-col justify-center">
-          <div
-            v-for="(part, idx) in item.inicial"
-            :key="part?.data ? part.data.id : 'no-inicial-' + index + '-' + idx"
-            class="p-2 sm:p-5 border-b-neutral-400 dark:border-b-neutral-600"
-            :class="dividerClass(item, 'inicial', idx, item.inicial.length)"
-          >
-            <template v-if="part.data">
-              <div class="flex justify-between">
-                <div class="mr-2 sm:mr-12 wrap-break-word sm:text-nowrap text-sm sm:text-base">
-                  <p class="font-semibold">
-                    {{ part.data.uc.nome }}
-                    <span v-if="part.data.opcao_escolhida" class="font-medium">
-                      <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
-                      {{ part.data.opcao_escolhida.nome }}
-                    </span>
-                  </p>
-                  <div class="flex flex-wrap sm:flex-nowrap">
-                    <p class="mt-1 text-xs">{{ part.data.uc.sigla }}</p>
-                    <p class="mt-1 mx-2 px-2 border-x border-x-neutral-600 text-xs">
-                      {{ $t('compare.ects') }}: {{ part.data.uc.ects }}
-                    </p>
-                    <p class="mt-1 text-xs">
-                      {{ $t('compare.semester') }}: {{ part.data.uc.semestre }}
-                    </p>
-                  </div>
-                </div>
-                <div class="hidden sm:block">
-                  <p
-                    v-if="part.data.observacao"
-                    class="mt-1 text-xs italic text-neutral-500 dark:text-neutral-400 text-right"
-                  >
-                    {{ part.data.observacao }}
-                  </p>
-                </div>
-              </div>
-            </template>
-            <p v-else class="text-sm italic">{{ $t('compare.no_inicial') }}</p>
-          </div>
-        </div>
-
-        <div class="flex flex-col justify-center">
-          <div
-            v-for="(part, idx) in item.final"
-            :key="part?.data ? part.data.id : 'no-final-' + index + '-' + idx"
-            class="p-2 sm:p-5 border-neutral-300"
-            :class="dividerClass(item, 'final', idx, item.final.length)"
-          >
-            <template v-if="part.data">
-              <div class="flex justify-between">
-                <div class="mr-2 sm:mr-12 wrap-break-word sm:text-nowrap text-sm sm:text-base">
-                  <p class="font-semibold">
-                    {{ part.data.uc.nome }}
-                    <span v-if="part.data.opcao_escolhida" class="font-medium">
-                      <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
-                      {{ part.data.opcao_escolhida.nome }}
-                    </span>
-                  </p>
-                  <div class="flex flex-wrap sm:flex-nowrap">
-                    <p class="mt-1 text-xs">{{ part.data.uc.sigla }}</p>
-                    <p class="mt-1 mx-2 px-2 border-x border-x-neutral-600 text-xs">
-                      {{ $t('compare.ects') }}: {{ part.data.uc.ects }}
-                    </p>
-                    <p class="mt-1 text-xs">
-                      {{ $t('compare.semester') }}: {{ part.data.uc.semestre }}
-                    </p>
-                  </div>
-                </div>
-                <div class="hidden sm:block">
-                  <p
-                    v-if="part.data.observacao"
-                    class="mt-1 text-xs italic text-neutral-500 dark:text-neutral-400 text-right"
-                  >
-                    {{ part.data.observacao }}
-                  </p>
-                </div>
-              </div>
-            </template>
-            <p v-else-if="plano_final" class="text-sm italic text-[#b91c1c] dark:text-[#fca5a5]">
-              {{ $t('compare.no_final') }}
-            </p>
-          </div>
-        </div>
-      </div>
+      <CompareTable
+        :equivalences="equivalences"
+        :plano_final="plano_final"
+      />
     </section>
 
     <div
@@ -239,9 +154,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch, inject, computed } from 'vue'
+import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useI18n } from '@/i18n'
 import { useRoute } from 'vue-router'
+import CompareTable from '@/components/CompareTable.vue'
 
 const { locale } = useI18n()
 const route = useRoute()
@@ -309,7 +225,7 @@ async function fetchData() {
 
   let url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
 
-  if (!plano_final.value){
+  if (!plano_final.value) {
     url = url.split('&plano_final=')[0]
   }
 
@@ -344,27 +260,6 @@ function formatPart(item, side) {
   }))
 }
 
-function mappingCount(item, side) {
-  return item[side].filter((part) => part.data).length
-}
-
-function shouldUseDashedDivider(item, side) {
-  const otherSide = side === 'inicial' ? 'final' : 'inicial'
-  return mappingCount(item, side) > 1 && mappingCount(item, otherSide) === 1
-}
-
-function dividerClass(item, side, idx, listLength) {
-  if (idx >= listLength - 1) {
-    return ''
-  }
-
-  if (shouldUseDashedDivider(item, side)) {
-    return 'border-b-2 border-dashed'
-  }
-
-  return 'border-b'
-}
-
 onMounted(async () => {
   await fetchCursos()
   await fetchData()
@@ -378,4 +273,3 @@ watch(curso_id, (newVal, oldVal) => {
   }
 })
 </script>
-

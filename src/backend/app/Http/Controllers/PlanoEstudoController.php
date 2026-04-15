@@ -32,7 +32,7 @@ class PlanoEstudoController extends Controller
     {
         $planoEstudo->load([
             'curso:id,nome,sigla,codigo',
-            'planoUcs' => fn ($q) => $q
+            'planoUcs' => fn($q) => $q
                 ->select('id', 'id_plano', 'id_uc')
                 ->withExists(['opcoes as opcional']), // add opcional attribute to each planoUc
             'planoUcs.uc:id,nome,sigla,ects,horas,id_curso',
@@ -70,5 +70,20 @@ class PlanoEstudoController extends Controller
         return response()->json([
             'message' => 'Plano de estudo deletado com sucesso!',
         ], 200);
+    }
+
+    public function getUcs(PlanoEstudo $planoEstudo, Request $request)
+    {
+        $planoEstudo->load(['planoUcs' => function ($query) use ($request) {
+            if ($request->has('semestre')) {
+                $query->whereHas('uc', function ($q) use ($request) {
+                    $q->where('semestre', $request->semestre);
+                });
+            }
+        }, 'planoUcs.uc']);
+
+        return response()->json([
+            'data' => PlanoEstudoResource::make($planoEstudo),
+        ]);
     }
 }
