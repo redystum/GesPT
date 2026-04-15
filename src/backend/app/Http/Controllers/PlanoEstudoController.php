@@ -10,13 +10,18 @@ use App\Http\Resources\PlanoEstudoResource;
 
 class PlanoEstudoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $planosEstudo = PlanoEstudo::query()
+        $query = PlanoEstudo::query()
             ->with(['curso:id,nome,sigla,codigo'])
             ->select('id', 'ano', 'id_curso')
-            ->orderByDesc('id')
-            ->get();
+            ->orderByDesc('id');
+
+        if ($request->has('curso_id')) {
+            $query->where('id_curso', $request->curso_id);
+        }
+
+        $planosEstudo = $query->get();
 
         return response()->json([
             'data' => PlanoEstudoResource::collection($planosEstudo),

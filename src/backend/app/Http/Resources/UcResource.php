@@ -22,6 +22,7 @@ class UcResource extends JsonResource
             'sigla' => $this->sigla,
             'ects' => $this->ects,
             'horas' => $this->horas,
+            'semestre' => $this->semestre,
             'id_curso' => $this->id_curso,
             'curso' => CursoResource::make($this->whenLoaded('curso')),
         ];

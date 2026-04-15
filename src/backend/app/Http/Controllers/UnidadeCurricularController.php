@@ -10,13 +10,15 @@ use App\Models\Uc;
 
 class UnidadeCurricularController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $ucs = Uc::query()
-            ->with('curso:id,nome,sigla,codigo')
-            ->select('id', 'nome', 'sigla', 'ects', 'horas', 'id_curso')
-            ->orderByDesc('id')
-            ->get();
+        $query = Uc::query()->with('curso:id,nome,sigla,codigo');
+
+        if ($request->has('curso_id')) {
+            $query->where('id_curso', $request->curso_id);
+        }
+
+        $ucs = $query->orderByDesc('id')->get();
 
         return response()->json([
             'data' => UcResource::collection($ucs),
