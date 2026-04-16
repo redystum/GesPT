@@ -5,6 +5,7 @@
     <div class="mb-4">
       <label class="block text-sm font-medium mb-1">Previous Plan</label>
       <select
+        v-if="!loadingPlan"
         v-model="selectedPrevPlanId"
         class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
       >
@@ -13,6 +14,9 @@
           {{ plan.ano }} ({{ plan.curso?.nome || 'N/A' }})
         </option>
       </select>
+      <div v-else class="text-sm p-3 text-neutral-500">
+        Loading latest plan...
+      </div>
       <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
         Latest plan is auto-selected. You can change it if needed.
       </p>
@@ -116,6 +120,8 @@
 
 <script setup>
 import { ref, watch, onMounted, computed } from 'vue'
+import { storeToRefs } from 'pinia'
+import { usePlanWizardStore } from '../../stores/planWizard'
 
 const props = defineProps({
   modelValue: { type: Object, default: () => ({ prevPlanId: '', equivalences: [] }) },
@@ -124,102 +130,29 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const selectedPrevPlanId = ref('')
+const store = usePlanWizardStore()
+const { prevPlanData, prevPlans, prevUcs, prevUcsBySemester, loadingPlan } = storeToRefs(store)
+
+const selectedPrevPlanId = computed({
+  get: () => store.wizardData.equivalences.prevPlanId,
+  set: (val) => { store.wizardData.equivalences.prevPlanId = val }
+})
 const equivalences = ref([])
 
-const prevPlans = ref([])
-const prevUcs = ref([])
-const prevUcsBySemester = ref({})
-
 const newPlanUcs = computed(() => props.newPlanUcs || [])
-
-const getPlanStartYear = (plan) => {
-  const year = String(plan?.ano || '').split('/')[0]
-  const parsed = Number.parseInt(year, 10)
-  return Number.isNaN(parsed) ? 0 : parsed
-}
-
-const latestPrevPlanId = computed(() => {
-  if (!prevPlans.value.length) return ''
-  const sorted = [...prevPlans.value].sort((a, b) => {
-    const yearDiff = getPlanStartYear(b) - getPlanStartYear(a)
-    if (yearDiff !== 0) return yearDiff
-    return (b.id || 0) - (a.id || 0)
-  })
-  return sorted[0]?.id || ''
-})
 
 const getEquivSemester = (equiv) => {
   const idx = Number(equiv.newUcIndex)
   if (Number.isNaN(idx) || !newPlanUcs.value[idx]) return null
   return newPlanUcs.value[idx]?.semestre ?? null
 }
-
-const mapPlanUcs = (plan) => {
-  if (!plan) return []
-  const list = plan.planoUcs || plan.ucs || []
-  return list.map((pu) => pu.uc || pu)
-}
-
-const fetchPrevPlans = async () => {
-  try {
-    const courseId = props.courseData?.data?.id
-    if (!courseId) return
-
-    const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-    const response = await fetch(`${apiUrl}/planos-estudo?curso_id=${courseId}`)
-    if (!response.ok) throw new Error('Failed to load plans')
-    const data = await response.json()
-    prevPlans.value = data.data || data
-
-    if (!selectedPrevPlanId.value && latestPrevPlanId.value) {
-      selectedPrevPlanId.value = latestPrevPlanId.value
-    }
-  } catch (err) {
-    console.error('Error fetching previous plans:', err)
-  }
-}
-
-const fetchPrevPlanUcs = async (planId, semester = null) => {
-  try {
-    if (!planId) {
-      prevUcs.value = []
-      return []
-    }
-
-    const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-    const qs = semester ? `?semestre=${encodeURIComponent(semester)}` : ''
-    const response = await fetch(`${apiUrl}/planos-estudo/${planId}/ucs${qs}`)
-    if (!response.ok) throw new Error('Failed to load plan detail')
-    const data = await response.json()
-    const plan = data.data || data
-    const mappedUcs = mapPlanUcs(plan)
-
-    if (!semester) {
-      prevUcs.value = mappedUcs
-      return mappedUcs
-    }
-
-    const semesterFiltered = mappedUcs.filter((uc) => Number(uc.semestre) === Number(semester))
-    prevUcsBySemester.value = {
-      ...prevUcsBySemester.value,
-      [semester]: semesterFiltered
-    }
-    return semesterFiltered
-  } catch (err) {
-    console.error('Error fetching plan UCs:', err)
-    if (!semester) {
-      prevUcs.value = []
-    }
-    return []
-  }
-}
-
 onMounted(() => {
-  fetchPrevPlans()
+  const courseId = props.courseData?.data?.id
+  store.fetchPrevPlans(courseId)
+  store.fetchLatestPlan(courseId)
 
   if (props.modelValue) {
-    selectedPrevPlanId.value = props.modelValue.prevPlanId || ''
+    store.wizardData.equivalences.prevPlanId = props.modelValue.prevPlanId || ''
     equivalences.value = (props.modelValue.equivalences || []).map((eq) => ({
       newUcIndex: eq.newUcIndex ?? '',
       oldUcs: Array.isArray(eq.oldUcs) ? [...eq.oldUcs] : [],
@@ -230,7 +163,7 @@ onMounted(() => {
 
 watch(selectedPrevPlanId, (newId) => {
   if (newId) {
-    fetchPrevPlanUcs(newId)
+    store.fetchPrevPlanUcs(newId)
     prevUcsBySemester.value = {}
   } else {
     prevUcs.value = []
@@ -253,24 +186,19 @@ watch([selectedPrevPlanId, equivalences], () => {
   })
 }, { deep: true })
 
-watch(latestPrevPlanId, (newLatest) => {
-  if (!selectedPrevPlanId.value && newLatest) {
-    selectedPrevPlanId.value = newLatest
-  }
-})
-
 watch(
   () => props.courseData?.data?.id,
   (courseId) => {
     if (!courseId) {
-      prevPlans.value = []
-      selectedPrevPlanId.value = ''
+      prevPlanData.value = null
+      store.wizardData.equivalences.prevPlanId = ''
       prevUcs.value = []
       prevUcsBySemester.value = {}
       return
     }
 
-    fetchPrevPlans()
+    store.fetchPrevPlans(courseId)
+    store.fetchLatestPlan(courseId)
   }
 )
 
@@ -287,16 +215,12 @@ const onNewUcChange = async (index) => {
   const semester = getEquivSemester(equiv)
   equiv.oldUcs = []
 
-  if (!selectedPrevPlanId.value && latestPrevPlanId.value) {
-    selectedPrevPlanId.value = latestPrevPlanId.value
-  }
-
   if (!selectedPrevPlanId.value || !semester) return
   if (prevUcsBySemester.value[semester]) return
 
   equiv.loading = true
-  const fetched = await fetchPrevPlanUcs(selectedPrevPlanId.value, semester)
-  if (!fetched.length && prevUcs.value.length) {
+  const fetched = await store.fetchPrevPlanUcs(selectedPrevPlanId.value, semester)
+  if (!fetched?.length && prevUcs.value.length) {
     prevUcsBySemester.value = {
       ...prevUcsBySemester.value,
       [semester]: prevUcs.value.filter((uc) => Number(uc.semestre) === Number(semester))
@@ -313,4 +237,3 @@ const removeEquiv = (index) => {
   equivalences.value.splice(index, 1)
 }
 </script>
-

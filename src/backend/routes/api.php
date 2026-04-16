@@ -18,6 +18,7 @@ Route::get('/compare', [EquivalencesController::class, 'compare']);
 
 // Routes for courses
 Route::apiResource('cursos', CourseController::class);
+Route::get('/cursos/{curso}/latest-plan', [CourseController::class, 'getLatestPlan']);
 
 // Routes for Planos de Estudo
 Route::apiResource('planos-estudo', PlanoEstudoController::class)

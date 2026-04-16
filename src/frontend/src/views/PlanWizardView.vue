@@ -180,28 +180,9 @@ import EquivalenceStep from '../components/wizard/EquivalenceStep.vue'
 import CompareTable from '@/components/CompareTable.vue'
 
 const store = usePlanWizardStore()
-const { wizardData } = storeToRefs(store)
+const { wizardData, planPreview } = storeToRefs(store)
 
 const currentStep = ref(1)
-const planPreview = ref([])
-
-watch(wizardData, () => {
-  planPreview.value = wizardData.value.ucs.map((uc) => ({
-    inicial: [
-      {
-        data: null
-      }
-    ],
-    final: [
-      {
-        data: {
-          uc: uc
-        }
-      }
-    ]
-  }))
-  console.log('Updated plan preview based on wizard data:', planPreview.value)
-}, { deep: true })
 
 const isStepUnlocked = (stepNumber) => Boolean(steps.value[stepNumber - 1]?.rule)
 

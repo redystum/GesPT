@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CursoResource;
+use App\Http\Resources\PlanoEstudoResource;
 use App\Models\Curso;
+use App\Models\PlanoEstudo;
 use Illuminate\Http\Request;
 
 class CourseController extends Controller
@@ -70,5 +72,21 @@ class CourseController extends Controller
         return response()->json([
             'message' => 'Curso deletado com sucesso!',
         ], 200);
+    }
+
+    public function getLatestPlan(Curso $curso)
+    {
+        $plano = PlanoEstudo::where('id_curso', $curso->id)->orderBy('ano', 'desc')->first();
+
+        if  (!$plano) {
+            return response()->json([
+                'message' => 'Nenhum plano de estudo encontrado para este curso.',
+            ], 404);
+        }
+
+        return response()->json([
+            'data' => PlanoEstudoResource::make($plano),
+        ], 200);
+
     }
 }
