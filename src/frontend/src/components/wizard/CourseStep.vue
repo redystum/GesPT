@@ -40,7 +40,7 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { inject, ref, watch, onMounted } from 'vue'
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -48,6 +48,7 @@ const emit = defineEmits(['update:modelValue'])
 const isCreatingNew = ref(false)
 const selectedCourseId = ref('')
 const newCourse = ref({ nome: '', name: '', sigla: '', codigo: '' })
+const api = inject('api')
 
 // Mock existing courses for UI demo, should fetch from API
 const courses = ref([])
@@ -58,10 +59,8 @@ const fetchCourses = async () => {
   loadingCourses.value = true
   errorCourses.value = ''
   try {
-    const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-    const response = await fetch(`${apiUrl}/cursos`)
-    if (!response.ok) throw new Error('Failed to load courses')
-    const data = await response.json()
+    const response = await api.get('/cursos')
+    const data = response.data
     // API might return data in a standard format or as paginated data.
     // Adjusting for common Laravel resource responses:
     courses.value = data.data || data

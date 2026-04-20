@@ -69,10 +69,11 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted } from 'vue'
+import { inject, ref, watch, onMounted } from 'vue'
 
 const props = defineProps(['modelValue', 'courseData'])
 const emit = defineEmits(['update:modelValue'])
+const api = inject('api')
 
 const ucs = ref([])
 const dbUcs = ref([])
@@ -94,10 +95,12 @@ const fetchUcs = async () => {
     const courseId = props.courseData?.data?.id
     if (!courseId) return // Skip fetching if no course is selected or if creating a new course
 
-    const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-    const response = await fetch(`${apiUrl}/ucs?curso_id=${courseId}`)
-    if (!response.ok) throw new Error('Failed to load UCs')
-    const data = await response.json()
+    const response = await api.get('/ucs', {
+      params: {
+        curso_id: courseId
+      }
+    })
+    const data = response.data
     dbUcs.value = data.data || data
   } catch (err) {
     console.error('Error fetching UCs:', err)

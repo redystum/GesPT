@@ -170,7 +170,7 @@
 </template>
 
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePlanWizardStore } from '../stores/planWizard'
 import CourseStep from '../components/wizard/CourseStep.vue'
@@ -180,6 +180,7 @@ import EquivalenceStep from '../components/wizard/EquivalenceStep.vue'
 import CompareTable from '@/components/CompareTable.vue'
 
 const store = usePlanWizardStore()
+const api = inject('api')
 const { wizardData, planPreview } = storeToRefs(store)
 
 const currentStep = ref(1)
@@ -262,19 +263,8 @@ watch(steps, () => {
 const finishWizard = async () => {
   console.log('Saving wizard data:', wizardData.value)
   try {
-    const response = await fetch('/wizard', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(wizardData.value)
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`)
-    }
-
-    const data = await response.json()
+    const response = await api.post('/wizard', wizardData.value)
+    const data = response.data
     console.log('Success:', data)
     alert('Plan Saved Successfully!')
   } catch (error) {

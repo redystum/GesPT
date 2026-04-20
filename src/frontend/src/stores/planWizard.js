@@ -1,7 +1,9 @@
 import { defineStore } from 'pinia'
-import { ref, watch } from 'vue'
+import { inject, ref, watch } from 'vue'
 
 export const usePlanWizardStore = defineStore('planWizard', () => {
+  const api = inject('api')
+
   const wizardData = ref({
     course: { isNew: false, data: {} },
     plan: { ano: '' },
@@ -110,24 +112,20 @@ export const usePlanWizardStore = defineStore('planWizard', () => {
 
   const fetchLatestPlan = async (courseId) => {
     if (!courseId) return
+    if (!api) return
 
     loadingPlan.value = true
     try {
-      const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-      const response = await fetch(`${apiUrl}/cursos/${courseId}/latest-plan`)
-      if (!response.ok) {
-        if (response.status === 404) {
-          prevPlanData.value = null
-          wizardData.value.equivalences.prevPlanId = ''
-        } else {
-          throw new Error('Failed to load latest plan')
-        }
-      } else {
-        const data = await response.json()
-        prevPlanData.value = data.data || data
-        wizardData.value.equivalences.prevPlanId = prevPlanData.value.id
-      }
+      const response = await api.get(`/cursos/${courseId}/latest-plan`)
+      const data = response.data
+      prevPlanData.value = data.data || data
+      wizardData.value.equivalences.prevPlanId = prevPlanData.value.id
     } catch (err) {
+      if (err.response?.status === 404) {
+        prevPlanData.value = null
+        wizardData.value.equivalences.prevPlanId = ''
+        return
+      }
       console.error('Error fetching latest plan:', err)
     } finally {
       loadingPlan.value = false
@@ -136,13 +134,15 @@ export const usePlanWizardStore = defineStore('planWizard', () => {
 
   const fetchPrevPlans = async (courseId) => {
     if (!courseId) return
+    if (!api) return
     try {
-      const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-      const response = await fetch(`${apiUrl}/planos-estudo?curso_id=${courseId}`)
-      if (response.ok) {
-        const data = await response.json()
-        prevPlans.value = data.data || data
-      }
+      const response = await api.get('/planos-estudo', {
+        params: {
+          curso_id: courseId
+        }
+      })
+      const data = response.data
+      prevPlans.value = data.data || data
     } catch (err) {
       console.error('Error fetching plans:', err)
     }
@@ -153,14 +153,13 @@ export const usePlanWizardStore = defineStore('planWizard', () => {
       prevUcs.value = []
       return []
     }
+    if (!api) return []
 
     try {
-      const apiUrl = import.meta.env.VITE_API_PATH_URL || 'http://localhost:8000/api'
-      const qs = semester ? `?semestre=${encodeURIComponent(semester)}` : ''
-      const response = await fetch(`${apiUrl}/planos-estudo/${planId}/ucs${qs}`)
-      if (!response.ok) throw new Error('Failed to load plan detail')
-
-      const data = await response.json()
+      const response = await api.get(`/planos-estudo/${planId}/ucs`, {
+        params: semester ? { semestre: semester } : undefined
+      })
+      const data = response.data
       const plan = data.data || data
       const mappedUcs = mapPlanUcs(plan)
 

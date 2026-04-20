@@ -1,16 +1,22 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { inject, ref, onMounted, watch } from 'vue'
 
 const estudante_id = ref(1)
 const plano_inicial = ref(1)
 const plano_final = ref(2)
 const equivalences = ref([])
+const api = inject('api')
 
 async function fetchData() {
-  const url = `http://localhost:8000/api/home?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
   try {
-    const response = await fetch(url)
-    let data = await response.json()
+    const response = await api.get('/home', {
+      params: {
+        estudante_id: estudante_id.value,
+        plano_inicial: plano_inicial.value,
+        plano_final: plano_final.value
+      }
+    })
+    const data = response.data
     equivalences.value = data.data
     console.log(equivalences)
   } catch (error) {

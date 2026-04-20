@@ -161,7 +161,7 @@ import CompareTable from '@/components/CompareTable.vue'
 
 const { locale } = useI18n()
 const route = useRoute()
-const API = inject('apiURL')
+const api = inject('api')
 
 const estudante_id = ref(1)
 const curso_id = ref(null)
@@ -196,8 +196,12 @@ const planos_disponiveis = computed(() => {
 
 async function fetchCursos() {
   try {
-    const response = await fetch(`${API}/cursos?with_planos_estudo=1`)
-    const res = await response.json()
+    const response = await api.get('/cursos', {
+      params: {
+        with_planos_estudo: 1
+      }
+    })
+    const res = response.data
     cursos.value = res.data
 
     if (cursos.value.length > 0) {
@@ -223,15 +227,18 @@ async function fetchData() {
     return
   }
 
-  let url = `${API}/compare?estudante_id=${estudante_id.value}&plano_inicial=${plano_inicial.value}&plano_final=${plano_final.value}`
-
-  if (!plano_final.value) {
-    url = url.split('&plano_final=')[0]
-  }
-
   try {
-    const response = await fetch(url)
-    const payload = await response.json()
+    const params = {
+      estudante_id: estudante_id.value,
+      plano_inicial: plano_inicial.value
+    }
+
+    if (plano_final.value) {
+      params.plano_final = plano_final.value
+    }
+
+    const response = await api.get('/compare', { params })
+    const payload = response.data
     data.value = payload.data
     formatData()
   } catch (error) {

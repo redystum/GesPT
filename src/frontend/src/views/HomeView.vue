@@ -90,7 +90,7 @@ import { inject, ref } from 'vue'
 import { useI18n } from '@/i18n'
 
 const { locale } = useI18n()
-const API = inject('apiURL')
+const api = inject('api')
 
 const courses = ref([])
 const searchInput = ref('')
@@ -98,17 +98,18 @@ const loading = ref(true)
 const error = ref(null)
 let searchTimeout = null
 
-fetch(`${API}/cursos?with_planos_estudo=1`)
-  .then((response) => {
-    if (!response.ok) throw new Error('Failed to load courses')
-    return response.json()
+api
+  .get('/cursos', {
+    params: {
+      with_planos_estudo: 1
+    }
   })
   .then((data) => {
-    courses.value = data.data
+    courses.value = data.data.data
   })
   .catch((err) => {
     console.error('Error fetching courses:', err)
-    error.value = err.message || 'An error occurred while fetching courses.'
+    error.value = err.response?.data?.message || err.message || 'An error occurred while fetching courses.'
   })
   .finally(() => {
     loading.value = false
@@ -123,17 +124,20 @@ function search() {
     loading.value = true
     error.value = null
 
-    fetch(`${API}/cursos?search=${searchInput.value}&with_planos_estudo=1`)
-      .then((response) => {
-        if (!response.ok) throw new Error('Failed to load courses')
-        return response.json()
+    api
+      .get('/cursos', {
+        params: {
+          search: searchInput.value,
+          with_planos_estudo: 1
+        }
       })
       .then((data) => {
-        courses.value = data.data
+        courses.value = data.data.data
       })
       .catch((err) => {
         console.error('Error fetching courses:', err)
-        error.value = err.message || 'An error occurred while fetching courses.'
+        error.value =
+          err.response?.data?.message || err.message || 'An error occurred while fetching courses.'
       })
       .finally(() => {
         loading.value = false

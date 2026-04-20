@@ -36,6 +36,8 @@ export function createI18n(options) {
   }
 
   return {
+    locale,
+    t,
     install(app) {
       app.provide(I18N_KEY, i18nContext)
       app.config.globalProperties.$t = t
