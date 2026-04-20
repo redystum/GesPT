@@ -26,7 +26,6 @@ export const usePlanWizardStore = defineStore('planWizard', () => {
   watch(
     [wizardData, prevPlanData],
     async () => {
-  // TODO: ucs criadas no wizard não assumem equivalencias na tabela (algo no codigo a baixo por causa dos ids)
       await fetchPrevPlanUcs(wizardData.value.equivalences.prevPlanId)
 
       if (prevUcs.value.length === 0 || wizardData.value.ucs.length === 0) {
@@ -48,10 +47,12 @@ export const usePlanWizardStore = defineStore('planWizard', () => {
           })
         }
 
-        if (wizardData.value.equivalences.equivalences.some((eq) => eq.newUc === uc.id)) {
-          let eqs = wizardData.value.equivalences.equivalences.filter((eq) => eq.newUc === uc.id)
-          eqs.map((eq) => {
-            prevUcs.value.map((puc) => {
+        const ucIdentifier = uc.id || uc.sigla || uc.nome || '';
+
+        if (wizardData.value.equivalences.equivalences.some((eq) => eq.newUc === ucIdentifier)) {
+          let eqs = wizardData.value.equivalences.equivalences.filter((eq) => eq.newUc === ucIdentifier)
+          eqs.forEach((eq) => {
+            prevUcs.value.forEach((puc) => {
               if (eq.oldUcs.includes(puc.id)) {
                 already.push(puc.id)
                 initial.push({
