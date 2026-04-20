@@ -1,0 +1,84 @@
+{
+    "course": {
+        "isNew": false,
+        "data": {
+            "id": 1,
+            "nome": "Engenharia Informática",
+            "name": "Computer Engineering",
+            "sigla": "EI",
+            "codigo": "9119"
+        }
+    },
+    "plan": {
+        "ano": "2026/27",
+        "isValid": true
+    },
+    "ucs": [
+        {
+            "id": -1,
+            "nome": "dsa",
+            "name": "dsa",
+            "sigla": "dsa",
+            "ects": 1,
+            "horas": 1,
+            "semestre": 1,
+            "isNew": true
+        },
+        {
+            "id": 5,
+            "nome": "Matemática A",
+            "name": "Mathematics A",
+            "sigla": "MATA",
+            "ects": 6,
+            "horas": 60,
+            "semestre": 1,
+            "id_curso": 1,
+            "curso": {
+                "id": 1,
+                "nome": "Engenharia Informática",
+                "name": null,
+                "sigla": "EI",
+                "codigo": "9119"
+            },
+            "isNew": false
+        },
+        {
+            "id": 2,
+            "nome": "Programação II",
+            "name": "Programming II",
+            "sigla": "P2",
+            "ects": 6,
+            "horas": 60,
+            "semestre": 1,
+            "id_curso": 1,
+            "curso": {
+                "id": 1,
+                "nome": "Engenharia Informática",
+                "name": null,
+                "sigla": "EI",
+                "codigo": "9119"
+            },
+            "isNew": false
+        }
+    ],
+    "equivalences": {
+        "prevPlanId": 2,
+        "equivalences": [
+            {
+                "newUcIndex": 0,
+                "newUc": -1,
+                "oldUcs": [
+                    7,
+                    4
+                ]
+            },
+            {
+                "newUcIndex": 1,
+                "newUc": 5,
+                "oldUcs": [
+                    3
+                ]
+            }
+        ]
+    }
+}

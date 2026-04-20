@@ -77,8 +77,10 @@ const emit = defineEmits(['update:modelValue'])
 const ucs = ref([])
 const dbUcs = ref([])
 const selectedExistingUc = ref(null)
+const newUcs = ref(0)
 
 const newUc = ref({
+  id: 0,
   nome: '',
   name: '',
   sigla: '',
@@ -125,9 +127,10 @@ const addExistingUc = () => {
 
 const addNewUc = () => {
   if (newUc.value.nome && newUc.value.sigla) {
-    ucs.value.push({ ...newUc.value, isNew: true })
+    newUcs.value++
+    ucs.value.push({ ...newUc.value, id: -newUcs.value, isNew: true })
     // Reset form
-    newUc.value = { nome: '', name: '', sigla: '', ects: null, horas: null, semestre: null }
+    newUc.value = { id: 0, nome: '', name: '', sigla: '', ects: null, horas: null, semestre: null }
   }
 }
 

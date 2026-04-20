@@ -47,7 +47,7 @@ export const usePlanWizardStore = defineStore('planWizard', () => {
           })
         }
 
-        const ucIdentifier = uc.id || uc.sigla || uc.nome || '';
+        const ucIdentifier = uc.id || uc.sigla || uc.nome || ''; // should hit id everytime or the backend may not like-it
 
         if (wizardData.value.equivalences.equivalences.some((eq) => eq.newUc === ucIdentifier)) {
           let eqs = wizardData.value.equivalences.equivalences.filter((eq) => eq.newUc === ucIdentifier)

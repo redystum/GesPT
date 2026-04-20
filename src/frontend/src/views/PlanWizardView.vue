@@ -259,9 +259,28 @@ watch(steps, () => {
   }
 })
 
-const finishWizard = () => {
+const finishWizard = async () => {
   console.log('Saving wizard data:', wizardData.value)
-  alert('Plan Saved! Check console for payload.')
+  try {
+    const response = await fetch('/wizard', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(wizardData.value)
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    console.log('Success:', data)
+    alert('Plan Saved Successfully!')
+  } catch (error) {
+    console.error('Error saving wizard data:', error)
+    alert('Failed to save plan. Check console for details.')
+  }
 }
 </script>
 <style scoped></style>
