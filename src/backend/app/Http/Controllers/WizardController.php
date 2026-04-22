@@ -11,7 +11,7 @@ class WizardController extends Controller
     {
         $request->validated();
 
-
+        dd($request->all());
 
     }
 }

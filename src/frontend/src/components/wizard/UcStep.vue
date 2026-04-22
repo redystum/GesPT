@@ -20,14 +20,20 @@
       <h3 class="font-semibold text-lg mb-4">Add a New UC</h3>
 
       <div class="mb-4 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md border border-blue-100 dark:border-blue-900">
-        <label class="block text-sm font-medium mb-1 text-blue-800 dark:text-blue-300">Select an existing UC</label>
+        <label class="block text-sm font-medium mb-1 text-blue-800 dark:text-blue-300">
+          Select an existing UC <span v-if="loadingUcs" class="text-sm text-blue-500 font-normal ml-2">Loading...</span>
+        </label>
         <div class="flex gap-2">
-          <select v-model="selectedExistingUc" class="flex-1 rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700">
-            <option :value="null" disabled>-- Choose from database --</option>
-            <option v-for="uc in dbUcs" :key="uc.id" :value="uc">
-              {{ uc.nome }} ({{ uc.sigla }})
-            </option>
-          </select>
+          <div class="relative flex-1">
+            <SearchableDropdown
+              v-model="selectedExistingUc"
+              :options="dbUcs"
+              :return-object="true"
+              :display-fn="u => `${u.nome} (${u.sigla})`"
+              :search-fn="(u, q) => normalizeString(u.nome?.toLowerCase() || '').includes(q) || normalizeString(u.sigla?.toLowerCase() || '').includes(q)"
+              placeholder="Search and select a UC..."
+            />
+          </div>
           <button @click="addExistingUc" :disabled="!selectedExistingUc" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer">Add Selected</button>
         </div>
       </div>
@@ -70,6 +76,7 @@
 
 <script setup>
 import { inject, ref, watch, onMounted } from 'vue'
+import SearchableDropdown from '../SearchableDropdown.vue'
 
 const props = defineProps(['modelValue', 'courseData'])
 const emit = defineEmits(['update:modelValue'])
@@ -79,6 +86,7 @@ const ucs = ref([])
 const dbUcs = ref([])
 const selectedExistingUc = ref(null)
 const newUcs = ref(0)
+const loadingUcs = ref(false)
 
 const newUc = ref({
   id: 0,
@@ -90,11 +98,16 @@ const newUc = ref({
   semestre: null
 })
 
-const fetchUcs = async () => {
-  try {
-    const courseId = props.courseData?.data?.id
-    if (!courseId) return // Skip fetching if no course is selected or if creating a new course
+const normalizeString = (str) => {
+  return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
+}
 
+const fetchUcs = async () => {
+  const courseId = props.courseData?.data?.id
+  if (!courseId) return // Skip fetching if no course is selected or if creating a new course
+
+  loadingUcs.value = true
+  try {
     const response = await api.get('/ucs', {
       params: {
         curso_id: courseId
@@ -104,6 +117,8 @@ const fetchUcs = async () => {
     dbUcs.value = data.data || data
   } catch (err) {
     console.error('Error fetching UCs:', err)
+  } finally {
+    loadingUcs.value = false
   }
 }
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="max-w-7xl mx-auto px-6 py-10 animate-fade-in-up">
+  <div class="max-w-7xl mx-auto px-6 py-10 animate-fade-in-up" @keydown.enter="handleEnterAdvance">
     <!-- Header -->
     <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 tracking-tight">
       {{ $t('wizard.title') || 'Create Plan Wizard' }}
@@ -264,6 +264,20 @@ watch(
 
 const nextStep = () => {
   if (!isNextDisabled.value && currentStep.value < steps.value.length) currentStep.value++
+}
+
+const handleEnterAdvance = (event) => {
+  if (event.isComposing || event.shiftKey || event.ctrlKey || event.altKey || event.metaKey) return
+  if (currentStep.value >= steps.value.length || isNextDisabled.value) return
+
+  const target = event.target
+  const tagName = target?.tagName?.toLowerCase()
+  const isEditable = target?.isContentEditable
+
+  if (tagName === 'textarea' || tagName === 'select' || isEditable) return
+
+  event.preventDefault()
+  nextStep()
 }
 
 const prevStep = () => {

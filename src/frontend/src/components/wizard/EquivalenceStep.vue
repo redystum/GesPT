@@ -47,16 +47,18 @@
         <div class="flex items-start justify-between gap-3 mb-4">
           <div class="flex-1">
             <label class="block text-xs font-semibold mb-1">New UC</label>
-            <select
-              v-model="equiv.newUcIndex"
-              @change="onNewUcChange(index)"
-              class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700 text-sm"
-            >
-              <option value="" disabled>Select new UC</option>
-              <option v-for="(newUc, i) in newPlanUcs" :key="i" :value="i">
-                {{ newUc.nome }} (Sem {{ newUc.semestre || '-' }})
-              </option>
-            </select>
+            <div class="relative">
+              <SearchableDropdown
+                v-model="equiv.newUcIndex"
+                :options="newPlanUcs.map((u, idx) => ({ ...u, origIndex: idx }))"
+                value-key="origIndex"
+                :display-fn="u => `${u.nome} (Sem ${u.semestre || '-'})`"
+                :search-fn="(u, q) => normalizeString(u.nome?.toLowerCase() || '').includes(q)"
+                @change="onNewUcChange(index)"
+                placeholder="Search and select new UC..."
+                input-class="text-sm"
+              />
+            </div>
           </div>
           <div class="pt-6">
             <button
@@ -122,6 +124,7 @@
 import { ref, watch, onMounted, computed } from 'vue'
 import { storeToRefs } from 'pinia'
 import { usePlanWizardStore } from '../../stores/planWizard'
+import SearchableDropdown from '../SearchableDropdown.vue'
 
 const props = defineProps({
   modelValue: { type: Object, default: () => ({ prevPlanId: '', equivalences: [] }) },
@@ -141,11 +144,16 @@ const equivalences = ref([])
 
 const newPlanUcs = computed(() => props.newPlanUcs || [])
 
+const normalizeString = (str) => {
+  return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
+}
+
 const getEquivSemester = (equiv) => {
   const idx = Number(equiv.newUcIndex)
   if (Number.isNaN(idx) || !newPlanUcs.value[idx]) return null
   return newPlanUcs.value[idx]?.semestre ?? null
 }
+
 onMounted(() => {
   const courseId = props.courseData?.data?.id
   store.fetchPrevPlans(courseId)
@@ -218,7 +226,8 @@ const onNewUcChange = async (index) => {
   if (!selectedPrevPlanId.value || !semester) return
   if (prevUcsBySemester.value[semester]) return
 
-  equiv.loading = true
+  const originalLoadingState = true
+  equiv.loading = originalLoadingState
   const fetched = await store.fetchPrevPlanUcs(selectedPrevPlanId.value, semester)
   if (!fetched?.length && prevUcs.value.length) {
     prevUcsBySemester.value = {
@@ -230,7 +239,11 @@ const onNewUcChange = async (index) => {
 }
 
 const addEquiv = () => {
-  equivalences.value.push({ newUcIndex: '', oldUcs: [], loading: false })
+  equivalences.value.push({
+    newUcIndex: '',
+    oldUcs: [],
+    loading: false
+  })
 }
 
 const removeEquiv = (index) => {

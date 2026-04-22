@@ -4,13 +4,17 @@
 
     <div class="space-y-4">
       <div v-if="!isCreatingNew">
-        <label class="block text-sm font-medium mb-1">Select Course</label>
-        <select v-model="selectedCourseId" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700">
-          <option value="" disabled>Select a course</option>
-          <option v-for="course in courses" :key="course.id" :value="course.id">
-            {{ course.nome }} ({{ course.sigla }})
-          </option>
-        </select>
+        <label class="block text-sm font-medium mb-1">
+          Select Course <span v-if="loadingCourses" class="text-sm text-neutral-500 font-normal ml-2">Loading...</span>
+        </label>
+
+        <SearchableDropdown
+          v-model="selectedCourseId"
+          :options="courses"
+          :display-fn="c => `${c.nome} (${c.sigla})`"
+          :search-fn="(c, q) => normalizeString(c.nome?.toLowerCase() || '').includes(q) || normalizeString(c.sigla?.toLowerCase() || '').includes(q)"
+          placeholder="Search and select a course..."
+        />
 
         <button @click="isCreatingNew = true" class="mt-4 text-blue-500 hover:underline text-sm cursor-pointer">+ Or create a new course</button>
       </div>
@@ -41,6 +45,7 @@
 
 <script setup>
 import { inject, ref, watch, onMounted } from 'vue'
+import SearchableDropdown from '../SearchableDropdown.vue'
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
@@ -54,6 +59,10 @@ const api = inject('api')
 const courses = ref([])
 const loadingCourses = ref(false)
 const errorCourses = ref('')
+
+const normalizeString = (str) => {
+  return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
+}
 
 const fetchCourses = async () => {
   loadingCourses.value = true
@@ -92,4 +101,3 @@ watch([isCreatingNew, selectedCourseId, newCourse, courses], () => {
   })
 }, { deep: true })
 </script>
-
