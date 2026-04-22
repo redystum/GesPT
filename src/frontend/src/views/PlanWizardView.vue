@@ -19,8 +19,12 @@
           <span
             class="w-6 h-6 rounded flex items-center justify-center text-xs"
             :class="[
-              currentStep === index + 1
-                ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900'
+              currentStep === index + 1 && hasStepErrors(index + 1)
+                ? 'bg-red-600 dark:bg-red-500 text-white'
+                : currentStep === index + 1
+                  ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900'
+                : hasStepErrors(index + 1)
+                  ? 'bg-red-600 dark:bg-red-500 text-white'
                 : isStepCompleted(index + 1)
                   ? 'bg-green-600 dark:bg-green-500 text-white'
                   : canNavigateToStep(index + 1)
@@ -32,8 +36,12 @@
           </span>
           <span
             :class="[
-              currentStep === index + 1
-                ? 'text-neutral-900 dark:text-neutral-100'
+              currentStep === index + 1 && hasStepErrors(index + 1)
+                ? 'text-red-700 dark:text-red-400'
+                : currentStep === index + 1
+                  ? 'text-neutral-900 dark:text-neutral-100'
+                : hasStepErrors(index + 1)
+                  ? 'text-red-700 dark:text-red-400'
                 : canNavigateToStep(index + 1)
                   ? 'text-neutral-500 dark:text-neutral-400'
                   : 'text-neutral-400 dark:text-neutral-600'
@@ -64,6 +72,28 @@
       >
         <!-- Dynamic Component Step -->
         <template v-if="isStepUnlocked(currentStep)">
+          <div
+            v-if="submitErrorMessage"
+            class="mb-5 rounded-md border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4"
+          >
+            <p class="text-sm font-semibold text-red-800 dark:text-red-300">{{ submitErrorMessage }}</p>
+            <ul
+              v-if="currentStepErrors.length"
+              class="mt-2 list-disc list-inside text-sm text-red-700 dark:text-red-300 space-y-1"
+            >
+              <li v-for="(errorMessage, idx) in currentStepErrors" :key="`${idx}-${errorMessage}`">
+                {{ errorMessage }}
+              </li>
+            </ul>
+          </div>
+
+          <div
+            v-if="submitSuccessMessage"
+            class="mb-5 rounded-md border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4 text-sm font-semibold text-green-800 dark:text-green-300"
+          >
+            {{ submitSuccessMessage }}
+          </div>
+
           <component
             :is="steps[currentStep - 1].component"
             v-model="wizardData[steps[currentStep - 1].key]"
@@ -184,8 +214,43 @@ const api = inject('api')
 const { wizardData, planPreview } = storeToRefs(store)
 
 const currentStep = ref(1)
+const submitErrorMessage = ref('')
+const submitSuccessMessage = ref('')
+const validationErrors = ref({})
 
 const isStepUnlocked = (stepNumber) => Boolean(steps.value[stepNumber - 1]?.rule)
+
+const stepErrorMap = {
+  1: ['course'],
+  2: ['plan'],
+  3: ['ucs'],
+  4: ['equivalences']
+}
+
+const flattenErrorMessages = (errorsObject) => {
+  if (!errorsObject || typeof errorsObject !== 'object') return []
+  return Object.values(errorsObject).flatMap((messages) =>
+    Array.isArray(messages) ? messages : [String(messages)]
+  )
+}
+
+const hasStepErrors = (stepNumber) => {
+  const keys = Object.keys(validationErrors.value || {})
+  const stepPrefixes = stepErrorMap[stepNumber] || []
+  return keys.some((errorKey) => stepPrefixes.some((prefix) => errorKey.startsWith(prefix)))
+}
+
+const currentStepErrors = computed(() => {
+  const keys = Object.keys(validationErrors.value || {})
+  const stepPrefixes = stepErrorMap[currentStep.value] || []
+  const filteredErrors = keys.reduce((acc, key) => {
+    if (stepPrefixes.some((prefix) => key.startsWith(prefix))) {
+      acc[key] = validationErrors.value[key]
+    }
+    return acc
+  }, {})
+  return flattenErrorMessages(filteredErrors)
+})
 
 const canNavigateToStep = (stepNumber) => {
   if (stepNumber < 1 || stepNumber > steps.value.length) return false
@@ -263,6 +328,8 @@ watch(
 )
 
 const nextStep = () => {
+  submitErrorMessage.value = ''
+  submitSuccessMessage.value = ''
   if (!isNextDisabled.value && currentStep.value < steps.value.length) currentStep.value++
 }
 
@@ -281,10 +348,14 @@ const handleEnterAdvance = (event) => {
 }
 
 const prevStep = () => {
+  submitErrorMessage.value = ''
+  submitSuccessMessage.value = ''
   if (currentStep.value > 1) currentStep.value--
 }
 
 const goToStep = (stepNumber) => {
+  submitErrorMessage.value = ''
+  submitSuccessMessage.value = ''
   if (canNavigateToStep(stepNumber)) {
     currentStep.value = stepNumber
   }
@@ -297,15 +368,24 @@ watch(steps, () => {
 })
 
 const finishWizard = async () => {
-  console.log('Saving wizard data:', wizardData.value)
+  submitErrorMessage.value = ''
+  submitSuccessMessage.value = ''
+  validationErrors.value = {}
+
   try {
-    const response = await api.post('/wizard', wizardData.value)
-    const data = response.data
-    console.log('Success:', data)
-    alert('Plan Saved Successfully!')
+    await api.post('/wizard', wizardData.value)
+    submitSuccessMessage.value = 'Plano guardado com sucesso.'
   } catch (error) {
-    console.error('Error saving wizard data:', error)
-    alert('Failed to save plan. Check console for details.')
+    const responseData = error?.response?.data
+    const backendErrors = responseData?.errors
+    validationErrors.value = backendErrors && typeof backendErrors === 'object' ? backendErrors : {}
+    submitErrorMessage.value = responseData?.message || 'Ocorreu um erro ao guardar o plano.'
+
+    // Keep users focused by moving to the first step that contains server-side validation errors.
+    const firstErroredStep = [1, 2, 3, 4].find((stepNumber) => hasStepErrors(stepNumber))
+    if (firstErroredStep) {
+      currentStep.value = firstErroredStep
+    }
   }
 }
 </script>

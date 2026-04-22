@@ -30,7 +30,7 @@ class StoreWizardRequest extends FormRequest
             'course.data.sigla' => 'required_if:course.isNew,true|string',
             'course.data.codigo' => 'required_if:course.isNew,true|string',
 
-            'plano.ano' => [
+            'plan.ano' => [
                 'required',
                 'string',
                 'max:9',
@@ -64,6 +64,36 @@ class StoreWizardRequest extends FormRequest
             'equivalences.equivalences.*.oldUcs' => 'array|min:1',
             'equivalences.equivalences.*.oldUcs.*' => 'integer',
 
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'course.isNew' => 'tipo de curso',
+            'course.data.id' => 'curso',
+            'course.data.nome' => 'nome do curso (PT)',
+            'course.data.name' => 'nome do curso (EN)',
+            'course.data.sigla' => 'sigla do curso',
+            'course.data.codigo' => 'codigo do curso',
+
+            'plan.ano' => 'ano letivo',
+
+            'ucs' => 'unidades curriculares',
+            'ucs.*.isNew' => 'tipo de unidade curricular',
+            'ucs.*.id' => 'unidade curricular',
+            'ucs.*.nome' => 'nome da unidade curricular (PT)',
+            'ucs.*.name' => 'nome da unidade curricular (EN)',
+            'ucs.*.sigla' => 'sigla da unidade curricular',
+            'ucs.*.ects' => 'ECTS da unidade curricular',
+            'ucs.*.horas' => 'horas da unidade curricular',
+            'ucs.*.semestre' => 'semestre da unidade curricular',
+
+            'equivalences.prevPlanId' => 'plano anterior',
+            'equivalences.equivalences' => 'equivalencias',
+            'equivalences.equivalences.*.newUc' => 'nova unidade curricular',
+            'equivalences.equivalences.*.oldUcs' => 'unidades curriculares antigas',
+            'equivalences.equivalences.*.oldUcs.*' => 'unidade curricular antiga',
         ];
     }
 }
