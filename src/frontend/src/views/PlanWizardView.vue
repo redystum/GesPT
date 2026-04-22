@@ -240,6 +240,28 @@ const steps = computed(() => [
   }
 ])
 
+const getCourseSelectionKey = (course) => {
+  if (!course) return 'none'
+  if (course.isNew) return 'new'
+
+  const selectedId = course.data?.id
+  return selectedId ? `existing:${selectedId}` : 'none'
+}
+
+watch(
+  () => getCourseSelectionKey(wizardData.value.course),
+  (newKey, oldKey) => {
+    if (!oldKey) return
+    if (newKey === oldKey) return
+
+    wizardData.value.ucs = []
+    wizardData.value.equivalences = {
+      prevPlanId: '',
+      equivalences: []
+    }
+  }
+)
+
 const nextStep = () => {
   if (!isNextDisabled.value && currentStep.value < steps.value.length) currentStep.value++
 }
