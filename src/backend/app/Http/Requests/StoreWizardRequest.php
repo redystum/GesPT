@@ -24,7 +24,7 @@ class StoreWizardRequest extends FormRequest
 
         return [
             'course.isNew' => 'boolean',
-            'course.data.id' => 'required|integer',
+            'course.data.id' => 'required_unless:course.isNew,true|integer',
             'course.data.nome' => 'required_if:course.isNew,true|string',
             'course.data.name' => 'required_if:course.isNew,true|string',
             'course.data.sigla' => 'required_if:course.isNew,true|string',
@@ -58,8 +58,8 @@ class StoreWizardRequest extends FormRequest
             'ucs.*.horas' => 'required_if:ucs.*.isNew,true|integer|min:1',
             'ucs.*.semestre' => 'required_if:ucs.*.isNew,true|integer',
 
-            'equivalences.prevPlanId' => 'required|integer|exists:plano_estudos,id',
-            'equivalences.equivalences' => 'required|array',
+            'equivalences.prevPlanId' => 'integer|exists:plano_estudos,id',
+            'equivalences.equivalences' => 'array',
             'equivalences.equivalences.*.newUc' => 'integer',
             'equivalences.equivalences.*.oldUcs' => 'array|min:1',
             'equivalences.equivalences.*.oldUcs.*' => 'integer',
