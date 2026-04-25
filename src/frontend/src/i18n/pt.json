@@ -29,7 +29,10 @@
     "back": "Voltar",
     "next": "Próximo passo",
     "previous": "Anterior",
-    "next_page": "Seguinte"
+    "next_page": "Seguinte",
+    "yes": "Sim",
+    "no": "Não",
+    "na": "N/D"
   },
   "states": {
     "empty_title": "Sem resultados"
@@ -115,6 +118,7 @@
     "step_course": "Curso",
     "step_plan_info": "Dados do Plano",
     "step_modules": "Unidades Curriculares",
+    "step_equivalences": "Equivalências",
     "configuration_title": "Configuração do plano",
     "plan_name": "Nome do plano",
     "plan_name_placeholder": "Engenharia Informática - Revisão 2026",
@@ -129,6 +133,74 @@
     "summary_course_value": "Engenharia Informática",
     "summary_year": "Ano letivo",
     "summary_status": "Estado",
-    "summary_status_value": "Rascunho"
+    "summary_status_value": "Rascunho",
+    "view": {
+      "step_locked": "Esta etapa está bloqueada. Complete a etapa anterior obrigatória para a desbloquear.",
+      "save_plan": "Guardar Plano",
+      "course_data": "Dados do Curso",
+      "new_label": "Novo?",
+      "selection": "Selecionado:",
+      "ucs_configured": "UCs Configuradas",
+      "unnamed_uc": "UC sem nome",
+      "next_disabled_invalid_year": "Preencha um ano letivo válido para continuar.",
+      "next_disabled_locked": "Complete os dados obrigatórios para desbloquear a próxima etapa.",
+      "save_success": "Plano guardado com sucesso.",
+      "save_error": "Ocorreu um erro ao guardar o plano."
+    },
+    "course_step": {
+      "title": "Seleção de Curso",
+      "select_course": "Selecionar Curso",
+      "search_course_placeholder": "Pesquise e selecione um curso...",
+      "or_create": "+ Ou criar um novo curso",
+      "name_pt": "Nome (PT)",
+      "name_en": "Nome (EN)",
+      "acronym": "Sigla",
+      "code": "Código",
+      "cancel_create": "Cancelar criação de novo curso",
+      "load_error": "Não foi possível carregar os cursos do servidor"
+    },
+    "plan_step": {
+      "title": "Informação do Plano",
+      "academic_year": "Ano Letivo",
+      "academic_year_placeholder": "ex.: 2026/2027 ou 2026/27",
+      "error_invalid_format": "O ano deve estar no formato 20xx/xx ou 20xx/20xx",
+      "error_invalid_sequence": "O segundo ano deve ser exatamente um ano após o primeiro (ex.: 2026/2027)"
+    },
+    "uc_step": {
+      "title": "Adicionar Unidades (UCs)",
+      "current_ucs": "UCs Atuais no Plano",
+      "empty": "Ainda não foram adicionadas UCs.",
+      "remove": "Remover",
+      "add_new_title": "Adicionar uma Nova UC",
+      "select_existing": "Selecionar uma UC existente",
+      "search_placeholder": "Pesquise e selecione uma UC...",
+      "add_selected": "Adicionar",
+      "or_create": "Ou criar uma nova",
+      "ects": "ECTS",
+      "hours": "Horas",
+      "semester": "Semestre",
+      "create_add": "Criar e Adicionar UC"
+    },
+    "equivalence_step": {
+      "title": "Equivalências",
+      "previous_plan": "Plano Anterior",
+      "select_previous_plan": "Selecione o plano anterior",
+      "loading_latest_plan": "A carregar plano mais recente...",
+      "latest_auto_selected": "O plano mais recente é selecionado automaticamente. Pode alterá-lo se necessário.",
+      "map_title": "Mapear Equivalências",
+      "map_description": "Escolha primeiro uma nova UC. Depois selecione uma ou mais UCs antigas do plano anterior com o mesmo semestre.",
+      "empty_prefix": "Ainda não existem equivalências. Clique em",
+      "empty_suffix": "para começar.",
+      "new_uc": "Nova UC",
+      "sem_abbr": "Sem",
+      "search_new_uc_placeholder": "Pesquise e selecione a nova UC...",
+      "remove_equivalence": "Remover equivalência",
+      "old_uc_same_semester": "UC(s) antiga(s) - mesmo semestre",
+      "loading_old_ucs": "A carregar UCs antigas...",
+      "no_old_ucs_found": "Não foram encontradas UCs antigas para este semestre no plano anterior selecionado.",
+      "observations": "Observações",
+      "observations_placeholder": "Observações sobre esta equivalência...",
+      "add_button": "+ Adicionar Equivalência"
+    }
   }
 }

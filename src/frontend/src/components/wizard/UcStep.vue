@@ -1,27 +1,27 @@
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">Add Units (UCs)</h2>
+    <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">{{ $t('wizard.uc_step.title') }}</h2>
 
     <div class="mb-4">
-      <h3 class="font-semibold text-lg mb-2">Current UCs in Plan</h3>
-      <div v-if="ucs.length === 0" class="text-neutral-500 italic">No UCs added yet.</div>
+      <h3 class="font-semibold text-lg mb-2">{{ $t('wizard.uc_step.current_ucs') }}</h3>
+      <div v-if="ucs.length === 0" class="text-neutral-500 italic">{{ $t('wizard.uc_step.empty') }}</div>
       <ul class="space-y-2">
         <li v-for="(uc, index) in ucs" :key="index" class="p-3 border rounded-md flex justify-between items-center bg-neutral-50 dark:bg-neutral-800 dark:border-neutral-700">
           <div>
             <div class="font-medium">{{ uc.nome }} ({{ uc.sigla }})</div>
-            <div class="text-xs text-neutral-600 dark:text-neutral-400">ECTS: {{ uc.ects }} | Hours: {{ uc.horas }} | Semester: {{ uc.semestre }}</div>
+            <div class="text-xs text-neutral-600 dark:text-neutral-400">{{ $t('wizard.uc_step.ects') }}: {{ uc.ects }} | {{ $t('wizard.uc_step.hours') }}: {{ uc.horas }} | {{ $t('wizard.uc_step.semester') }}: {{ uc.semestre }}</div>
           </div>
-          <button @click="removeUc(index)" class="text-red-500 hover:text-red-700 text-sm cursor-pointer">Remove</button>
+          <button @click="removeUc(index)" class="text-red-500 hover:text-red-700 text-sm cursor-pointer">{{ $t('wizard.uc_step.remove') }}</button>
         </li>
       </ul>
     </div>
 
     <div class="border-t pt-4 border-neutral-200 dark:border-neutral-700">
-      <h3 class="font-semibold text-lg mb-4">Add a New UC</h3>
+      <h3 class="font-semibold text-lg mb-4">{{ $t('wizard.uc_step.add_new_title') }}</h3>
 
       <div class="mb-4 bg-blue-50 dark:bg-blue-900/20 p-4 rounded-md border border-blue-100 dark:border-blue-900">
         <label class="block text-sm font-medium mb-1 text-blue-800 dark:text-blue-300">
-          Select an existing UC <span v-if="loadingUcs" class="text-sm text-blue-500 font-normal ml-2">Loading...</span>
+          {{ $t('wizard.uc_step.select_existing') }} <span v-if="loadingUcs" class="text-sm text-blue-500 font-normal ml-2">{{ $t('common.loading') }}</span>
         </label>
         <div class="flex gap-2">
           <div class="relative flex-1">
@@ -31,45 +31,45 @@
               :return-object="true"
               :display-fn="u => `${u.nome} (${u.sigla})`"
               :search-fn="(u, q) => normalizeString(u.nome?.toLowerCase() || '').includes(q) || normalizeString(u.sigla?.toLowerCase() || '').includes(q)"
-              placeholder="Search and select a UC..."
+              :placeholder="$t('wizard.uc_step.search_placeholder')"
             />
           </div>
-          <button @click="addExistingUc" :disabled="!selectedExistingUc" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer">Add Selected</button>
+          <button @click="addExistingUc" :disabled="!selectedExistingUc" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer">{{ $t('wizard.uc_step.add_selected') }}</button>
         </div>
       </div>
 
       <div class="relative py-2">
         <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-neutral-200 dark:border-neutral-700"></div></div>
-        <div class="relative flex justify-center"><span class="bg-white dark:bg-[#1a1a1a] px-2 text-xs text-neutral-500 uppercase">Or create a new one</span></div>
+        <div class="relative flex justify-center"><span class="bg-white dark:bg-[#1a1a1a] px-2 text-xs text-neutral-500 uppercase">{{ $t('wizard.uc_step.or_create') }}</span></div>
       </div>
 
       <div class="grid grid-cols-2 gap-4 mt-4">
         <div>
-          <label class="block text-sm font-medium mb-1">Name (PT)</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.name_pt') }}</label>
           <input type="text" v-model="newUc.nome" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Name (EN)</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.name_en') }}</label>
           <input type="text" v-model="newUc.name" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Sigla</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.acronym') }}</label>
           <input type="text" v-model="newUc.sigla" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">ECTS</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.uc_step.ects') }}</label>
           <input type="number" v-model="newUc.ects" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Hours</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.uc_step.hours') }}</label>
           <input type="number" v-model="newUc.horas" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700" />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">Semester</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.uc_step.semester') }}</label>
           <input type="number" v-model="newUc.semestre" class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700" />
         </div>
       </div>
-      <button @click="addNewUc" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 cursor-pointer">Create & Add UC</button>
+      <button @click="addNewUc" class="mt-4 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 cursor-pointer">{{ $t('wizard.uc_step.create_add') }}</button>
     </div>
   </div>
 </template>

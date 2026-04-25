@@ -1,24 +1,24 @@
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">Equivalences</h2>
+    <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">{{ $t('wizard.equivalence_step.title') }}</h2>
 
     <div class="mb-4">
-      <label class="block text-sm font-medium mb-1">Previous Plan</label>
+      <label class="block text-sm font-medium mb-1">{{ $t('wizard.equivalence_step.previous_plan') }}</label>
       <select
         v-if="!loadingPlan"
         v-model="selectedPrevPlanId"
         class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
       >
-        <option value="" disabled>Select previous plan</option>
+        <option value="" disabled>{{ $t('wizard.equivalence_step.select_previous_plan') }}</option>
         <option v-for="plan in prevPlans" :key="plan.id" :value="plan.id">
-          {{ plan.ano }} ({{ plan.curso?.nome || 'N/A' }})
+          {{ plan.ano }} ({{ plan.curso?.nome || $t('common.na') }})
         </option>
       </select>
       <div v-else class="text-sm p-3 text-neutral-500">
-        Loading latest plan...
+        {{ $t('wizard.equivalence_step.loading_latest_plan') }}
       </div>
       <p class="mt-1 text-xs text-neutral-500 dark:text-neutral-400">
-        Latest plan is auto-selected. You can change it if needed.
+        {{ $t('wizard.equivalence_step.latest_auto_selected') }}
       </p>
     </div>
 
@@ -26,17 +26,16 @@
       v-if="selectedPrevPlanId"
       class="border-t pt-4 border-neutral-200 dark:border-neutral-700"
     >
-      <h3 class="font-semibold text-lg mb-2">Map Equivalences</h3>
+      <h3 class="font-semibold text-lg mb-2">{{ $t('wizard.equivalence_step.map_title') }}</h3>
       <p class="text-sm text-neutral-600 dark:text-neutral-400 mb-4">
-        Pick a new UC first. Then choose one or more old UCs from the previous plan with the same
-        semester.
+        {{ $t('wizard.equivalence_step.map_description') }}
       </p>
 
       <div
         v-if="equivalences.length === 0"
         class="rounded-md border border-dashed border-neutral-300 dark:border-neutral-700 p-4 text-sm text-neutral-500 dark:text-neutral-400"
       >
-        No equivalences yet. Click <strong>+ Add Equivalence</strong> to start.
+        {{ $t('wizard.equivalence_step.empty_prefix') }} <strong>{{ $t('wizard.equivalence_step.add_button') }}</strong> {{ $t('wizard.equivalence_step.empty_suffix') }}
       </div>
 
       <div
@@ -46,16 +45,16 @@
       >
         <div class="flex items-start justify-between gap-3 mb-4">
           <div class="flex-1">
-            <label class="block text-xs font-semibold mb-1">New UC</label>
+            <label class="block text-xs font-semibold mb-1">{{ $t('wizard.equivalence_step.new_uc') }}</label>
             <div class="relative">
               <SearchableDropdown
                 v-model="equiv.newUcIndex"
                 :options="newPlanUcs.map((u, idx) => ({ ...u, origIndex: idx }))"
                 value-key="origIndex"
-                :display-fn="u => `${u.nome} (Sem ${u.semestre || '-'})`"
+                :display-fn="u => `${u.nome} (${$t('wizard.equivalence_step.sem_abbr')} ${u.semestre || '-'})`"
                 :search-fn="(u, q) => normalizeString(u.nome?.toLowerCase() || '').includes(q)"
                 @change="onNewUcChange(index)"
-                placeholder="Search and select new UC..."
+                :placeholder="$t('wizard.equivalence_step.search_new_uc_placeholder')"
                 input-class="text-sm"
               />
             </div>
@@ -64,7 +63,7 @@
             <button
               @click="removeEquiv(index)"
               class="text-red-500 font-bold ml-2 cursor-pointer"
-              title="Remove equivalence"
+              :title="$t('wizard.equivalence_step.remove_equivalence')"
             >
               <i class="fa fa-remove" />
             </button>
@@ -76,18 +75,18 @@
           class="bg-neutral-50 dark:bg-neutral-900/30 rounded-md border dark:border-neutral-700 p-3"
         >
           <div class="text-xs font-semibold mb-2 text-neutral-700 dark:text-neutral-300">
-            Old UC(s) - same semester ({{ getEquivSemester(equiv) || '-' }})
+            {{ $t('wizard.equivalence_step.old_uc_same_semester', { semester: getEquivSemester(equiv) || '-' }) }}
           </div>
 
           <div v-if="equiv.loading" class="text-sm text-neutral-500 dark:text-neutral-400">
-            Loading old UCs...
+            {{ $t('wizard.equivalence_step.loading_old_ucs') }}
           </div>
 
           <div
             v-else-if="getFilteredOldUcs(equiv).length === 0"
             class="text-sm text-neutral-500 dark:text-neutral-400 italic"
           >
-            No old UCs found for this semester in the selected previous plan.
+            {{ $t('wizard.equivalence_step.no_old_ucs_found') }}
           </div>
 
           <div class="flex-1">
@@ -109,12 +108,12 @@
           </div>
 
           <div class="mt-4">
-            <label class="block text-xs font-semibold mb-1">Observations</label>
+            <label class="block text-xs font-semibold mb-1">{{ $t('wizard.equivalence_step.observations') }}</label>
             <textarea
               v-model="equiv.observacoes"
               class="w-full rounded-md border p-2 text-sm bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
               rows="2"
-              placeholder="Any observations about this equivalence..."
+              :placeholder="$t('wizard.equivalence_step.observations_placeholder')"
             ></textarea>
           </div>
         </div>
@@ -124,7 +123,7 @@
         @click="addEquiv"
         class="mt-2 text-blue-500 hover:text-blue-700 text-sm font-medium cursor-pointer"
       >
-        <i class="fa fa-plus text-xs"/> Add Equivalence
+        <i class="fa fa-plus text-xs"/> {{ $t('wizard.equivalence_step.add_button') }}
       </button>
     </div>
   </div>

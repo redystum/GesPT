@@ -1,17 +1,21 @@
 <template>
   <div>
-    <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">Plan Information</h2>
+    <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">
+      {{ $t('wizard.plan_step.title') }}
+    </h2>
 
     <div class="space-y-4">
       <div>
-        <label class="block text-sm font-medium mb-1">Academic Year</label>
+        <label class="block text-sm font-medium mb-1">{{
+          $t('wizard.plan_step.academic_year')
+        }}</label>
         <input
           type="text"
           v-model="plan.ano"
           @input="validateYear"
-          placeholder="e.g. 2026/2027 or 2026/27"
+          :placeholder="$t('wizard.plan_step.academic_year_placeholder')"
           class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
-          :class="{'border-red-500 focus:ring-red-500/20': errorMsg}"
+          :class="{ 'border-red-500 focus:ring-red-500/20': errorMsg }"
         />
         <p v-if="errorMsg" class="text-red-500 text-xs mt-1">{{ errorMsg }}</p>
       </div>
@@ -21,9 +25,11 @@
 
 <script setup>
 import { ref, watch, onMounted } from 'vue'
+import { useI18n } from '@/i18n'
 
 const props = defineProps(['modelValue'])
 const emit = defineEmits(['update:modelValue'])
+const { t } = useI18n()
 
 const plan = ref({ ano: '' })
 const errorMsg = ref('')
@@ -36,7 +42,7 @@ const validateYear = () => {
   }
 
   if (!regex.test(plan.value.ano)) {
-    errorMsg.value = 'Year must be in format 20xx/xx or 20xx/20xx'
+    errorMsg.value = t('wizard.plan_step.error_invalid_format')
     return
   }
 
@@ -49,7 +55,7 @@ const validateYear = () => {
   }
 
   if (year2 !== year1 + 1) {
-    errorMsg.value = 'The second year must be exactly one year after the first (e.g. 2026/2027)'
+    errorMsg.value = t('wizard.plan_step.error_invalid_sequence')
     return
   }
 
@@ -63,7 +69,11 @@ onMounted(() => {
   }
 })
 
-watch(plan, () => {
-  emit('update:modelValue', { ...plan.value, isValid: !errorMsg.value })
-}, { deep: true })
+watch(
+  plan,
+  () => {
+    emit('update:modelValue', { ...plan.value, isValid: !errorMsg.value })
+  },
+  { deep: true }
+)
 </script>
