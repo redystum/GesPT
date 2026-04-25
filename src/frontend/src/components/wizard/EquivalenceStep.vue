@@ -107,6 +107,16 @@
               </label>
             </div>
           </div>
+
+          <div class="mt-4">
+            <label class="block text-xs font-semibold mb-1">Observations</label>
+            <textarea
+              v-model="equiv.observacoes"
+              class="w-full rounded-md border p-2 text-sm bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
+              rows="2"
+              placeholder="Any observations about this equivalence..."
+            ></textarea>
+          </div>
         </div>
       </div>
 
@@ -164,6 +174,7 @@ onMounted(() => {
     equivalences.value = (props.modelValue.equivalences || []).map((eq) => ({
       newUcIndex: eq.newUcIndex ?? '',
       oldUcs: Array.isArray(eq.oldUcs) ? [...eq.oldUcs] : [],
+      observacoes: eq.observacoes || '',
       loading: false
     }))
   }
@@ -188,7 +199,8 @@ watch([selectedPrevPlanId, equivalences], () => {
       return {
         newUcIndex: eq.newUcIndex,
         newUc: selectedNewUc?.id || selectedNewUc?.sigla || selectedNewUc?.nome || '',
-        oldUcs: eq.oldUcs
+        oldUcs: eq.oldUcs,
+        observacoes: eq.observacoes
       }
     })
   })
@@ -242,6 +254,7 @@ const addEquiv = () => {
   equivalences.value.push({
     newUcIndex: '',
     oldUcs: [],
+    observacoes: '',
     loading: false
   })
 }

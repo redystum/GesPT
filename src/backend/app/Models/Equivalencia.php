@@ -22,6 +22,7 @@ class Equivalencia extends Model
         'id_plano_uc',
         'lado',
         'custom',
+        'observacao',
     ];
 
     public function rule(): BelongsTo
