@@ -29,7 +29,10 @@
     "back": "Back",
     "next": "Next step",
     "previous": "Previous",
-    "next_page": "Next"
+    "next_page": "Next",
+    "yes": "Yes",
+    "no": "No",
+    "na": "N/A"
   },
   "states": {
     "empty_title": "No results"
@@ -111,6 +114,7 @@
     "step_course": "Course",
     "step_plan_info": "Plan Info",
     "step_modules": "Course Units",
+    "step_equivalences": "Equivalences",
     "configuration_title": "Plan configuration",
     "plan_name": "Plan name",
     "plan_name_placeholder": "Computer Science - 2026 Revision",
@@ -125,6 +129,83 @@
     "summary_course_value": "Computer Science",
     "summary_year": "Academic year",
     "summary_status": "Status",
-    "summary_status_value": "Draft"
+    "summary_status_value": "Draft",
+    "view": {
+      "step_locked": "This step is locked. Complete the required previous step to unlock it.",
+      "save_plan": "Save Plan",
+      "course_data": "Course Data",
+      "new_label": "New?",
+      "selection": "Selected:",
+      "ucs_configured": "UCs Configured",
+      "unnamed_uc": "Unnamed UC",
+      "next_disabled_invalid_year": "Fill a valid academic year to continue.",
+      "next_disabled_locked": "Complete the required data to unlock the next step.",
+      "save_success": "Plan saved successfully.",
+      "save_error": "An error occurred while saving the plan."
+    },
+    "course_step": {
+      "title": "Course Selection",
+      "select_course": "Select Course",
+      "search_course_placeholder": "Search and select a course...",
+      "or_create": "+ Or create a new course",
+      "name_pt": "Name (PT)",
+      "name_en": "Name (EN)",
+      "acronym": "Acronym",
+      "code": "Code",
+      "cancel_create": "Cancel creating new course",
+      "load_error": "Could not load courses from server",
+      "excel_template": "Excel template",
+      "excel_template_hint": "Download the course template, fill it, then import it here.",
+      "download_template": "Download template",
+      "downloading_template": "Downloading...",
+      "download_template_error": "Could not download the Excel template.",
+      "importing_template": "Importing...",
+      "import_template_success": "Template imported successfully.",
+      "import_template_error": "Could not import the Excel template."
+    },
+    "plan_step": {
+      "title": "Plan Information",
+      "academic_year": "Academic Year",
+      "academic_year_placeholder": "e.g. 2026/2027 or 2026/27",
+      "error_invalid_format": "Year must be in format 20xx/xx or 20xx/20xx",
+      "error_invalid_sequence": "The second year must be exactly one year after the first (e.g. 2026/2027)"
+    },
+    "uc_step": {
+      "title": "Add Units (UCs)",
+      "current_ucs": "Current UCs in Plan",
+      "empty": "No UCs added yet.",
+      "remove": "Remove",
+      "add_new_title": "Add a New UC",
+      "select_existing": "Select an existing UC",
+      "search_placeholder": "Search and select a UC...",
+      "add_selected": "Add",
+      "or_create": "Or create a new one",
+      "ects": "ECTS",
+      "hours": "Hours",
+      "semester": "Semester",
+      "create_add": "Create & Add UC"
+    },
+    "equivalence_step": {
+      "title": "Equivalences",
+      "previous_plan": "Previous Plan",
+      "select_previous_plan": "Select previous plan",
+      "loading_latest_plan": "Loading latest plan...",
+      "latest_auto_selected": "Latest plan is auto-selected. You can change it if needed.",
+      "map_title": "Map Equivalences",
+      "map_description": "Pick a new UC first. Then choose one or more old UCs from the previous plan with the same semester.",
+      "empty_prefix": "No equivalences yet. Click",
+      "empty_suffix": "to start.",
+      "new_uc": "New UC",
+      "sem_abbr": "Sem",
+      "search_new_uc_placeholder": "Search and select new UC...",
+      "remove_equivalence": "Remove equivalence",
+      "old_uc_same_semester": "Old UC(s) - same semester",
+      "loading_old_ucs": "Loading old UCs...",
+      "no_old_ucs_found": "No old UCs found for this semester in the selected previous plan.",
+      "observations": "Observations",
+      "observations_placeholder": "Any observations about this equivalence...",
+      "add_button": "Add Equivalence",
+      "add_button_full": "+ Add Equivalence"
+    }
   }
 }

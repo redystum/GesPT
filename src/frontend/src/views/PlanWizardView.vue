@@ -2,7 +2,7 @@
   <div class="max-w-7xl mx-auto px-6 py-10 animate-fade-in-up" @keydown.enter="handleEnterAdvance">
     <!-- Header -->
     <h1 class="text-3xl font-bold text-neutral-900 dark:text-neutral-100 mb-8 tracking-tight">
-      {{ $t('wizard.title') || 'Create Plan Wizard' }}
+      {{ $t('wizard.title') }}
     </h1>
 
     <!-- Progress Stepper -->
@@ -105,7 +105,7 @@
           <div
             class="rounded-md border border-amber-200 dark:border-amber-700 bg-amber-50 dark:bg-amber-900/20 p-4 text-sm text-amber-800 dark:text-amber-300"
           >
-            This step is locked. Complete the required previous step to unlock it.
+            {{ $t('wizard.view.step_locked') }}
           </div>
         </template>
 
@@ -118,7 +118,7 @@
             :disabled="isPrevDisabled"
             class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
           >
-            {{ $t('common.back') || 'Back' }}
+            {{ $t('common.back') }}
           </button>
 
           <button
@@ -128,7 +128,7 @@
             :title="nextDisabledReason"
             class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 border border-neutral-800 dark:border-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
           >
-            {{ $t('common.next') || 'Next' }}
+            {{ $t('common.next') }}
           </button>
 
           <button
@@ -136,7 +136,7 @@
             @click="finishWizard"
             class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-green-600 dark:bg-green-500 text-white border border-green-700 dark:border-green-400 hover:bg-green-700 cursor-pointer"
           >
-            Save Plan
+            {{ $t('wizard.view.save_plan') }}
           </button>
         </div>
       </div>
@@ -146,20 +146,20 @@
         <div
           class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
         >
-          <h3 class="font-bold text-sm mb-4 text-neutral-900 dark:text-neutral-100">Summary</h3>
+          <h3 class="font-bold text-sm mb-4 text-neutral-900 dark:text-neutral-100">{{ $t('wizard.summary_title') }}</h3>
           <div class="space-y-3 text-sm pb-4 border-b">
             <div class="flex flex-col gap-1 pb-2 text-neutral-600 dark:text-neutral-400">
-              <span class="font-semibold text-neutral-800 dark:text-neutral-200">Course Data</span>
-              <span>New? {{ wizardData.course.isNew ? 'Yes' : 'No' }}</span>
+              <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{ $t('wizard.view.course_data') }}</span>
+              <span>{{ $t('wizard.view.new_label') }} {{ wizardData.course.isNew ? $t('common.yes') : $t('common.no') }}</span>
               <span
-                >Selection:
-                {{ wizardData.course.data?.nome || wizardData.course.data?.id || '?' }}</span
+                >{{ $t('wizard.view.selection') }}
+                {{ wizardData.course.data?.nome || wizardData.course.data?.id || $t('common.na') }}</span
               >
             </div>
             <div
               class="flex justify-between items-center pb-2 text-neutral-600 dark:text-neutral-400"
             >
-              <span class="font-semibold text-neutral-800 dark:text-neutral-200">Year</span>
+              <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{ $t('wizard.summary_year') }}</span>
               <span class="font-medium text-neutral-900 dark:text-neutral-100">{{
                 wizardData.plan.ano || '-'
               }}</span>
@@ -167,7 +167,7 @@
             <div class="flex flex-col gap-2 text-neutral-600 dark:text-neutral-400">
               <div class="flex justify-between items-center">
                 <span class="font-semibold text-neutral-800 dark:text-neutral-200"
-                  >UCs Configured</span
+                  >{{ $t('wizard.view.ucs_configured') }}</span
                 >
                 <span class="font-medium text-neutral-900 dark:text-neutral-100">{{
                   wizardData.ucs.length
@@ -182,7 +182,7 @@
                   :key="idx"
                   class="text-neutral-700 dark:text-neutral-300"
                 >
-                  {{ uc.nome || uc.sigla || 'Unnamed UC' }}
+                  {{ uc.nome || uc.sigla || $t('wizard.view.unnamed_uc') }}
                 </li>
               </ul>
             </div>
@@ -202,6 +202,7 @@
 <script setup>
 import { computed, inject, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
+import { useI18n } from '@/i18n'
 import { usePlanWizardStore } from '../stores/planWizard'
 import CourseStep from '../components/wizard/CourseStep.vue'
 import PlanStep from '../components/wizard/PlanStep.vue'
@@ -211,6 +212,7 @@ import CompareTable from '@/components/CompareTable.vue'
 
 const store = usePlanWizardStore()
 const api = inject('api')
+const { t } = useI18n()
 const { wizardData, planPreview } = storeToRefs(store)
 
 const currentStep = ref(1)
@@ -278,27 +280,27 @@ const isNextDisabled = computed(() => {
 
 const nextDisabledReason = computed(() => {
   if (currentStep.value === 2 && wizardData.value.plan.isValid === false) {
-    return 'Fill a valid academic year to continue.'
+    return t('wizard.view.next_disabled_invalid_year')
   }
 
   if (!isStepUnlocked(currentStep.value + 1)) {
-    return 'Complete the required data to unlock the next step.'
+    return t('wizard.view.next_disabled_locked')
   }
 
   return ''
 })
 
 const steps = computed(() => [
-  { label: 'Course', key: 'course', component: CourseStep, rule: true },
-  { label: 'Plan Info', key: 'plan', component: PlanStep, rule: true },
+  { label: t('wizard.step_course'), key: 'course', component: CourseStep, rule: true },
+  { label: t('wizard.step_plan_info'), key: 'plan', component: PlanStep, rule: true },
   {
-    label: 'Unidades Curriculares (UCs)',
+    label: t('wizard.step_modules'),
     key: 'ucs',
     component: UcStep,
     rule: wizardData.value.course.isNew || wizardData.value.course.data.id > 0
   },
   {
-    label: 'Equivalences',
+    label: t('wizard.step_equivalences'),
     key: 'equivalences',
     component: EquivalenceStep,
     rule: wizardData.value.ucs.length > 0
@@ -374,12 +376,12 @@ const finishWizard = async () => {
 
   try {
     await api.post('/wizard', wizardData.value)
-    submitSuccessMessage.value = 'Plano guardado com sucesso.'
+    submitSuccessMessage.value = t('wizard.view.save_success')
   } catch (error) {
     const responseData = error?.response?.data
     const backendErrors = responseData?.errors
     validationErrors.value = backendErrors && typeof backendErrors === 'object' ? backendErrors : {}
-    submitErrorMessage.value = responseData?.message || 'Ocorreu um erro ao guardar o plano.'
+    submitErrorMessage.value = responseData?.message || t('wizard.view.save_error')
 
     // Keep users focused by moving to the first step that contains server-side validation errors.
     const firstErroredStep = [1, 2, 3, 4].find((stepNumber) => hasStepErrors(stepNumber))

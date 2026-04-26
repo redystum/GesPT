@@ -69,6 +69,7 @@ class WizardController extends Controller
                         'id_rule' => $eq_rule->id,
                         'id_plano_uc' => $uc_id,
                         'lado' => Equivalencia::LADO_FINAL,
+                        'observacao' => $equivalence->observacoes ?? null,
                     ]);
 
                     // TODO: (also todo on frontend) add observação

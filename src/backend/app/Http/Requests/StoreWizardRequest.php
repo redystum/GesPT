@@ -45,7 +45,8 @@ class StoreWizardRequest extends FormRequest
                     if ($year2 !== $year1 + 1) {
                         $fail('The second year must be exactly one year after the first (e.g. 2025/2026).');
                     }
-                }
+                },
+                'unique:plano_estudos,ano,NULL,id,id_curso,' . ($this->course['isNew'] ? 'NULL' : $this->course['data']['id'])
             ],
 
             'ucs' => 'required|array|min:1',
@@ -61,6 +62,7 @@ class StoreWizardRequest extends FormRequest
             'equivalences.prevPlanId' => 'integer|exists:plano_estudos,id',
             'equivalences.equivalences' => 'array',
             'equivalences.equivalences.*.newUc' => 'integer',
+            'equivalences.equivalences.*.observacoes' => 'nullable|string',
             'equivalences.equivalences.*.oldUcs' => 'array|min:1',
             'equivalences.equivalences.*.oldUcs.*' => 'integer',
 
