@@ -16,6 +16,39 @@
           placeholder="Search and select a course..."
         />
 
+        <div class="mt-4 rounded-md border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/40 p-4">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <h3 class="text-sm font-semibold text-neutral-900 dark:text-neutral-100">Excel template</h3>
+              <p class="text-xs text-neutral-600 dark:text-neutral-400">Download the course template, fill it, then import it here.</p>
+            </div>
+
+            <button
+              type="button"
+              @click="downloadTemplate"
+              :disabled="!selectedCourseId || downloadingTemplate"
+              class="inline-flex items-center justify-center gap-2 rounded-md px-3 py-2 text-sm font-semibold transition-colors duration-150 bg-green-600 text-white border border-green-700 hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed enabled:cursor-pointer"
+            >
+              <font-awesome-icon icon="fa-solid fa-file-excel" />
+              {{ downloadingTemplate ? 'Downloading...' : 'Download template' }}
+            </button>
+          </div>
+
+          <div class="mt-4 flex flex-col sm:flex-row sm:items-center gap-3">
+            <input
+              type="file"
+              accept=".xlsx,.xls,.csv"
+              @change="importTemplate"
+              :disabled="importingTemplate"
+              class="block w-full text-sm text-neutral-700 dark:text-neutral-300 file:mr-3 file:rounded-md file:border-0 file:bg-neutral-900 file:px-3 file:py-2 file:text-sm file:font-semibold file:text-white dark:file:bg-neutral-200 dark:file:text-neutral-900 disabled:opacity-50"
+            />
+            <span v-if="importingTemplate" class="text-sm text-neutral-500 dark:text-neutral-400">Importing...</span>
+          </div>
+
+          <p v-if="templateMessage" class="mt-3 text-sm text-green-700 dark:text-green-400">{{ templateMessage }}</p>
+          <p v-if="templateError" class="mt-3 text-sm text-red-600 dark:text-red-400">{{ templateError }}</p>
+        </div>
+
         <button @click="isCreatingNew = true" class="mt-4 text-blue-500 hover:underline text-sm cursor-pointer">+ Or create a new course</button>
       </div>
 
@@ -48,7 +81,7 @@ import { inject, ref, watch, onMounted } from 'vue'
 import SearchableDropdown from '../SearchableDropdown.vue'
 
 const props = defineProps(['modelValue'])
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'template-imported'])
 
 const isCreatingNew = ref(false)
 const selectedCourseId = ref('')
@@ -59,6 +92,10 @@ const api = inject('api')
 const courses = ref([])
 const loadingCourses = ref(false)
 const errorCourses = ref('')
+const downloadingTemplate = ref(false)
+const importingTemplate = ref(false)
+const templateMessage = ref('')
+const templateError = ref('')
 
 const normalizeString = (str) => {
   return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
@@ -81,6 +118,80 @@ const fetchCourses = async () => {
   }
 }
 
+const getSelectedCourse = () => {
+  return courses.value.find(c => c.id === selectedCourseId.value)
+}
+
+const getDownloadFilename = (contentDisposition) => {
+  const fallback = `course-template-${selectedCourseId.value}.xlsx`
+  const match = contentDisposition?.match(/filename="?([^"]+)"?/)
+  return match?.[1] || fallback
+}
+
+const downloadTemplate = async () => {
+  if (!selectedCourseId.value) return
+
+  downloadingTemplate.value = true
+  templateMessage.value = ''
+  templateError.value = ''
+
+  try {
+    const response = await api.get(`/wizard/course-template/${selectedCourseId.value}`, {
+      responseType: 'blob'
+    })
+
+    const blobUrl = URL.createObjectURL(new Blob([response.data]))
+    const link = document.createElement('a')
+    link.href = blobUrl
+    link.download = getDownloadFilename(response.headers['content-disposition'])
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    URL.revokeObjectURL(blobUrl)
+  } catch (err) {
+    console.error(err)
+    templateError.value = 'Could not download the Excel template.'
+  } finally {
+    downloadingTemplate.value = false
+  }
+}
+
+const importTemplate = async (event) => {
+  const file = event.target.files?.[0]
+  if (!file) return
+
+  importingTemplate.value = true
+  templateMessage.value = ''
+  templateError.value = ''
+
+  try {
+    const formData = new FormData()
+    formData.append('file', file)
+    if (selectedCourseId.value) {
+      formData.append('course_id', selectedCourseId.value)
+    }
+
+    const response = await api.post('/wizard/course-template/import', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    })
+
+    const importedData = response.data?.data || response.data
+    if (importedData?.course) {
+      emit('template-imported', importedData)
+    }
+
+    templateMessage.value = response.data?.message || 'Template imported successfully.'
+  } catch (err) {
+    console.error(err)
+    templateError.value = err.response?.data?.message || 'Could not import the Excel template.'
+  } finally {
+    importingTemplate.value = false
+    event.target.value = ''
+  }
+}
+
 onMounted(() => {
   fetchCourses()
   if (props.modelValue) {
@@ -94,7 +205,7 @@ onMounted(() => {
 })
 
 watch([isCreatingNew, selectedCourseId, newCourse, courses], () => {
-  const selectedCourse = courses.value.find(c => c.id === selectedCourseId.value) || { id: selectedCourseId.value }
+  const selectedCourse = getSelectedCourse() || { id: selectedCourseId.value }
   emit('update:modelValue', {
     isNew: isCreatingNew.value,
     data: isCreatingNew.value ? newCourse.value : selectedCourse
