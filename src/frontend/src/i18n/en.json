@@ -68,7 +68,6 @@
     "regex_pattern": "Regex Pattern",
     "rule_behavior_label": "Behavior:",
     "rule_behavior": "Only institutional accounts with the @ipleiria.pt domain are allowed to authenticate.",
-    "test_pattern": "Test pattern",
     "system_policies": "System Policies",
     "policy_mfa": "MFA Enforcement",
     "policy_sso": "SSO Integration (SAML 2.0)",
@@ -87,7 +86,9 @@
     "role_faculty": "Faculty",
     "role_admin": "Administrator",
     "edit": "Edit",
-    "table_count": "Showing 2 of 1,284 records"
+    "table_count": "Showing 2 of 1,284 records",
+    "test_pattern": "Test the regex pattern (one per line)",
+    "invalid_regex_warning": "The provided regex pattern is invalid."
   },
   "compare": {
     "kicker": "Curriculum Analysis",

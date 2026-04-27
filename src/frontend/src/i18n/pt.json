@@ -68,7 +68,6 @@
     "regex_pattern": "Padrão Regex",
     "rule_behavior_label": "Comportamento:",
     "rule_behavior": "Apenas contas com domínio institucional @ipleiria.pt podem autenticar.",
-    "test_pattern": "Testar padrão",
     "system_policies": "Políticas do Sistema",
     "policy_mfa": "Obrigatoriedade de MFA",
     "policy_sso": "Integração SSO (SAML 2.0)",
@@ -90,7 +89,9 @@
     "table_count": "A mostrar 2 de 1.284 registos",
     "whitelist_search": "Pesquisar por nome ou email",
     "rule_title": "Regras de validação de autenticação",
-    "rule_pattern_label": "Padrão regex de validação"
+    "rule_pattern_label": "Padrão regex de validação",
+    "test_pattern": "Testar padrão regex (um por linha)",
+    "invalid_regex_warning": "O padrão regex fornecido é inválido."
   },
   "compare": {
     "kicker": "Análise Curricular",

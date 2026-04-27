@@ -10,6 +10,10 @@ use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
+    public function index(){
+        return UserResource::collection(User::all());
+    }
+
     public function show(User $user){
         return response()->json([
             'data' => UserResource::make($user),
