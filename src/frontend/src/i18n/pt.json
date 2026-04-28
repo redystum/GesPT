@@ -76,7 +76,7 @@
     "status_connected": "Ligado",
     "status_pending": "Pendente",
     "whitelist_title": "Lista de acesso autorizada",
-    "whitelist_subtitle": "Gestão de domínios e contas autorizadas.",
+    "whitelist_subtitle": "Gestão de contas com login.",
     "filter_rules": "Filtrar regras",
     "table_identifier": "Identificador / Domínio",
     "table_role": "Perfil",
@@ -91,7 +91,8 @@
     "rule_title": "Regras de validação de autenticação",
     "rule_pattern_label": "Padrão regex de validação",
     "test_pattern": "Testar padrão regex (um por linha)",
-    "invalid_regex_warning": "O padrão regex fornecido é inválido."
+    "invalid_regex_warning": "O padrão regex fornecido é inválido.",
+    "regex_helper": "Se não estiver familiarizado com expressões regulares, consulte o departamento de TI (DEI) para garantir que o padrão cumpre as nossas normas de segurança. Isto também poderá ser útil: "
   },
   "compare": {
     "kicker": "Análise Curricular",

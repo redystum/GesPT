@@ -7,12 +7,31 @@
         class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
       >
         <h2 class="mb-4 text-sm font-semibold uppercase tracking-[0.15em]">
-          <font-awesome-icon :icon="['fas', 'keyboard']" class="text-xs" />
           {{ $t('admin.rule_title') }}
         </h2>
-        <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.12em]">
-          {{ $t('admin.rule_pattern_label') }}
-        </label>
+        <div class="mb-2 flex items-center gap-2">
+          <label class="block text-xs font-semibold uppercase tracking-[0.12em]">
+            {{ $t('admin.rule_pattern_label') }}
+          </label>
+          <div class="relative flex items-center" ref="tooltipContainer">
+            <button type="button" @click="showTooltip = !showTooltip" class="leading-none flex items-center justify-center outline-none">
+              <font-awesome-icon
+                :icon="['fas', 'circle-question']"
+                class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 cursor-pointer transition-colors text-sm"
+              />
+            </button>
+            <div
+              :class="showTooltip ? 'opacity-100 visible' : 'opacity-0 invisible'"
+              class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max max-w-62.5 px-3 py-2 dark:bg-neutral-900 bg-neutral-100 dark:text-white text-neutral-900 text-sm rounded-md transition-all duration-200 pointer-events-none z-10 text-center shadow-lg font-normal tracking-normal normal-case"
+            >
+              {{ $t('admin.regex_helper') }}
+              <a href="https://regex101.com/" target="_blank" class="underline pointer-events-auto">regex101.com</a>
+              <div
+                class="absolute top-full left-1/2 -translate-x-1/2 border-4 border-transparent border-t-neutral-100 dark:border-t-neutral-900"
+              ></div>
+            </div>
+          </div>
+        </div>
         <input
           type="text"
           v-model="regex_pattern"
@@ -26,6 +45,7 @@
           <textarea
             v-model="rule_behavior"
             placeholder="Enter regex to test"
+            rows="5"
             class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 mb-4 font-mono text-xs"
           ></textarea>
 
@@ -152,12 +172,31 @@
 </template>
 
 <script setup>
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted, onUnmounted } from 'vue'
 
-const rule_behavior = ref('')
+const rule_behavior = ref(
+  '2231034@my.ipleiria.pt\n' + '2231034@ipleiria.pt\n' + 'ruben.alves@ipleiria.pt'
+)
 const validationResults = ref([])
 const regex_pattern = ref('^[a-zA-Z0-9._%+-]+@ipleiria.pt$')
 const isRegexValid = ref(true)
+
+const showTooltip = ref(false)
+const tooltipContainer = ref(null)
+
+const handleClickOutside = (event) => {
+  if (tooltipContainer.value && !tooltipContainer.value.contains(event.target)) {
+    showTooltip.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 
 const validateLines = () => {
   try {
@@ -170,6 +209,8 @@ const validateLines = () => {
     validationResults.value = []
   }
 }
+
+validateLines()
 
 watch([rule_behavior, regex_pattern], validateLines)
 </script>
