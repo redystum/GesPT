@@ -78,7 +78,7 @@
     "whitelist_title": "Authorized access list",
     "whitelist_subtitle": "Manage approved domains and account entries.",
     "filter_rules": "Filter rules",
-    "table_identifier": "Identifier / Domain",
+    "table_identifier": "Identifier",
     "table_role": "Role",
     "table_actions": "Actions",
     "verified_domain": "Verified domain",
@@ -89,7 +89,9 @@
     "table_count": "Showing 2 of 1,284 records",
     "test_pattern": "Test the regex pattern (one per line)",
     "invalid_regex_warning": "The provided regex pattern is invalid.",
-    "regex_helper": "If you’re unfamiliar with regular expressions, please consult the IT department (DEI) to ensure the pattern meets our security standards. This may help as well: "
+    "regex_helper": "If you’re unfamiliar with regular expressions, please consult the IT department (DEI) to ensure the pattern meets our security standards. This may help as well: ",
+    "no_users": "No users found.",
+    "loading_users": "Loading users..."
   },
   "compare": {
     "kicker": "Curriculum Analysis",

@@ -78,7 +78,7 @@
     "whitelist_title": "Lista de acesso autorizada",
     "whitelist_subtitle": "Gestão de contas com login.",
     "filter_rules": "Filtrar regras",
-    "table_identifier": "Identificador / Domínio",
+    "table_identifier": "Identificador",
     "table_role": "Perfil",
     "table_actions": "Ações",
     "verified_domain": "Domínio verificado",
@@ -92,7 +92,9 @@
     "rule_pattern_label": "Padrão regex de validação",
     "test_pattern": "Testar padrão regex (um por linha)",
     "invalid_regex_warning": "O padrão regex fornecido é inválido.",
-    "regex_helper": "Se não estiver familiarizado com expressões regulares, consulte o departamento de TI (DEI) para garantir que o padrão cumpre as nossas normas de segurança. Isto também poderá ser útil: "
+    "regex_helper": "Se não estiver familiarizado com expressões regulares, consulte o departamento de TI (DEI) para garantir que o padrão cumpre as nossas normas de segurança. Isto também poderá ser útil: ",
+    "no_users": "Nenhum utilizador encontrado.",
+    "loading_users": "A carregar utilizadores..."
   },
   "compare": {
     "kicker": "Análise Curricular",

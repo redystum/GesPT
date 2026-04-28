@@ -69,7 +69,7 @@
     </div>
 
     <article
-      class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 overflow-hidden xl:col-span-2"
+      class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 overflow-hidden xl:col-span-2 flex flex-col"
     >
       <div
         class="flex flex-col gap-4 border-b border-neutral-400 dark:border-neutral-600 p-5 sm:flex-row sm:items-center sm:justify-between"
@@ -81,6 +81,7 @@
         <div class="flex w-full gap-3 sm:w-auto">
           <input
             type="text"
+            v-model="searchQuery"
             :placeholder="$t('admin.whitelist_search')"
             class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 sm:w-64"
           />
@@ -94,7 +95,7 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto">
+      <div class="overflow-x-auto flex-1">
         <table class="w-full text-left min-w-155 whitespace-nowrap">
           <thead>
             <tr
@@ -105,39 +106,25 @@
               <th class="px-5 py-3 text-right">{{ $t('admin.table_actions') }}</th>
             </tr>
           </thead>
-          <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800 text-sm">
-            <tr class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
-              <td class="px-5 py-4">
-                <p class="font-semibold text-neutral-900 dark:text-neutral-100">@ipleiria.pt</p>
-                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-                  {{ $t('admin.verified_domain') }}
-                </p>
-              </td>
-              <td class="px-5 py-4">
-                <span
-                  class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
-                  >{{ $t('admin.role_faculty') }}</span
-                >
-              </td>
-              <td class="px-5 py-4 text-right">
-                <button
-                  class="text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 transition-colors p-2"
-                >
-                  <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" class="text-sm" />
-                </button>
+          <tbody v-if="isLoading">
+            <tr>
+              <td colspan="3" class="px-5 py-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                {{ $t('admin.loading_users') }}
               </td>
             </tr>
-            <tr class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
+          </tbody>
+          <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800 text-sm" v-else-if="users.length > 0">
+            <tr v-for="user in users" :key="user.id" class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
               <td class="px-5 py-4">
-                <p class="font-semibold text-neutral-900 dark:text-neutral-100">dean@ipleiria.pt</p>
+                <p class="font-semibold text-neutral-900 dark:text-neutral-100">{{ user.name }}</p>
                 <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
-                  {{ $t('admin.individual_account') }}
+                  {{ user.email }}
                 </p>
               </td>
               <td class="px-5 py-4">
                 <span
                   class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
-                  >{{ $t('admin.role_admin') }}</span
+                  >{{ user.role }}</span
                 >
               </td>
               <td class="px-5 py-4 text-right">
@@ -149,11 +136,18 @@
               </td>
             </tr>
           </tbody>
+          <tbody v-else>
+            <tr>
+              <td colspan="3" class="px-5 py-8 text-center text-sm text-neutral-500 dark:text-neutral-400">
+                {{ $t('admin.no_users') }}
+              </td>
+            </tr>
+          </tbody>
         </table>
       </div>
 
       <div
-        class="flex items-center justify-between border-t border-neutral-400 dark:border-neutral-600 p-4 text-xs"
+        class="flex items-center justify-between border-t border-neutral-400 dark:border-neutral-600 p-4 text-xs mt-auto"
       >
         <span>{{ $t('admin.table_count') }}</span>
         <div class="flex items-center gap-3">
@@ -172,7 +166,9 @@
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted } from 'vue'
+import { ref, watch, onMounted, onUnmounted, inject } from 'vue'
+
+const api = inject('api')
 
 const rule_behavior = ref(
   '2231034@my.ipleiria.pt\n' + '2231034@ipleiria.pt\n' + 'ruben.alves@ipleiria.pt'
@@ -184,6 +180,33 @@ const isRegexValid = ref(true)
 const showTooltip = ref(false)
 const tooltipContainer = ref(null)
 
+const users = ref([])
+const searchQuery = ref('')
+const isLoading = ref(true)
+let searchTimeout = null
+
+const fetchUsers = async () => {
+  isLoading.value = true
+  try {
+    const url = searchQuery.value ? `/users?search=${encodeURIComponent(searchQuery.value)}` : '/users'
+    const response = await api.get(url)
+    users.value = response.data.data || []
+  } catch (error) {
+    console.error('Error fetching users:', error)
+  } finally {
+    isLoading.value = false
+  }
+}
+
+watch(searchQuery, () => {
+  if (searchTimeout) {
+    clearTimeout(searchTimeout)
+  }
+  searchTimeout = setTimeout(() => {
+    fetchUsers()
+  }, 300) // 300ms debounce
+})
+
 const handleClickOutside = (event) => {
   if (tooltipContainer.value && !tooltipContainer.value.contains(event.target)) {
     showTooltip.value = false
@@ -192,10 +215,12 @@ const handleClickOutside = (event) => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  fetchUsers()
 })
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
+  if (searchTimeout) clearTimeout(searchTimeout)
 })
 
 const validateLines = () => {

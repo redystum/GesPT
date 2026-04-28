@@ -10,8 +10,17 @@ use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
-    public function index(){
-        return UserResource::collection(User::all());
+    public function index(Request $request){
+        $users = User::with('permissoes')
+            ->when($request->has('search'), function ($query) use ($request) {
+                $search = $request->input('search');
+                $query->where('name', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%");
+            })
+            ->get();
+        return response()->json([
+            'data' => UserResource::collection($users),
+        ], 200);
     }
 
     public function show(User $user){
