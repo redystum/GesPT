@@ -91,7 +91,9 @@
     "invalid_regex_warning": "The provided regex pattern is invalid.",
     "regex_helper": "If you’re unfamiliar with regular expressions, please consult the IT department (DEI) to ensure the pattern meets our security standards. This may help as well: ",
     "no_users": "No users found.",
-    "loading_users": "Loading users..."
+    "loading_users": "Loading users...",
+    "save": "Save",
+    "saving": "Saving..."
   },
   "compare": {
     "kicker": "Curriculum Analysis",

@@ -94,7 +94,9 @@
     "invalid_regex_warning": "O padrão regex fornecido é inválido.",
     "regex_helper": "Se não estiver familiarizado com expressões regulares, consulte o departamento de TI (DEI) para garantir que o padrão cumpre as nossas normas de segurança. Isto também poderá ser útil: ",
     "no_users": "Nenhum utilizador encontrado.",
-    "loading_users": "A carregar utilizadores..."
+    "loading_users": "A carregar utilizadores...",
+    "save": "Guardar",
+    "saving": "A guardar..."
   },
   "compare": {
     "kicker": "Análise Curricular",

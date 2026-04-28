@@ -86,7 +86,8 @@
             class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 sm:w-64"
           />
           <button
-            class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap"
+            @click="showAddModal = true"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap"
           >
             <font-awesome-icon :icon="['fas', 'plus']" class="text-sm leading-none" />{{
               $t('common.add_entry')
@@ -162,6 +163,35 @@
         </div>
       </div>
     </article>
+
+    <!-- Add User Modal -->
+    <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div class="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-md border border-neutral-200 dark:border-neutral-800 flex flex-col">
+        <div class="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
+          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New User</h3>
+          <button @click="closeAddModal" class="cursor-pointer text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300">
+            <span class="text-xl leading-none">&times;</span>
+          </button>
+        </div>
+        <div class="p-5 space-y-5">
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Name</label>
+            <input v-model="newUser.name" type="text" placeholder="João Pedro" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Email</label>
+            <input v-model="newUser.email" type="email" placeholder="joao.pedro@ipleiria.pt" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-3 p-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 rounded-b-lg">
+          <button @click="closeAddModal" class="px-4 py-2 text-sm font-semibold transition-colors text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 cursor-pointer">Cancel</button>
+          <button @click="addUser" :disabled="isAddingUser || !newUser.name || !newUser.email" class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+            <span v-if="isAddingUser">{{ $t('admin.saving') }}</span>
+            <span v-else>{{ $t('admin.save') }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -185,6 +215,10 @@ const searchQuery = ref('')
 const isLoading = ref(true)
 let searchTimeout = null
 
+const showAddModal = ref(false)
+const isAddingUser = ref(false)
+const newUser = ref({ name: '', email: '' })
+
 const fetchUsers = async () => {
   isLoading.value = true
   try {
@@ -195,6 +229,26 @@ const fetchUsers = async () => {
     console.error('Error fetching users:', error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const closeAddModal = () => {
+  showAddModal.value = false
+  newUser.value = { name: '', email: '' }
+}
+
+const addUser = async () => {
+  if (!newUser.value.name || !newUser.value.email) return
+
+  isAddingUser.value = true
+  try {
+    await api.post('/users', newUser.value)
+    closeAddModal()
+    fetchUsers()
+  } catch (error) {
+    console.error('Error adding user:', error)
+  } finally {
+    isAddingUser.value = false
   }
 }
 
