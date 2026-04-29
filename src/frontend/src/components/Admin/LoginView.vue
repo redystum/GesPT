@@ -1,10 +1,10 @@
 <style scoped></style>
 
 <template>
-  <div class="grid grid-cols-1 gap-6 xl:grid-cols-3">
+  <div class="grid grid-cols-1 gap-6 xl:grid-cols-3 max-h-dvh">
     <div class="space-y-6 xl:col-span-1">
       <article
-        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
+        class="rounded-lg border h-full border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
       >
         <h2 class="mb-4 text-sm font-semibold uppercase tracking-[0.15em]">
           {{ $t('admin.rule_title') }}
@@ -69,10 +69,10 @@
     </div>
 
     <article
-      class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 overflow-hidden xl:col-span-2 flex flex-col"
+      class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 overflow-hidden xl:col-span-2 flex flex-col h-full max-h-[50dvh]"
     >
       <div
-        class="flex flex-col gap-4 border-b border-neutral-400 dark:border-neutral-600 p-5 sm:flex-row sm:items-center sm:justify-between"
+        class="flex flex-col gap-4 border-b border-neutral-400 dark:border-neutral-600 p-5 sm:flex-row sm:items-center sm:justify-between shrink-0"
       >
         <div>
           <h2 class="text-lg font-semibold">{{ $t('admin.whitelist_title') }}</h2>
@@ -96,11 +96,11 @@
         </div>
       </div>
 
-      <div class="overflow-x-auto flex-1">
+      <div class="overflow-auto min-h-0 flex-1 relative">
         <table class="w-full text-left min-w-155 whitespace-nowrap">
-          <thead>
+          <thead class="sticky top-0 z-10">
             <tr
-              class="border-b border-neutral-200 dark:border-neutral-800 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-neutral-800/50"
+              class="border-b border-neutral-200 dark:border-neutral-800 text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400 bg-neutral-50 dark:bg-[#1a1a1a]"
             >
               <th class="px-5 py-3">{{ $t('admin.table_identifier') }}</th>
               <th class="px-5 py-3">{{ $t('admin.table_role') }}</th>
@@ -155,15 +155,23 @@
       </div>
 
       <div
-        class="flex items-center justify-between border-t border-neutral-400 dark:border-neutral-600 p-4 text-xs mt-auto"
+        class="flex items-center justify-between border-t border-neutral-400 dark:border-neutral-600 p-4 text-xs shrink-0"
       >
-        <span>{{ $t('admin.table_count') }}</span>
+        <span>{{ $t('admin.table_count_dynamic', { start: pagination.from || 0, end: pagination.to || 0, total: pagination.total || 0 }) }}</span>
         <div class="flex items-center gap-3">
-          <button class="transition-colors" disabled>
+          <button
+            class="transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="!pagination.prev_page_url"
+            @click="fetchPage(pagination.current_page - 1)"
+          >
             <font-awesome-icon :icon="['fas', 'chevron-left']" class="text-[10px]" />
             {{ $t('common.previous') }}
           </button>
-          <button class="transition-colors">
+          <button
+            class="transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            :disabled="!pagination.next_page_url"
+            @click="fetchPage(pagination.current_page + 1)"
+          >
             {{ $t('common.next') }}
             <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-[10px]" />
           </button>
@@ -172,7 +180,7 @@
     </article>
 
     <!-- Add User Modal -->
-    <div v-if="showAddModal" @click.self="closeAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div v-if="showAddModal" @mousedown.self="closeAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div class="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-md border border-neutral-200 dark:border-neutral-800 flex flex-col">
         <div class="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
           <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{{ $t('admin.add_user_title') }}</h3>
@@ -251,16 +259,62 @@ const isAddingUser = ref(false)
 const newUser = ref({ name: '', email: '', type: 'remote', password: '', password_confirmation: '' })
 const errors = ref({})
 
-const fetchUsers = async () => {
+const pagination = ref({
+  current_page: 1,
+  last_page: 1,
+  per_page: 15,
+  total: 0,
+  from: 0,
+  to: 0,
+  prev_page_url: null,
+  next_page_url: null,
+})
+
+const fetchUsers = async (page = 1) => {
   isLoading.value = true
   try {
-    const url = searchQuery.value ? `/users?search=${encodeURIComponent(searchQuery.value)}` : '/users'
+    let url = `/users?page=${page}`
+    if (searchQuery.value) {
+      url += `&search=${encodeURIComponent(searchQuery.value)}`
+    }
     const response = await api.get(url)
     users.value = response.data.data || []
+
+    // Update pagination metadata from Laravel response
+    if (response.data.meta) {
+        pagination.value = {
+            current_page: response.data.meta.current_page,
+            last_page: response.data.meta.last_page,
+            per_page: response.data.meta.per_page,
+            total: response.data.meta.total,
+            from: response.data.meta.from,
+            to: response.data.meta.to,
+            prev_page_url: response.data.links?.prev,
+            next_page_url: response.data.links?.next,
+        }
+    } else {
+        // Fallback if the response doesn't have meta/links wrapped
+        pagination.value = {
+            current_page: response.data.current_page || 1,
+            last_page: response.data.last_page || 1,
+            per_page: response.data.per_page || 15,
+            total: response.data.total || users.value.length,
+            from: response.data.from || (users.value.length ? 1 : 0),
+            to: response.data.to || users.value.length,
+            prev_page_url: response.data.prev_page_url,
+            next_page_url: response.data.next_page_url,
+        }
+    }
   } catch (error) {
     console.error('Error fetching users:', error)
   } finally {
     isLoading.value = false
+  }
+}
+
+const fetchPage = (page) => {
+  if (page >= 1 && page <= pagination.value.last_page) {
+    fetchUsers(page)
   }
 }
 
@@ -303,7 +357,7 @@ watch(searchQuery, () => {
     clearTimeout(searchTimeout)
   }
   searchTimeout = setTimeout(() => {
-    fetchUsers()
+    fetchUsers(1) // Reset to page 1 on new search
   }, 300) // 300ms debounce
 })
 

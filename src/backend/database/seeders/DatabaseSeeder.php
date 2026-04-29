@@ -37,6 +37,8 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
+        User::factory(150)->create();
+
 
         // TODO: replace insert to updateOrCreate so it does not break the db ex:
         /*
