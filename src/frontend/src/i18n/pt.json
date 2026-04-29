@@ -32,7 +32,8 @@
     "next_page": "Seguinte",
     "yes": "Sim",
     "no": "Não",
-    "na": "N/D"
+    "na": "N/D",
+    "cancel": "Cancelar"
   },
   "states": {
     "empty_title": "Sem resultados"
@@ -96,7 +97,17 @@
     "no_users": "Nenhum utilizador encontrado.",
     "loading_users": "A carregar utilizadores...",
     "save": "Guardar",
-    "saving": "A guardar..."
+    "saving": "A guardar...",
+    "add_user_title": "Adicionar Novo Utilizador",
+    "add_user_name": "Nome",
+    "add_user_email": "Email",
+    "add_user_type": "Tipo de Conta",
+    "add_user_type_remote": "Remota (SSO)",
+    "add_user_type_local": "Local",
+    "add_user_password": "Palavra-passe",
+    "add_user_password_confirm": "Confirmar Palavra-passe",
+    "add_user_password_mismatch": "As palavras-passe não coincidem",
+    "add_user_error_general": "Ocorreu um erro inesperado. Por favor, tente novamente."
   },
   "compare": {
     "kicker": "Análise Curricular",

@@ -120,7 +120,7 @@
                 <div class="flex items-center gap-2">
                   <p class="font-semibold text-neutral-900 dark:text-neutral-100">{{ user.name }}</p>
                   <span v-if="user.type === 'local'" class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
-                    Local
+                    {{ $t('admin.add_user_type_local') }}
                   </span>
                 </div>
                 <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
@@ -175,7 +175,7 @@
     <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div class="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-md border border-neutral-200 dark:border-neutral-800 flex flex-col">
         <div class="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
-          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">Add New User</h3>
+          <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{{ $t('admin.add_user_title') }}</h3>
           <button @click="closeAddModal" class="cursor-pointer text-neutral-500 hover:text-neutral-700 dark:hover:text-neutral-300">
             <span class="text-xl leading-none">&times;</span>
           </button>
@@ -185,37 +185,37 @@
             {{ errors.general }}
           </div>
           <div>
-            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Name</label>
+            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">{{ $t('admin.add_user_name') }}</label>
             <input v-model="newUser.name" @keydown.enter="addUser" type="text" placeholder="João Pedro" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.name}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
             <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name[0] }}</p>
           </div>
           <div>
-            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Email</label>
+            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">{{ $t('admin.add_user_email') }}</label>
             <input v-model="newUser.email" @keydown.enter="addUser" type="email" placeholder="joao.pedro@ipleiria.pt" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.email}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
             <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email[0] }}</p>
           </div>
           <div>
-            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Account Type</label>
+            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">{{ $t('admin.add_user_type') }}</label>
             <select v-model="newUser.type" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.type}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20">
-              <option value="remote">Remote (SSO)</option>
-              <option value="local">Local</option>
+              <option value="remote">{{ $t('admin.add_user_type_remote') }}</option>
+              <option value="local">{{ $t('admin.add_user_type_local') }}</option>
             </select>
             <p v-if="errors.type" class="text-red-500 text-xs mt-1">{{ errors.type[0] }}</p>
           </div>
           <div v-if="newUser.type === 'local'" class="space-y-5">
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Password</label>
+              <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">{{ $t('admin.add_user_password') }}</label>
               <input v-model="newUser.password" @keydown.enter="addUser" type="password" placeholder="••••••••" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.password}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
               <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password[0] }}</p>
             </div>
             <div>
-              <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Confirm Password</label>
+              <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">{{ $t('admin.add_user_password_confirm') }}</label>
               <input v-model="newUser.password_confirmation" @keydown.enter="addUser" type="password" placeholder="••••••••" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
             </div>
           </div>
         </div>
         <div class="flex items-center justify-end gap-3 p-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 rounded-b-lg">
-          <button @click="closeAddModal" class="px-4 py-2 text-sm font-semibold transition-colors text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 cursor-pointer">Cancel</button>
+          <button @click="closeAddModal" class="px-4 py-2 text-sm font-semibold transition-colors text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 cursor-pointer">{{ $t('common.cancel') }}</button>
           <button @click="addUser" :disabled="isAddingUser" class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <span v-if="isAddingUser">{{ $t('admin.saving') }}</span>
             <span v-else>{{ $t('admin.save') }}</span>

@@ -32,7 +32,8 @@
     "next_page": "Next",
     "yes": "Yes",
     "no": "No",
-    "na": "N/A"
+    "na": "N/A",
+    "cancel": "Cancel"
   },
   "states": {
     "empty_title": "No results"
@@ -93,7 +94,20 @@
     "no_users": "No users found.",
     "loading_users": "Loading users...",
     "save": "Save",
-    "saving": "Saving..."
+    "saving": "Saving...",
+    "whitelist_search": "Search by name or email",
+    "add_user_title": "Add New User",
+    "add_user_name": "Name",
+    "add_user_email": "Email",
+    "add_user_type": "Account Type",
+    "add_user_type_remote": "Remote (SSO)",
+    "add_user_type_local": "Local",
+    "add_user_password": "Password",
+    "add_user_password_confirm": "Confirm Password",
+    "add_user_password_mismatch": "Passwords do not match",
+    "add_user_error_general": "An unexpected error occurred. Please try again.",
+    "rule_title": "Authentication Validation Rules",
+    "rule_pattern_label": "Validation Regex Pattern"
   },
   "compare": {
     "kicker": "Curriculum Analysis",
