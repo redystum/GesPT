@@ -15,6 +15,8 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+Route::post('login', [UserController::class, 'login']);
+
 Route::get('/compare', [EquivalencesController::class, 'compare']);
 
 // Routes for courses

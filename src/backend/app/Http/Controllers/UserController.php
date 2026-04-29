@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\LoginRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Requests\StoreUserRequest;
@@ -51,5 +52,29 @@ class UserController extends Controller
         return response()->json([
             'message' => 'User eliminado com sucesso!',
         ], 200);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $request->validated();
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user && $user->type === User::USER_TYPE_LOCAL){
+            if (auth()->attempt($request->only('email', 'password'), $request->remember)) {
+                $token = $user->createToken('auth_token')->plainTextToken;
+                return response()->json([
+                    'message' => 'Login successful',
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                ], 200);
+            }
+        }
+
+        // TODO: request ipleiria
+
+        return response()->json([
+            'message' => 'Invalid credentials',
+        ], 401);
     }
 }
