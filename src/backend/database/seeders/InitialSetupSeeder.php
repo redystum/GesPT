@@ -2,7 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Role;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,13 +15,24 @@ class InitialSetupSeeder extends Seeder
      */
     public function run(): void
     {
-        User::firstOrCreate(
+        $user = User::firstOrCreate(
             ['email' => 'admin@gespt.local'],
             [
                 'name' => 'Admin',
                 'email' => 'admin@gespt.local',
+                'type' => 'local',
                 'password' => bcrypt('admin123'),
             ]
+        );
+
+        $role = Role::firstOrCreate(
+            ['nome' => 'Admin'],
+            ['nome' => 'Admin', 'descricao' => 'Administrador do sistema']
+        );
+
+        UserRole::firstOrCreate(
+            ['id_user' => $user->id, 'id_role' => $role->id],
+            ['id_user' => $user->id, 'id_role' => $role->id]
         );
 
     }

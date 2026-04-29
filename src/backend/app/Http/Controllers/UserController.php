@@ -11,7 +11,7 @@ use App\Http\Resources\UserResource;
 class UserController extends Controller
 {
     public function index(Request $request){
-        $users = User::with('permissoes')
+        $users = User::with('roles')
             ->when($request->has('search'), function ($query) use ($request) {
                 $search = $request->input('search');
                 $query->where('name', 'like', "%{$search}%")

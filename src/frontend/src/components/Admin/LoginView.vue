@@ -117,16 +117,23 @@
           <tbody class="divide-y divide-neutral-200 dark:divide-neutral-800 text-sm" v-else-if="users.length > 0">
             <tr v-for="user in users" :key="user.id" class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
               <td class="px-5 py-4">
-                <p class="font-semibold text-neutral-900 dark:text-neutral-100">{{ user.name }}</p>
+                <div class="flex items-center gap-2">
+                  <p class="font-semibold text-neutral-900 dark:text-neutral-100">{{ user.name }}</p>
+                  <span v-if="user.type === 'local'" class="inline-flex items-center rounded-md px-1.5 py-0.5 text-[10px] font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400">
+                    Local
+                  </span>
+                </div>
                 <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-0.5">
                   {{ user.email }}
                 </p>
               </td>
               <td class="px-5 py-4">
                 <span
+                  v-for="role in user.roles"
+                  v-bind:key="role.id"
                   class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300"
-                  >{{ user.role }}</span
-                >
+                  >{{ role.nome }}
+                </span>
               </td>
               <td class="px-5 py-4 text-right">
                 <button
@@ -174,18 +181,42 @@
           </button>
         </div>
         <div class="p-5 space-y-5">
+          <div v-if="errors.general" class="p-3 bg-red-100 border border-red-200 text-red-700 rounded-md text-sm">
+            {{ errors.general }}
+          </div>
           <div>
             <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Name</label>
-            <input v-model="newUser.name" type="text" placeholder="João Pedro" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+            <input v-model="newUser.name" @keydown.enter="addUser" type="text" placeholder="João Pedro" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.name}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+            <p v-if="errors.name" class="text-red-500 text-xs mt-1">{{ errors.name[0] }}</p>
           </div>
           <div>
             <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Email</label>
-            <input v-model="newUser.email" type="email" placeholder="joao.pedro@ipleiria.pt" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+            <input v-model="newUser.email" @keydown.enter="addUser" type="email" placeholder="joao.pedro@ipleiria.pt" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.email}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+            <p v-if="errors.email" class="text-red-500 text-xs mt-1">{{ errors.email[0] }}</p>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Account Type</label>
+            <select v-model="newUser.type" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.type}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20">
+              <option value="remote">Remote (SSO)</option>
+              <option value="local">Local</option>
+            </select>
+            <p v-if="errors.type" class="text-red-500 text-xs mt-1">{{ errors.type[0] }}</p>
+          </div>
+          <div v-if="newUser.type === 'local'" class="space-y-5">
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Password</label>
+              <input v-model="newUser.password" @keydown.enter="addUser" type="password" placeholder="••••••••" :class="{'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.password}" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+              <p v-if="errors.password" class="text-red-500 text-xs mt-1">{{ errors.password[0] }}</p>
+            </div>
+            <div>
+              <label class="block text-xs font-semibold uppercase tracking-[0.12em] mb-2 text-neutral-700 dark:text-neutral-300">Confirm Password</label>
+              <input v-model="newUser.password_confirmation" @keydown.enter="addUser" type="password" placeholder="••••••••" class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20" />
+            </div>
           </div>
         </div>
         <div class="flex items-center justify-end gap-3 p-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 rounded-b-lg">
           <button @click="closeAddModal" class="px-4 py-2 text-sm font-semibold transition-colors text-neutral-600 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 cursor-pointer">Cancel</button>
-          <button @click="addUser" :disabled="isAddingUser || !newUser.name || !newUser.email" class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
+          <button @click="addUser" :disabled="isAddingUser" class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer">
             <span v-if="isAddingUser">{{ $t('admin.saving') }}</span>
             <span v-else>{{ $t('admin.save') }}</span>
           </button>
@@ -217,7 +248,8 @@ let searchTimeout = null
 
 const showAddModal = ref(false)
 const isAddingUser = ref(false)
-const newUser = ref({ name: '', email: '' })
+const newUser = ref({ name: '', email: '', type: 'remote', password: '', password_confirmation: '' })
+const errors = ref({})
 
 const fetchUsers = async () => {
   isLoading.value = true
@@ -234,19 +266,33 @@ const fetchUsers = async () => {
 
 const closeAddModal = () => {
   showAddModal.value = false
-  newUser.value = { name: '', email: '' }
+  newUser.value = { name: '', email: '', type: 'remote', password: '', password_confirmation: '' }
+  errors.value = {}
 }
 
 const addUser = async () => {
-  if (!newUser.value.name || !newUser.value.email) return
-
   isAddingUser.value = true
+  errors.value = {}
   try {
-    await api.post('/users', newUser.value)
+    const payload = { ...newUser.value }
+    if (payload.type === 'remote') {
+      delete payload.password
+      delete payload.password_confirmation
+    }
+
+    await api.post('/users', payload)
     closeAddModal()
     fetchUsers()
   } catch (error) {
-    console.error('Error adding user:', error)
+    if (error.response && error.response.status === 422) {
+      errors.value = error.response.data.errors || {}
+      if (error.response.data.message && !error.response.data.errors) {
+         errors.value = { general: error.response.data.message }
+      }
+    } else {
+      errors.value = { general: 'An unexpected error occurred. Please try again.' }
+      console.error('Error adding user:', error)
+    }
   } finally {
     isAddingUser.value = false
   }
