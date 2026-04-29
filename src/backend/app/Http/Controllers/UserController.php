@@ -18,9 +18,7 @@ class UserController extends Controller
                       ->orWhere('email', 'like', "%{$search}%");
             })
             ->paginate(50);
-        return response()->json([
-            'data' => UserResource::collection($users),
-        ], 200);
+        return UserResource::collection($users);
     }
 
     public function show(User $user){

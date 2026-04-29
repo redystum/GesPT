@@ -160,7 +160,7 @@
         <span>{{ $t('admin.table_count_dynamic', { start: pagination.from || 0, end: pagination.to || 0, total: pagination.total || 0 }) }}</span>
         <div class="flex items-center gap-3">
           <button
-            class="transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             :disabled="!pagination.prev_page_url"
             @click="fetchPage(pagination.current_page - 1)"
           >
@@ -168,11 +168,11 @@
             {{ $t('common.previous') }}
           </button>
           <button
-            class="transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            class="transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             :disabled="!pagination.next_page_url"
             @click="fetchPage(pagination.current_page + 1)"
           >
-            {{ $t('common.next') }}
+            {{ $t('common.next_page') }}
             <font-awesome-icon :icon="['fas', 'chevron-right']" class="text-[10px]" />
           </button>
         </div>
