@@ -172,7 +172,7 @@
     </article>
 
     <!-- Add User Modal -->
-    <div v-if="showAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+    <div v-if="showAddModal" @click.self="closeAddModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
       <div class="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-md border border-neutral-200 dark:border-neutral-800 flex flex-col">
         <div class="flex items-center justify-between p-4 border-b border-neutral-200 dark:border-neutral-800">
           <h3 class="text-lg font-semibold text-neutral-900 dark:text-neutral-100">{{ $t('admin.add_user_title') }}</h3>
