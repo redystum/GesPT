@@ -45,7 +45,9 @@
     "email": "Email Institucional",
     "password": "Palavra-passe",
     "submit": "Iniciar sessão",
-    "forgot": "Esqueceu-se da palavra-passe?"
+    "forgot": "Esqueceu-se da palavra-passe?",
+    "remember": "Lembrar-me",
+    "error": "Email ou palavra-passe inválidos. Por favor, tente novamente."
   },
   "home": {
     "kicker": "Gestão Académica",

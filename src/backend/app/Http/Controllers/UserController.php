@@ -57,6 +57,7 @@ class UserController extends Controller
     public function login(LoginRequest $request)
     {
         $request->validated();
+        dd($request->all());
 
         $user = User::where('email', $request->email)->first();
 

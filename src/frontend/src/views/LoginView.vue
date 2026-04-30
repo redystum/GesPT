@@ -16,6 +16,21 @@
           <p class="mt-2 text-sm">{{ $t('login.message') }}</p>
         </div>
 
+        <div v-if="hasError" class="mb-6 rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800/50 transition-all">
+          <div class="flex">
+            <div class="flex-shrink-0">
+              <svg class="h-5 w-5 text-red-400 dark:text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.28 7.22a.75.75 0 00-1.06 1.06L8.94 10l-1.72 1.72a.75.75 0 101.06 1.06L10 11.06l1.72 1.72a.75.75 0 101.06-1.06L11.06 10l1.72-1.72a.75.75 0 00-1.06-1.06L10 8.94 8.28 7.22z" clip-rule="evenodd" />
+              </svg>
+            </div>
+            <div class="ml-3">
+              <p class="text-sm font-medium text-red-800 dark:text-red-200">
+                {{ $t('login.error') }}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <form class="space-y-5" @submit.prevent="handleLogin">
           <div>
             <label for="email" class="mb-1.5 block text-sm font-semibold">
@@ -25,6 +40,7 @@
               id="email"
               type="email"
               required
+              v-model="email"
               class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
               placeholder="...@ipleiria.pt"
             />
@@ -43,14 +59,27 @@
               id="password"
               type="password"
               required
+              v-model="password"
               class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
               placeholder="••••••••••••"
             />
           </div>
 
+          <div class="flex items-center">
+            <input
+              id="remember_me"
+              type="checkbox"
+              v-model="rememberMe"
+              class="h-4 w-4 cursor-pointer rounded border-neutral-200 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a] text-neutral-900 focus:ring-2 focus:ring-neutral-500/20"
+            />
+            <label for="remember_me" class="cursor-pointer ml-2 block text-sm">
+              {{ $t('login.remember') }}
+            </label>
+          </div>
+
           <button
             type="submit"
-            class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 w-full"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 w-full"
           >
             {{ $t('login.submit') }}
           </button>
@@ -61,11 +90,32 @@
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
+import axios from 'axios'
 
 const router = useRouter()
 
-const handleLogin = () => {
-  router.push('/')
+const email = ref('')
+const password = ref('')
+const rememberMe = ref(false)
+const hasError = ref(false)
+
+const handleLogin = async () => {
+  hasError.value = false
+  try {
+    const response = await axios.post('/api/login', {
+      email: email.value,
+      password: password.value,
+      remember: rememberMe.value
+    })
+    console.log('Login successful:', response.data)
+    // Redirect to home or dashboard on successful login
+    router.push('/')
+  } catch (error) {
+    console.error('Login failed:', error.response ? error.response.data : error.message)
+    // Display the error message in the UI
+    hasError.value = true
+  }
 }
 </script>

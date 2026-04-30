@@ -45,7 +45,9 @@
     "email": "Institutional Email",
     "password": "Password",
     "submit": "Sign in",
-    "forgot": "Forgot password?"
+    "forgot": "Forgot password?",
+    "remember": "Remember me",
+    "error": "Invalid email or password. Please try again."
   },
   "home": {
     "kicker": "Academic Management",
