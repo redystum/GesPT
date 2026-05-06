@@ -43,9 +43,12 @@ Route::apiResource('users', UserController::class);
 Route::post('wizard', [WizardController::class, 'store']);
 
 // route for testing admin regex builder
-Route::name('admin.')->prefix('admin')->group(function () {
-    Route::post('regex/test', [LoginController::class, 'testRegex']);
-    Route::post('regex/update', [LoginController::class, 'updateRegex']);
+Route::prefix('admin')->group(function () {
+    Route::prefix('regex/')->group(function () {
+        Route::post('test', [LoginController::class, 'testRegex']);
+        Route::post('update', [LoginController::class, 'updateRegex']);
+        Route::get('get', [LoginController::class, 'get']);
+    });
 
 });
 

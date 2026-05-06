@@ -72,7 +72,15 @@
 
         <div class="flex flex-wrap items-center gap-3 mt-6">
           <button
-            class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300"
+            class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800"
+            @click="discardChanges"
+            :disabled="isDiscarding"
+          >
+            <span v-if="isDiscarding">{{ $t('common.loading') || 'Loading...' }}</span>
+            <span v-else>{{ $t('common.discard') }}</span>
+          </button>
+          <button
+            class="cursor-pointer inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300"
             @click="saveRegex"
             :disabled="isSavingRegex"
           >
@@ -264,6 +272,7 @@ const regexError = ref('')
 const backendRegex = ref('')
 
 const isSavingRegex = ref(false)
+const isDiscarding = ref(false)
 
 const showTooltip = ref(false)
 const tooltipContainer = ref(null)
@@ -438,8 +447,10 @@ const saveRegex = async () => {
   isSavingRegex.value = true
   regexError.value = ''
   try {
+    const lines = rule_behavior.value.split('\n').filter(line => line.trim() !== '')
     await api.post('/admin/regex/update', {
-      regex: regex_pattern.value
+      regex: regex_pattern.value,
+      test_subjects: lines
     })
     // Optional: show a success message or toast here
   } catch (error) {
@@ -452,6 +463,32 @@ const saveRegex = async () => {
     }
   } finally {
     isSavingRegex.value = false
+  }
+}
+
+const discardChanges = async () => {
+  isDiscarding.value = true
+  regexError.value = ''
+  try {
+    const response = await api.get('/admin/regex/get')
+    if (response.data.regex !== undefined) {
+      regex_pattern.value = response.data.regex
+    }
+    if (response.data.test_subjects !== undefined) {
+      if (Array.isArray(response.data.test_subjects)) {
+        rule_behavior.value = response.data.test_subjects.join('\n')
+      } else {
+        rule_behavior.value = response.data.test_subjects
+      }
+    }
+  } catch (error) {
+    if (error.response?.data?.message) {
+      regexError.value = error.response.data.message
+    } else {
+      regexError.value = 'Failed to discard changes.'
+    }
+  } finally {
+    isDiscarding.value = false
   }
 }
 
