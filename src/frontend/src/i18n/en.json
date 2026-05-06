@@ -109,7 +109,8 @@
     "add_user_password_mismatch": "Passwords do not match",
     "add_user_error_general": "An unexpected error occurred. Please try again.",
     "rule_title": "Authentication Validation Rules",
-    "rule_pattern_label": "Validation Regex Pattern"
+    "rule_pattern_label": "Validation Regex Pattern",
+    "final_regex": "Final Regex"
   },
   "compare": {
     "kicker": "Curriculum Analysis",

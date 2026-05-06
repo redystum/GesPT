@@ -35,8 +35,12 @@
         <input
           type="text"
           v-model="regex_pattern"
-          class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 mb-4 font-mono text-xs"
+          class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20 mb-1 font-mono text-xs"
         />
+        <div v-if="backendRegex" class="text-xs text-neutral-500 dark:text-neutral-400 mb-4 font-mono">
+          <p>{{ $t('admin.final_regex') }}: </p>
+          <p>{{ backendRegex }}</p>
+        </div>
 
         <div>
           <label class="mb-2 block text-xs font-semibold uppercase tracking-[0.12em]">
@@ -63,7 +67,18 @@
         </div>
 
         <div v-if="!isRegexValid" class="text-red-500 text-xs mt-2">
-          {{ $t('admin.invalid_regex_warning') }}
+          {{ regexError || $t('admin.invalid_regex_warning') }}
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3 mt-6">
+          <button
+            class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300"
+            @click="saveRegex"
+            :disabled="isSavingRegex"
+          >
+            <span v-if="isSavingRegex">{{ $t('admin.saving') || 'Saving...' }}</span>
+            <span v-else>{{ $t('admin.save_configuration') }}</span>
+          </button>
         </div>
       </article>
     </div>
@@ -245,6 +260,10 @@ const rule_behavior = ref(
 const validationResults = ref([])
 const regex_pattern = ref('^[a-zA-Z0-9._%+-]+@ipleiria.pt$')
 const isRegexValid = ref(true)
+const regexError = ref('')
+const backendRegex = ref('')
+
+const isSavingRegex = ref(false)
 
 const showTooltip = ref(false)
 const tooltipContainer = ref(null)
@@ -367,6 +386,75 @@ const handleClickOutside = (event) => {
   }
 }
 
+let validateTimeout = null
+const validateLines = () => {
+  if (validateTimeout) clearTimeout(validateTimeout)
+  validateTimeout = setTimeout(async () => {
+    isRegexValid.value = true
+    regexError.value = ''
+    try {
+      const allLines = rule_behavior.value.split('\n')
+      const lines = allLines.filter(line => line.trim() !== '')
+      if (!regex_pattern.value) {
+        validationResults.value = []
+        backendRegex.value = ''
+        return
+      }
+      if (lines.length === 0) {
+        validationResults.value = allLines.map(() => false)
+        return
+      }
+
+      const response = await api.post('/admin/regex/test', {
+        regex: regex_pattern.value,
+        test_subjects: lines
+      })
+
+      backendRegex.value = response.data.regex
+
+      const resultMap = Object.fromEntries(
+        (response.data.results || []).map(r => [r.subject, r.valid])
+      )
+
+      validationResults.value = allLines.map(line => {
+        if (line.trim() === '') return false
+        return !!resultMap[line]
+      })
+    } catch (error) {
+      isRegexValid.value = false
+      validationResults.value = []
+      backendRegex.value = ''
+
+      if (error.response?.data?.errors?.regex) {
+        regexError.value = error.response.data.errors.regex[0]
+      } else if (error.response?.data?.message) {
+        regexError.value = error.response.data.message
+      }
+    }
+  }, 300)
+}
+
+const saveRegex = async () => {
+  isSavingRegex.value = true
+  regexError.value = ''
+  try {
+    await api.post('/admin/regex/update', {
+      regex: regex_pattern.value
+    })
+    // Optional: show a success message or toast here
+  } catch (error) {
+    if (error.response?.data?.errors?.regex) {
+      regexError.value = error.response.data.errors.regex[0]
+    } else if (error.response?.data?.message) {
+      regexError.value = error.response.data.message
+    } else {
+      regexError.value = 'Failed to save configuration.'
+    }
+  } finally {
+    isSavingRegex.value = false
+  }
+}
+
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   fetchUsers()
@@ -377,17 +465,6 @@ onUnmounted(() => {
   if (searchTimeout) clearTimeout(searchTimeout)
 })
 
-const validateLines = () => {
-  try {
-    const regex = new RegExp(regex_pattern.value)
-    isRegexValid.value = true
-    const lines = rule_behavior.value.split('\n')
-    validationResults.value = lines.map((line) => regex.test(line))
-  } catch {
-    isRegexValid.value = false
-    validationResults.value = []
-  }
-}
 
 validateLines()
 

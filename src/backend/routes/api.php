@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EquivalencesController;
 use App\Http\Controllers\CompareController;
@@ -40,6 +41,13 @@ Route::apiResource('users', UserController::class);
 
 // Route for wizard
 Route::post('wizard', [WizardController::class, 'store']);
+
+// route for testing admin regex builder
+Route::name('admin.')->prefix('admin')->group(function () {
+    Route::post('regex/test', [LoginController::class, 'testRegex']);
+    Route::post('regex/update', [LoginController::class, 'updateRegex']);
+
+});
 
 Route::any('/', function () {
     $routes = collect(Route::getRoutes())->map(function ($route) {

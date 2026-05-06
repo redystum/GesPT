@@ -18,19 +18,6 @@
           {{ $t('admin.subtitle') }}
         </p>
       </div>
-
-      <div class="flex flex-wrap items-center gap-3">
-        <button
-          class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-        >
-          {{ $t('common.discard') }}
-        </button>
-        <button
-          class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300"
-        >
-          {{ $t('admin.save_configuration') }}
-        </button>
-      </div>
     </div>
 
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-[16rem_1fr]">
