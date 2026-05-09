@@ -90,11 +90,11 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
-import axios from 'axios'
 
 const router = useRouter()
+const api = inject('api')
 
 const email = ref('')
 const password = ref('')
@@ -104,7 +104,7 @@ const hasError = ref(false)
 const handleLogin = async () => {
   hasError.value = false
   try {
-    const response = await axios.post('/api/login', {
+    const response = await api.post('/login', {
       email: email.value,
       password: password.value,
       remember: rememberMe.value

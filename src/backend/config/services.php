@@ -31,4 +31,8 @@ return [
         ],
     ],
 
+    'ipleiria' => [
+        'auth' => env('IPLEIRIA_AUTH_URL'),
+    ]
+
 ];

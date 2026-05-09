@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\PermitionsController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EquivalencesController;
 use App\Http\Controllers\OpcoesController;
@@ -17,7 +18,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('login', [UserController::class, 'login']);
+Route::post('login', [AuthController::class, 'login']);;
 
 Route::get('/compare', [EquivalencesController::class, 'compare']);
 
