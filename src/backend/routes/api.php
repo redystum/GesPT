@@ -3,8 +3,7 @@
 use App\Http\Controllers\Admin\LoginController;
 use App\Http\Controllers\Admin\PermitionsController;
 use App\Http\Controllers\Admin\RolesController;
-use app\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\CompareController;
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EquivalencesController;
 use App\Http\Controllers\OpcoesController;
@@ -38,14 +37,13 @@ Route::apiResource('ucs', UnidadeCurricularController::class);
 Route::apiResource('opcoes', OpcoesController::class)
     ->parameters(['opcoes' => 'opcoao']);
 
-// Routes for Users TODO: mover para admin
-Route::apiResource('users', UserController::class);
-
 // Route for wizard
 Route::post('wizard', [WizardController::class, 'store']);
 
 // route for testing admin regex builder
 Route::prefix('admin')->group(function () {
+    Route::apiResource('users', UserController::class);
+
     Route::prefix('regex/')->group(function () {
         Route::post('test', [LoginController::class, 'testRegex']);
         Route::post('update', [LoginController::class, 'updateRegex']);
