@@ -126,12 +126,13 @@
             <tr class="text-xs font-semibold uppercase tracking-wider text-neutral-500 dark:text-neutral-400">
               <th class="px-6 py-4">{{ $t('admin.table_identifier') }}</th>
               <th class="px-6 py-4">{{ $t('admin.table_role') }}</th>
+              <th class="px-6 py-4">{{ $t('admin.table_custom_permissions') || 'Custom Permissions' }}</th>
               <th class="px-6 py-4 text-right">{{ $t('admin.table_actions') }}</th>
             </tr>
           </thead>
           <tbody v-if="isLoading" class="divide-y divide-neutral-100 dark:divide-neutral-800">
             <tr>
-              <td colspan="3" class="px-6 py-12 text-center text-neutral-500 dark:text-neutral-400">
+              <td colspan="4" class="px-6 py-12 text-center text-neutral-500 dark:text-neutral-400">
                 <font-awesome-icon :icon="['fas', 'spinner']" spin class="mr-2 text-neutral-400" />
                 {{ $t('admin.loading_users') }}
               </td>
@@ -165,6 +166,18 @@
                   </span>
                 </div>
               </td>
+              <td class="px-6 py-3.5">
+                <span 
+                  class="font-medium"
+                  :class="[
+                    (user.permissoes_personalizadas ?? user.custom_permissions ?? 0) === 0 
+                      ? 'opacity-40 text-neutral-500' 
+                      : 'text-neutral-900 dark:text-neutral-100'
+                  ]"
+                >
+                  {{ user.permissoes_personalizadas ?? user.custom_permissions ?? 0 }}
+                </span>
+              </td>
               <td class="px-6 py-3.5 text-right">
                 <button
                   class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
@@ -176,7 +189,7 @@
           </tbody>
           <tbody v-else class="divide-y divide-neutral-100 dark:divide-neutral-800">
             <tr>
-              <td colspan="3" class="px-6 py-12 text-center text-neutral-500 dark:text-neutral-400">
+              <td colspan="4" class="px-6 py-12 text-center text-neutral-500 dark:text-neutral-400">
                 {{ $t('admin.no_users') }}
               </td>
             </tr>

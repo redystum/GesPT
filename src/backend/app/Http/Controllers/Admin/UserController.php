@@ -6,14 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
-use App\Http\Resources\UserResource;
+use App\Http\Resources\Admin\UserResource;
 use App\Models\User;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
     public function index(Request $request){
-        $users = User::with('roles')
+        $users = User::with(['roles', 'permissoes'])
             ->when($request->has('search'), function ($query) use ($request) {
                 $search = $request->input('search');
                 $query->where('name', 'like', "%{$search}%")

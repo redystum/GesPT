@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace app\Http\Resources\Admin;
 
+use App\Http\Resources\RoleResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -20,6 +21,7 @@ class UserResource extends JsonResource
             'email' => $this->email,
             'type' => $this->type,
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
+            'custom_permissions' => $this->relationLoaded('permissoes') ? $this->permissoes->count() : 0
         ];
     }
 }

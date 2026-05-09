@@ -51,9 +51,9 @@ class User extends Authenticatable
         ];
     }
 
-    public function permissoes(): HasMany
+    public function permissoes(): HasManyThrough
     {
-        return $this->hasMany(UserPermissoes::class, 'id_user');
+        return $this->hasManyThrough(Permissoes::class, UserPermissoes::class, 'id_user', 'id', 'id', 'id_permissao');
     }
 
     public function roles(): HasManyThrough
