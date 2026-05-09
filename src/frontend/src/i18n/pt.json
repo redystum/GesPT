@@ -110,7 +110,9 @@
     "add_user_password_confirm": "Confirmar Palavra-passe",
     "add_user_password_mismatch": "As palavras-passe não coincidem",
     "add_user_error_general": "Ocorreu um erro inesperado. Por favor, tente novamente.",
-    "final_regex": "Regex final"
+    "final_regex": "Regex final",
+    "total_users": "utilizadores",
+    "of": "de"
   },
   "compare": {
     "kicker": "Análise Curricular",

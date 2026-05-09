@@ -110,7 +110,9 @@
     "add_user_error_general": "An unexpected error occurred. Please try again.",
     "rule_title": "Authentication Validation Rules",
     "rule_pattern_label": "Validation Regex Pattern",
-    "final_regex": "Final Regex"
+    "final_regex": "Final Regex",
+    "total_users": "users",
+    "of": "of"
   },
   "compare": {
     "kicker": "Curriculum Analysis",

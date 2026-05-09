@@ -1,85 +1,66 @@
 <template>
-  <div
-    class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up"
-  >
-    <div class="mb-8 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+  <div class="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-8 py-8 sm:py-10 animate-fade-in-up">
+    <header class="mb-8 md:flex md:items-end md:justify-between">
       <div>
-        <p
-          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
-        >
+        <p class="text-xs font-semibold uppercase tracking-widest text-neutral-500 dark:text-neutral-400">
           {{ $t('admin.kicker') }}
         </p>
-        <h1
-          class="text-2xl sm:text-3xl font-bold leading-tight text-neutral-900 dark:text-neutral-100 mt-2"
-        >
+        <h1 class="mt-2 text-2xl sm:text-3xl font-bold tracking-tight text-neutral-900 dark:text-neutral-100">
           {{ $t('admin.title') }}
         </h1>
         <p class="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">
           {{ $t('admin.subtitle') }}
         </p>
       </div>
-    </div>
+    </header>
 
-    <div class="grid grid-cols-1 gap-6 xl:grid-cols-[16rem_1fr]">
-      <aside
-        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-4 sm:p-5"
-      >
-        <nav class="space-y-1.5">
+    <div class="flex flex-col xl:flex-row gap-8 lg:gap-10">
+      <aside class="w-full xl:w-64 shrink-0 xl:border-r border-neutral-200 dark:border-neutral-800 xl:pr-8">
+        <nav class="flex xl:flex-col gap-2 overflow-x-auto pb-5 xl:pb-0 hide-scrollbar border-b border-neutral-200 dark:border-neutral-800 xl:border-b-0">
           <a
             href="#"
-            class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full"
-            >{{ $t('admin.menu_dashboard') }}</a
+            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
+            {{ $t('admin.menu_dashboard') }}
+          </a>
           <a
             href="#"
-            class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full"
-            >{{ $t('admin.menu_curriculum') }}</a
+            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
+            {{ $t('admin.menu_curriculum') }}
+          </a>
           <a
             href="#"
-            class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 text-neutral-900 dark:text-neutral-100 bg-neutral-200 dark:bg-neutral-800 w-full"
-            >{{ $t('admin.menu_auth') }}</a
+            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 shadow-sm border border-neutral-200 dark:border-neutral-800"
           >
+            {{ $t('admin.menu_auth') }}
+          </a>
           <a
             href="#"
-            class="inline-flex items-center rounded-md px-3 py-2 text-sm font-medium transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 w-full"
-            >{{ $t('admin.menu_audit') }}</a
+            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100"
           >
+            {{ $t('admin.menu_audit') }}
+          </a>
         </nav>
       </aside>
 
-      <section class="space-y-6">
+      <main class="flex-1 min-w-0">
         <LoginView />
-      </section>
+      </main>
     </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import LoginView from '@/components/Admin/LoginView.vue'
-
-export default {
-  components: { LoginView },
-  data() {
-    return {
-      rule_behavior: '', // Bind this to the textarea
-      regexPattern: /^[a-zA-Z0-9._%+-]+@ipleiria\.pt$/, // Example regex pattern
-      validationResults: [] // Store validation results for each line
-    }
-  },
-  watch: {
-    rule_behavior(newVal) {
-      this.validateLines(newVal)
-    }
-  },
-  methods: {
-    validateLines(text) {
-      const lines = text.split('\n')
-      this.validationResults = lines.map((line) => {
-        const regex = new RegExp(this.regexPattern)
-        return regex.test(line)
-      })
-    }
-  }
-}
 </script>
+
+<style scoped>
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+</style>
