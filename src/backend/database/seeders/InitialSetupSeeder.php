@@ -25,14 +25,13 @@ class InitialSetupSeeder extends Seeder
             ]
         );
 
-        $role = Role::firstOrCreate(
-            ['nome' => 'Admin'],
-            ['nome' => 'Admin', 'descricao' => 'Administrador do sistema']
-        );
+        $this->call([
+            PermissionsSeeder::class,
+        ]);
 
         UserRole::firstOrCreate(
-            ['id_user' => $user->id, 'id_role' => $role->id],
-            ['id_user' => $user->id, 'id_role' => $role->id]
+            ['id_user' => $user->id, 'id_role' => 1],
+            ['id_user' => $user->id, 'id_role' => 1]
         );
 
     }

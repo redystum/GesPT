@@ -11,13 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('permissions_category', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
-            $table->foreignId('id_permissao')->constrained('permissoes');
-            $table->foreignId('id_categoria')->constrained('categorias');
-
-
+        Schema::table('permissoes', function (Blueprint $table) {
+            $table->unsignedBigInteger('id_categoria')->nullable();
+            $table->foreign('id_categoria')->references('id')->on('categorias')->onDelete('set null');
         });
     }
 
@@ -26,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('role_category');
+        Schema::table('permissoes', function (Blueprint $table) {
+            //
+        });
     }
 };
