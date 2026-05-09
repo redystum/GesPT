@@ -33,7 +33,8 @@
     "yes": "Yes",
     "no": "No",
     "na": "N/A",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "delete": "Delete"
   },
   "states": {
     "empty_title": "No results"
@@ -128,6 +129,9 @@
     "table_role_desc": "Description",
     "table_permissions_count": "Permissions",
     "table_users_count": "Users",
+    "delete_role_title": "Delete Role",
+    "delete_role_desc": "Are you sure you want to delete this role? This action cannot be undone.",
+    "delete_role_confirm": "Delete Role",
     "loading_roles": "Loading roles...",
     "no_roles": "No roles found.",
     "total_roles": "roles",

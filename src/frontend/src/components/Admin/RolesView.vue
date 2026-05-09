@@ -72,15 +72,24 @@
                 </span>
               </td>
               <td class="px-6 py-3.5 text-right">
-                <button
-                  @click="editRole(role)"
-                  :disabled="fetchingRoleId === role.id"
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50"
-                  title="Edit Role"
-                >
-                  <font-awesome-icon v-if="fetchingRoleId === role.id" :icon="['fas', 'spinner']" spin class="text-sm" />
-                  <font-awesome-icon v-else :icon="['fas', 'pen']" class="text-sm" />
-                </button>
+                <div v-if="role.id !== 1" class="flex items-center justify-end gap-2">
+                  <button
+                    @click="editRole(role)"
+                    :disabled="fetchingRoleId === role.id"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50"
+                    :title="$t('admin.edit') || 'Edit'"
+                  >
+                    <font-awesome-icon v-if="fetchingRoleId === role.id" :icon="['fas', 'spinner']" spin class="text-sm" />
+                    <font-awesome-icon v-else :icon="['fas', 'pen']" class="text-sm" />
+                  </button>
+                  <button
+                    @click="confirmDelete(role)"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                    :title="$t('common.delete') || 'Delete'"
+                  >
+                    <font-awesome-icon :icon="['fas', 'trash']" class="text-sm" />
+                  </button>
+                </div>
               </td>
             </tr>
           </tbody>
@@ -189,6 +198,12 @@
             </div>
           </div>
 
+          <!-- Error Banner -->
+          <div v-if="saveError" class="px-6 py-3 bg-red-50 dark:bg-red-900/10 border-t border-red-100 dark:border-red-900/20 text-red-600 dark:text-red-400 text-sm flex items-center gap-2 shrink-0">
+            <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
+            {{ saveError }}
+          </div>
+
           <!-- Footer -->
           <footer class="p-4 sm:p-6 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3 bg-neutral-50/80 dark:bg-neutral-900/30 shrink-0">
             <button @click="closeRoleModal" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer">
@@ -199,6 +214,47 @@
               {{ $t('admin.save_role') || 'Save Role' }}
             </button>
           </footer>
+        </div>
+      </div>
+    </Transition>
+    <!-- Delete Confirmation Modal -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div class="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" @click="closeDeleteModal"></div>
+        <div class="relative w-full max-w-sm bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 p-6">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4 text-red-600 dark:text-red-400">
+              <font-awesome-icon :icon="['fas', 'triangle-exclamation']" class="text-xl" />
+            </div>
+            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2">{{ $t('admin.delete_role_title') || 'Delete Role' }}</h3>
+            <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+              {{ $t('admin.delete_role_desc') || 'Are you sure you want to delete this role? This action cannot be undone.' }}
+              <br/><br/>
+              <span class="font-semibold text-neutral-900 dark:text-neutral-100">{{ roleToDelete?.nome || roleToDelete?.name }}</span>
+            </p>
+            
+            <div v-if="deleteError" class="w-full mb-6 px-4 py-3 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-lg text-red-600 dark:text-red-400 text-sm flex items-start text-left gap-2">
+              <font-awesome-icon :icon="['fas', 'circle-exclamation']" class="mt-0.5 shrink-0" />
+              <span>{{ deleteError }}</span>
+            </div>
+
+            <div class="flex gap-3 w-full">
+              <button @click="closeDeleteModal" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
+                {{ $t('common.cancel') || 'Cancel' }}
+              </button>
+              <button @click="deleteRole" class="flex-1 inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors bg-red-600 text-white hover:bg-red-700 shadow-sm" :disabled="isDeleting">
+                <font-awesome-icon v-if="isDeleting" :icon="['fas', 'spinner']" spin />
+                {{ $t('admin.delete_role_confirm') || 'Delete' }}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </Transition>
@@ -220,6 +276,12 @@ const showRoleModal = ref(false)
 const editingRole = ref(false)
 const isSaving = ref(false)
 const fetchingRoleId = ref(null)
+const saveError = ref(null)
+
+const showDeleteModal = ref(false)
+const roleToDelete = ref(null)
+const isDeleting = ref(false)
+const deleteError = ref(null)
 
 const roleForm = ref({
   id: null,
@@ -302,6 +364,7 @@ const fetchPage = (page) => {
 
 const openCreateModal = () => {
   editingRole.value = false
+  saveError.value = null
   roleForm.value = {
     id: null,
     name: '',
@@ -313,6 +376,7 @@ const openCreateModal = () => {
 
 const editRole = async (role) => {
   fetchingRoleId.value = role.id
+  saveError.value = null
   try {
     const response = await api.get(`admin/roles/${role.id}`)
     const roleData = response.data.data || response.data
@@ -338,19 +402,58 @@ const closeRoleModal = () => {
 
 const saveRole = async () => {
   isSaving.value = true
+  saveError.value = null
   try {
-    // Call API here to save or update role
-    // e.g. if (editingRole.value) await api.put(...) else await api.post(...)
-    
-    // Simulate API delay
-    await new Promise(resolve => setTimeout(resolve, 600))
+    const payload = {
+      nome: roleForm.value.name,
+      descricao: roleForm.value.description,
+      permissoes: roleForm.value.permissions
+    }
+
+    if (editingRole.value) {
+      //payload.id = roleForm.value.id
+      await api.put(`admin/roles/${roleForm.value.id}`, payload)
+    } else {
+      await api.post('admin/roles', payload)
+    }
     
     await fetchRoles(pagination.value.current_page)
     closeRoleModal()
   } catch (error) {
     console.error('Error saving role:', error)
+    saveError.value = error.response?.data?.message || error.response?.data?.error || 'Failed to save role. Please check your inputs and try again.'
   } finally {
     isSaving.value = false
+  }
+}
+
+const confirmDelete = (role) => {
+  roleToDelete.value = role
+  deleteError.value = null
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+  roleToDelete.value = null
+  deleteError.value = null
+}
+
+const deleteRole = async () => {
+  if (!roleToDelete.value) return
+  isDeleting.value = true
+  deleteError.value = null
+  try {
+    await api.delete(`admin/roles/${roleToDelete.value.id}`)
+    
+    // Refresh table and close modal
+    await fetchRoles(pagination.value.current_page)
+    closeDeleteModal()
+  } catch (error) {
+    console.error('Error deleting role:', error)
+    deleteError.value = error.response?.data?.message || error.response?.data?.error || 'Failed to delete role. It might be in use.'
+  } finally {
+    isDeleting.value = false
   }
 }
 

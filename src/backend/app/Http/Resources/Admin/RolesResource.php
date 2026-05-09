@@ -18,8 +18,8 @@ class RolesResource extends JsonResource
             'id' => $this->id,
             'nome' => $this->nome,
             'descricao' => $this->descricao,
-            'permissoes' => $this->whenLoaded('permissoes')->count(),
-            'users' => $this->whenLoaded('users')->count(),
+            'permissoes' => $this->relationLoaded('permissoes') ? $this->permissoes->count() : 0,
+            'users' => $this->relationLoaded('users') ? $this->users->count() : 0,
         ];
     }
 }

@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StoreRoleRequest;
 use App\Http\Resources\Admin\RolesResource;
 use App\Http\Resources\Admin\RolesShowResource;
+use App\Http\Resources\RoleResource;
 use App\Models\Role;
+use App\Models\RolePermissoes;
 use Illuminate\Http\Request;
 
 class RolesController extends Controller
@@ -46,9 +49,21 @@ class RolesController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRoleRequest $request)
     {
-        //
+        $request->validated();
+
+        $role = Role::create($request->only(['nome', 'descricao']));
+
+        foreach ($request->permissoes as $permissao) {
+            RolePermissoes::create([
+                'id_role' => $role->id,
+                'id_permissao' => $permissao,
+            ]);
+        }
+
+        return response()->json([ 'data' => new RolesResource($role) ], 201);
+
     }
 
     /**
@@ -65,16 +80,44 @@ class RolesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(StoreRoleRequest $request, Role $role)
     {
-        //
+        $request->validated();
+
+        if ($role->id === 1){
+            return response()->json([
+                'message' => __('messages.role_admin_edit_forbidden'),
+            ], 403);
+        }
+
+        $role->update($request->only(['nome', 'descricao']));
+
+        // Atualizar as permissões associadas
+        RolePermissoes::where('id_role', $role->id)->delete();
+        foreach ($request->permissoes as $permissao) {
+            RolePermissoes::create([
+                'id_role' => $role->id,
+                'id_permissao' => $permissao,
+            ]);
+        }
+
+        return response()->json([ 'data' => new RolesResource($role) ], 200);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(Role $role)
     {
-        //
+        if ($role->id === 1){
+            return response()->json([
+                'message' => __('messages.role_admin_delete_forbidden'),
+            ], 403);
+        }
+        $role->delete();
+
+        return response()->json([
+            'message' => __('messages.role_deleted_success'),
+        ], 200);
     }
 }
