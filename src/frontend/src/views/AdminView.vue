@@ -18,41 +18,49 @@
       <aside class="w-full xl:w-64 shrink-0 xl:border-r border-neutral-200 dark:border-neutral-800 xl:pr-8">
         <nav class="flex xl:flex-col gap-2 overflow-x-auto pb-5 xl:pb-0 hide-scrollbar border-b border-neutral-200 dark:border-neutral-800 xl:border-b-0">
           <a
+            v-for="tab in tabs"
+            :key="tab.id"
             href="#"
-            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100"
+            @click.prevent="activeTab = tab.id"
+            :class="[
+              'flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all border',
+              activeTab === tab.id
+                ? 'bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 shadow-sm border-neutral-200 dark:border-neutral-800'
+                : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100 border-transparent'
+            ]"
           >
-            {{ $t('admin.menu_dashboard') }}
-          </a>
-          <a
-            href="#"
-            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100"
-          >
-            {{ $t('admin.menu_curriculum') }}
-          </a>
-          <a
-            href="#"
-            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 shadow-sm border border-neutral-200 dark:border-neutral-800"
-          >
-            {{ $t('admin.menu_auth') }}
-          </a>
-          <a
-            href="#"
-            class="flex items-center whitespace-nowrap rounded-lg px-3.5 py-2.5 text-sm font-medium transition-all text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 hover:text-neutral-900 dark:hover:text-neutral-100"
-          >
-            {{ $t('admin.menu_audit') }}
+            {{ $t(tab.translationKey) }}
           </a>
         </nav>
       </aside>
 
       <main class="flex-1 min-w-0">
-        <LoginView />
+        <LoginView v-if="activeTab === 'auth'" />
+        <RolesView v-else-if="activeTab === 'roles'" />
+        <div v-else class="flex flex-col items-center justify-center h-[500px] rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-neutral-50/50 dark:bg-neutral-800/10">
+          <font-awesome-icon :icon="['fas', 'hammer']" class="text-4xl text-neutral-300 dark:text-neutral-600 mb-4" />
+          <h2 class="text-lg font-bold text-neutral-600 dark:text-neutral-400">{{ $t(tabs.find(t => t.id === activeTab)?.translationKey || '') }}</h2>
+          <p class="text-sm text-neutral-500 dark:text-neutral-500 mt-1">{{ $t('common.under_construction') || 'Under construction' }}</p>
+        </div>
       </main>
     </div>
   </div>
 </template>
 
 <script setup>
+import { ref } from 'vue'
 import LoginView from '@/components/Admin/LoginView.vue'
+import RolesView from '@/components/Admin/RolesView.vue'
+
+const activeTab = ref('auth')
+
+const tabs = [
+  { id: 'dashboard', translationKey: 'admin.menu_dashboard' },
+  { id: 'curriculum', translationKey: 'admin.menu_curriculum' },
+  { id: 'auth', translationKey: 'admin.menu_auth' },
+  { id: 'roles', translationKey: 'admin.menu_roles' },
+  { id: 'audit', translationKey: 'admin.menu_audit' },
+]
 </script>
 
 <style scoped>

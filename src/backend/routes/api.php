@@ -1,13 +1,15 @@
 <?php
 
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\PermitionsController;
+use App\Http\Controllers\Admin\RolesController;
+use app\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\CompareController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EquivalencesController;
-use App\Http\Controllers\CompareController;
+use App\Http\Controllers\OpcoesController;
 use App\Http\Controllers\PlanoEstudoController;
 use App\Http\Controllers\UnidadeCurricularController;
-use App\Http\Controllers\OpcoesController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\WizardController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -36,7 +38,7 @@ Route::apiResource('ucs', UnidadeCurricularController::class);
 Route::apiResource('opcoes', OpcoesController::class)
     ->parameters(['opcoes' => 'opcoao']);
 
-// Routes for Users
+// Routes for Users TODO: mover para admin
 Route::apiResource('users', UserController::class);
 
 // Route for wizard
@@ -49,8 +51,11 @@ Route::prefix('admin')->group(function () {
         Route::post('update', [LoginController::class, 'updateRegex']);
         Route::get('get', [LoginController::class, 'get']);
     });
+    Route::apiResource('roles', RolesController::class);
+    Route::get('permissions', [PermitionsController::class, 'index']);
 
 });
+
 
 Route::any('/', function () {
     $routes = collect(Route::getRoutes())->map(function ($route) {
