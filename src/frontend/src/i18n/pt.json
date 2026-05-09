@@ -128,9 +128,9 @@
     "table_role_desc": "Descrição",
     "table_permissions_count": "Permissões",
     "table_users_count": "Utilizadores",
-    "loading_roles": "A carregar perfis...",
+    "loading_roles": "A carregar roles...",
     "no_roles": "Nenhuma role encontrada.",
-    "total_roles": "perfis",
+    "total_roles": "roles",
     "total_users": "utilizadores",
     "of": "de"
   },

@@ -341,7 +341,7 @@ const pagination = ref({
 const fetchUsers = async (page = 1) => {
   isLoading.value = true
   try {
-    let url = `/users?page=${page}`
+    let url = `/admin/users?page=${page}`
     if (searchQuery.value) {
       url += `&search=${encodeURIComponent(searchQuery.value)}`
     }
