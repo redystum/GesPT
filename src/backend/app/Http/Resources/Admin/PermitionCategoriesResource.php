@@ -18,7 +18,7 @@ class PermitionCategoriesResource extends JsonResource
             'id' => $this->id,
             'nome' => $this->nome,
             'name' => $this->name,
-            'permissoes' => PermitionsResource::collection($this->whenLoaded('permissoes')),
+            'permissoes' => PermissionsResource::collection($this->whenLoaded('permissoes')),
         ];
     }
 }

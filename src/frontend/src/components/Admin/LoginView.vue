@@ -170,19 +170,31 @@
                 <span 
                   class="font-medium"
                   :class="[
-                    (user.permissoes_personalizadas ?? user.custom_permissions ?? 0) === 0 
+                    (user.custom_permissions ?? 0) === 0
                       ? 'opacity-40 text-neutral-500' 
                       : 'text-neutral-900 dark:text-neutral-100'
                   ]"
                 >
-                  {{ user.permissoes_personalizadas ?? user.custom_permissions ?? 0 }}
+                  {{ user.custom_permissions ?? 0 }}
                 </span>
               </td>
               <td class="px-6 py-3.5 text-right">
                 <button
-                  class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors"
+                  @click="editUser(user)"
+                  :disabled="fetchingUserId === user.id || user.id === 1"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  :title="$t('admin.edit') || 'Edit'"
                 >
-                  <font-awesome-icon :icon="['fas', 'ellipsis-vertical']" />
+                  <font-awesome-icon v-if="fetchingUserId === user.id" :icon="['fas', 'spinner']" spin class="text-sm" />
+                  <font-awesome-icon v-else :icon="['fas', 'pen']" class="text-sm" />
+                </button>
+                <button
+                  @click="confirmDelete(user)"
+                  :disabled="user.id === 1"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  :title="$t('common.delete') || 'Delete'"
+                >
+                  <font-awesome-icon :icon="['fas', 'trash']" class="text-sm" />
                 </button>
               </td>
             </tr>
@@ -307,11 +319,152 @@
         </div>
       </div>
     </Transition>
+
+    <!-- Edit User Modal -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0 scale-95"
+      enter-to-class="opacity-100 scale-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100 scale-100"
+      leave-to-class="opacity-0 scale-95"
+    >
+      <div v-if="showEditUserModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div class="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm transition-opacity" @click="closeEditUserModal"></div>
+        <div class="relative w-full max-w-5xl max-h-[85vh] h-[750px] flex flex-col bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-xl overflow-hidden border border-neutral-200 dark:border-neutral-800">
+          <!-- Header -->
+          <header class="flex items-center justify-between p-6 border-b border-neutral-100 dark:border-neutral-800 shrink-0">
+            <div>
+              <h3 class="text-xl font-bold text-neutral-900 dark:text-neutral-100">
+                {{ $t('admin.edit_user_title') || 'Edit User' }}
+              </h3>
+            </div>
+            <button @click="closeEditUserModal" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300 transition-colors p-2 rounded-lg hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer">
+              <font-awesome-icon :icon="['fas', 'times']" />
+            </button>
+          </header>
+
+          <!-- Body -->
+          <div class="flex-1 overflow-y-auto p-6 custom-scrollbar bg-neutral-50/30 dark:bg-[#1a1a1a]">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+              
+              <!-- Left Column: User Details & Roles -->
+              <div class="lg:col-span-1 lg:border-r border-neutral-100 dark:border-neutral-800 lg:pr-6">
+                 <div class="lg:sticky lg:top-0 space-y-6">
+                   <div>
+                     <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2">{{ $t('admin.add_user_name') }}</label>
+                     <input v-model="editUserForm.name" type="text" class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100 focus:outline-none transition-shadow" />
+                   </div>
+                   
+                   <div>
+                     <h4 class="text-sm font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 mb-4 border-b border-neutral-200 dark:border-neutral-800 pb-2">{{ $t('admin.menu_roles') }}</h4>
+                     <div class="space-y-3">
+                       <label v-for="role in availableRoles" :key="role.id" class="flex items-center gap-3 cursor-pointer group">
+                         <div class="relative flex items-center justify-center">
+                           <input type="checkbox" :value="role.id" :checked="editUserForm.roles.includes(role.id)" @change="toggleRole(role.id)" class="peer sr-only" />
+                           <div class="w-5 h-5 rounded border-2 border-neutral-300 dark:border-neutral-600 peer-checked:bg-neutral-900 peer-checked:border-neutral-900 dark:peer-checked:bg-neutral-100 dark:peer-checked:border-neutral-100 transition-colors flex items-center justify-center peer-checked:[&>svg]:opacity-100">
+                             <svg class="text-white dark:text-neutral-900 w-3 h-3 opacity-0 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                           </div>
+                         </div>
+                         <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-colors">{{ role.nome || role.name }}</span>
+                       </label>
+                     </div>
+                   </div>
+                 </div>
+              </div>
+
+              <!-- Right Column: Permissions Categories -->
+              <div class="lg:col-span-3 space-y-8">
+                <div class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 text-blue-700 dark:text-blue-400 p-3 rounded-lg flex items-start gap-3 text-sm">
+                  <font-awesome-icon :icon="['fas', 'circle-info']" class="mt-0.5" />
+                  <p>{{ $t('admin.role_permissions_warning') || 'Permissions inherited from roles cannot be removed manually. You can assign additional custom permissions below.' }}</p>
+                </div>
+                
+                <div v-for="category in availablePermissions" :key="category.id || category.nome">
+                  <h4 class="text-sm font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 mb-4 border-b border-neutral-200 dark:border-neutral-800 pb-2">{{ category.nome || category.name }}</h4>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <label v-for="perm in category.permissoes" :key="perm.id" class="flex items-start gap-3 cursor-pointer group p-3 rounded-lg border border-neutral-100 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors bg-white dark:bg-[#1a1a1a] hover:bg-neutral-50 dark:hover:bg-neutral-800/50" :class="{ 'opacity-60 cursor-not-allowed': lockedPermissions.includes(perm.id) }">
+                      <div class="relative flex items-center justify-center mt-0.5">
+                        <input type="checkbox" :value="perm.id" :checked="lockedPermissions.includes(perm.id) || editUserForm.custom_permissions.includes(perm.id)" :disabled="lockedPermissions.includes(perm.id)" @change="toggleCustomPermission(perm.id)" class="peer sr-only" />
+                        <div class="w-5 h-5 rounded border-2 border-neutral-300 dark:border-neutral-600 peer-checked:bg-neutral-900 peer-checked:border-neutral-900 dark:peer-checked:bg-neutral-100 dark:peer-checked:border-neutral-100 peer-disabled:bg-neutral-300 dark:peer-disabled:bg-neutral-700 peer-disabled:border-neutral-300 dark:peer-disabled:border-neutral-700 transition-colors flex items-center justify-center peer-checked:[&>svg]:opacity-100">
+                          <svg class="text-white dark:text-neutral-900 w-3 h-3 opacity-0 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                        </div>
+                      </div>
+                      <div class="flex-1">
+                        <span class="block text-sm font-medium text-neutral-700 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-neutral-100 transition-colors">{{ perm.nome || perm.name }}</span>
+                        <p class="text-xs text-neutral-500 mt-1 leading-relaxed">{{ perm.descricao || perm.description }}</p>
+                      </div>
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div v-if="editUserError" class="px-6 py-3 bg-red-50 dark:bg-red-900/10 border-t border-red-100 dark:border-red-900/20 text-red-600 dark:text-red-400 text-sm flex items-center gap-2 shrink-0">
+            <font-awesome-icon :icon="['fas', 'triangle-exclamation']" />
+            {{ editUserError }}
+          </div>
+
+          <footer class="p-4 sm:p-6 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3 bg-neutral-50/80 dark:bg-neutral-900/30 shrink-0">
+            <button @click="closeEditUserModal" class="px-4 py-2 text-sm font-medium rounded-lg text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer">
+              {{ $t('common.cancel') || 'Cancel' }}
+            </button>
+            <button @click="saveUser" class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-6 py-2 text-sm font-medium transition-colors bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-sm" :disabled="isEditingUser">
+              <font-awesome-icon v-if="isEditingUser" :icon="['fas', 'spinner']" spin class="text-sm" />
+              {{ $t('admin.save') || 'Save' }}
+            </button>
+          </footer>
+        </div>
+      </div>
+    </Transition>
+
+    <!-- Delete Confirmation Modal -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div v-if="showDeleteModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
+        <div class="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm" @click="closeDeleteModal"></div>
+        <div class="relative w-full max-w-sm bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 p-6">
+          <div class="flex flex-col items-center text-center">
+            <div class="w-12 h-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-4 text-red-600 dark:text-red-400">
+              <font-awesome-icon :icon="['fas', 'triangle-exclamation']" class="text-xl" />
+            </div>
+            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2">{{ $t('admin.delete_user_title') || 'Delete User' }}</h3>
+            <p class="text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+              {{ $t('admin.delete_user_desc') || 'Are you sure you want to delete this user? This action cannot be undone.' }}
+              <br/><br/>
+              <span class="font-semibold text-neutral-900 dark:text-neutral-100">{{ userToDelete?.name }}</span>
+            </p>
+            
+            <div v-if="deleteError" class="w-full mb-6 px-4 py-3 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-lg text-red-600 dark:text-red-400 text-sm flex items-start text-left gap-2">
+              <font-awesome-icon :icon="['fas', 'circle-exclamation']" class="mt-0.5 shrink-0" />
+              <span>{{ deleteError }}</span>
+            </div>
+
+            <div class="flex gap-3 w-full">
+              <button @click="closeDeleteModal" class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer">
+                {{ $t('common.cancel') || 'Cancel' }}
+              </button>
+              <button @click="deleteUser" class="flex-1 inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors bg-red-600 text-white hover:bg-red-700 shadow-sm" :disabled="isDeleting">
+                <font-awesome-icon v-if="isDeleting" :icon="['fas', 'spinner']" spin />
+                {{ $t('admin.delete_user_confirm') || 'Delete' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
-import { ref, watch, onMounted, onUnmounted, inject } from 'vue'
+import { ref, watch, onMounted, onUnmounted, inject, computed } from 'vue'
 
 const api = inject('api')
 
@@ -339,6 +492,86 @@ const showAddModal = ref(false)
 const isAddingUser = ref(false)
 const newUser = ref({ name: '', email: '', type: 'remote', password: '', password_confirmation: '' })
 const errors = ref({})
+
+const showEditUserModal = ref(false)
+const isEditingUser = ref(false)
+const fetchingUserId = ref(null)
+const editUserError = ref(null)
+
+const showDeleteModal = ref(false)
+const userToDelete = ref(null)
+const isDeleting = ref(false)
+const deleteError = ref(null)
+
+const editUserForm = ref({
+  id: null,
+  name: '',
+  roles: [],
+  custom_permissions: []
+})
+
+const availableRoles = ref([])
+const availablePermissions = ref([])
+const rolePermissionsCache = ref({})
+
+const lockedPermissions = computed(() => {
+  const locked = new Set()
+  editUserForm.value.roles.forEach(roleId => {
+    const perms = rolePermissionsCache.value[roleId]
+    if (perms) {
+      perms.forEach(pId => locked.add(pId))
+    }
+  })
+  return Array.from(locked)
+})
+
+const fetchGlobalData = async () => {
+  try {
+    const [rolesRes, permsRes] = await Promise.all([
+      api.get('/admin/roles?per_page=100'),
+      api.get('/admin/permissions')
+    ])
+    availableRoles.value = rolesRes.data.data || rolesRes.data || []
+    availablePermissions.value = permsRes.data.data || permsRes.data || []
+  } catch (err) {
+    console.error('Error fetching global data:', err)
+  }
+}
+
+const ensureRolePermissions = async (roleId) => {
+  if (rolePermissionsCache.value[roleId]) return
+  try {
+    const res = await api.get(`/admin/roles/${roleId}`)
+    const roleData = res.data.data || res.data
+    const perms = (roleData.permissoes || roleData.permissions || []).map(p => p.id)
+    rolePermissionsCache.value = {
+      ...rolePermissionsCache.value,
+      [roleId]: perms
+    }
+  } catch(e) {
+    console.error(`Error fetching role ${roleId}:`, e)
+  }
+}
+
+const toggleRole = async (roleId) => {
+  const index = editUserForm.value.roles.indexOf(roleId)
+  if (index === -1) {
+    editUserForm.value.roles.push(roleId)
+    await ensureRolePermissions(roleId)
+  } else {
+    editUserForm.value.roles.splice(index, 1)
+  }
+}
+
+const toggleCustomPermission = (permId) => {
+  if (lockedPermissions.value.includes(permId)) return
+  const index = editUserForm.value.custom_permissions.indexOf(permId)
+  if (index === -1) {
+    editUserForm.value.custom_permissions.push(permId)
+  } else {
+    editUserForm.value.custom_permissions.splice(index, 1)
+  }
+}
 
 const pagination = ref({
   current_page: 1,
@@ -430,6 +663,84 @@ const addUser = async () => {
     }
   } finally {
     isAddingUser.value = false
+  }
+}
+
+const editUser = async (user) => {
+  fetchingUserId.value = user.id
+  editUserError.value = null
+  try {
+    const response = await api.get(`/admin/users/${user.id}`)
+    const userData = response.data.data || response.data
+    
+    editUserForm.value = {
+      id: userData.id,
+      name: userData.name,
+      roles: (userData.roles || []).map(r => r.id),
+      custom_permissions: (userData.custom_permissions || userData.permissoes_personalizadas || []).map(p => p.id)
+    }
+    
+    await Promise.all(editUserForm.value.roles.map(rId => ensureRolePermissions(rId)))
+    
+    showEditUserModal.value = true
+  } catch(e) {
+    console.error('Error fetching user:', e)
+  } finally {
+    fetchingUserId.value = null
+  }
+}
+
+const closeEditUserModal = () => {
+  showEditUserModal.value = false
+  editUserError.value = null
+}
+
+const saveUser = async () => {
+  isEditingUser.value = true
+  editUserError.value = null
+  try {
+    const payload = {
+      name: editUserForm.value.name,
+      roles: editUserForm.value.roles,
+      custom_permissions: editUserForm.value.custom_permissions
+    }
+    await api.put(`/admin/users/${editUserForm.value.id}`, payload)
+    
+    await fetchUsers(pagination.value.current_page)
+    closeEditUserModal()
+  } catch (error) {
+    console.error('Error saving user:', error)
+    editUserError.value = error.response?.data?.message || 'Failed to save user.'
+  } finally {
+    isEditingUser.value = false
+  }
+}
+
+const confirmDelete = (user) => {
+  userToDelete.value = user
+  deleteError.value = null
+  showDeleteModal.value = true
+}
+
+const closeDeleteModal = () => {
+  showDeleteModal.value = false
+  userToDelete.value = null
+  deleteError.value = null
+}
+
+const deleteUser = async () => {
+  if (!userToDelete.value) return
+  isDeleting.value = true
+  deleteError.value = null
+  try {
+    await api.delete(`/admin/users/${userToDelete.value.id}`)
+    await fetchUsers(pagination.value.current_page)
+    closeDeleteModal()
+  } catch (error) {
+    console.error('Error deleting user:', error)
+    deleteError.value = error.response?.data?.message || 'Failed to delete user.'
+  } finally {
+    isDeleting.value = false
   }
 }
 
@@ -547,6 +858,7 @@ const discardChanges = async () => {
 
 onMounted(() => {
   document.addEventListener('click', handleClickOutside)
+  fetchGlobalData()
   fetchUsers()
 })
 

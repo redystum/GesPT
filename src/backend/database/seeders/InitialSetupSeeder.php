@@ -18,6 +18,7 @@ class InitialSetupSeeder extends Seeder
         $user = User::firstOrCreate(
             ['email' => 'admin@gespt.local'],
             [
+                'id' => 1,
                 'name' => 'Admin',
                 'email' => 'admin@gespt.local',
                 'type' => 'local',

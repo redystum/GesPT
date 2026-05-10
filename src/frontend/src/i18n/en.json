@@ -137,7 +137,12 @@
     "no_roles": "No roles found.",
     "total_roles": "roles",
     "total_users": "users",
-    "of": "of"
+    "of": "of",
+    "edit_user_title": "Edit User",
+    "delete_user_title": "Delete User",
+    "delete_user_desc": "Are you sure you want to delete this user? This action cannot be undone.",
+    "delete_user_confirm": "Delete User",
+    "role_permissions_warning": "Permissions inherited from roles cannot be removed manually. You can assign additional custom permissions below."
   },
   "compare": {
     "kicker": "Curriculum Analysis",

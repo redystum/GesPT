@@ -72,11 +72,10 @@
                 </span>
               </td>
               <td class="px-6 py-3.5 text-right">
-                <div v-if="role.id !== 1" class="flex items-center justify-end gap-2">
                   <button
                     @click="editRole(role)"
-                    :disabled="fetchingRoleId === role.id"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50"
+                    :disabled="fetchingRoleId === role.id || role.id === 1"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     :title="$t('admin.edit') || 'Edit'"
                   >
                     <font-awesome-icon v-if="fetchingRoleId === role.id" :icon="['fas', 'spinner']" spin class="text-sm" />
@@ -84,12 +83,12 @@
                   </button>
                   <button
                     @click="confirmDelete(role)"
-                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer"
+                    :disabled="role.id === 1"
+                    class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                     :title="$t('common.delete') || 'Delete'"
                   >
                     <font-awesome-icon :icon="['fas', 'trash']" class="text-sm" />
                   </button>
-                </div>
               </td>
             </tr>
           </tbody>

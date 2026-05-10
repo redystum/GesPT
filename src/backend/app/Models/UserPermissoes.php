@@ -14,7 +14,7 @@ class UserPermissoes extends Model
 
     protected $fillable = [
         'id_user',
-        'id_permiscao',
+        'id_permissao',
     ];
 
     public function user(): BelongsTo
@@ -24,6 +24,6 @@ class UserPermissoes extends Model
 
     public function permissao(): BelongsTo
     {
-        return $this->belongsTo(Permissoes::class, 'id_permiscao');
+        return $this->belongsTo(Permissoes::class, 'id_permissao');
     }
 }
