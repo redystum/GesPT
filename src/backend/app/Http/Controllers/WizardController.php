@@ -23,7 +23,7 @@ class WizardController extends Controller
 
             $course = new Curso();
             if ($data->course->isNew) {
-                $course = Curso::create($data->course->data);
+                $course = Curso::create((array)$data->course->data);
             } else {
                 $course = Curso::find($data->course->data->id);
             }

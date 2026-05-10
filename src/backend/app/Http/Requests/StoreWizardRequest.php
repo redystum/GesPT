@@ -59,7 +59,7 @@ class StoreWizardRequest extends FormRequest
             'ucs.*.horas' => 'required_if:ucs.*.isNew,true|integer|min:1',
             'ucs.*.semestre' => 'required_if:ucs.*.isNew,true|integer',
 
-            'equivalences.prevPlanId' => 'integer|exists:plano_estudos,id',
+            'equivalences.prevPlanId' => 'nullable|integer|exists:plano_estudos,id',
             'equivalences.equivalences' => 'array',
             'equivalences.equivalences.*.newUc' => 'integer',
             'equivalences.equivalences.*.observacoes' => 'nullable|string',
