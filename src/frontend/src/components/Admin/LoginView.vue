@@ -468,11 +468,9 @@ import { ref, watch, onMounted, onUnmounted, inject, computed } from 'vue'
 
 const api = inject('api')
 
-const rule_behavior = ref(
-  '2231034@my.ipleiria.pt\n' + '2231034@ipleiria.pt\n' + 'ruben.alves@ipleiria.pt'
-)
+const rule_behavior = ref('')
 const validationResults = ref([])
-const regex_pattern = ref('^[a-zA-Z0-9._%+-]+@ipleiria.pt$')
+const regex_pattern = ref('')
 const isRegexValid = ref(true)
 const regexError = ref('')
 const backendRegex = ref('')
@@ -860,6 +858,7 @@ onMounted(() => {
   document.addEventListener('click', handleClickOutside)
   fetchGlobalData()
   fetchUsers()
+  discardChanges()
 })
 
 onUnmounted(() => {
