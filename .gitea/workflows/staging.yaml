@@ -43,7 +43,7 @@ jobs:
       - name: rsync deployments
         uses: burnett01/rsync-deployments@7.0.0
         with:
-          switches: -azr --no-perms --omit-dir-times --delete --exclude '.env' --exclude 'node_modules/' --exclude "vendor" --exclude "public/storage" --exclude "storage/app" --exclude "storage/framework/cache" --exclude "composer.lock" 
+          switches: -azr --no-perms --omit-dir-times --delete --exclude '.env' --exclude 'node_modules/' --exclude "vendor" --exclude "public/storage" --exclude "storage/app" --exclude "storage/framework/cache"
           path: src/backend/*
           remote_path: /var/www/${{ vars.PROJECT }}/backend/
           remote_host: ${{ vars.STAGING_VM }}
