@@ -27,6 +27,8 @@ Route::apiResource('cursos', CourseController::class);
 Route::get('/cursos/{curso}/latest-plan', [CourseController::class, 'getLatestPlan']);
 
 // Routes for Planos de Estudo
+Route::get('/planos-estudo/template/{curso}', [PlanoEstudoController::class, 'exportTemplate']);
+
 Route::apiResource('planos-estudo', PlanoEstudoController::class)
     ->parameters(['planos-estudo' => 'planoEstudo']);
 Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'getUcs']);

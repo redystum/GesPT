@@ -7,6 +7,9 @@ use App\Http\Requests\UpdatePlanoEstudoRequest;
 use App\Models\PlanoEstudo;
 use Illuminate\Http\Request;
 use App\Http\Resources\PlanoEstudoResource;
+use App\Exports\PlanoEstudoTemplateExport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Curso;
 
 class PlanoEstudoController extends Controller
 {
@@ -85,5 +88,13 @@ class PlanoEstudoController extends Controller
         return response()->json([
             'data' => PlanoEstudoResource::make($planoEstudo),
         ]);
+    }
+
+    public function exportTemplate(Curso $curso)
+    {
+        return Excel::download(
+            new PlanoEstudoTemplateExport($curso),
+            'plano_estudo_template_' . $curso->codigo . '.xlsx'
+        );
     }
 }

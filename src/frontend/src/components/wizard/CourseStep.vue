@@ -191,7 +191,7 @@ const downloadTemplate = async () => {
   templateError.value = ''
 
   try {
-    const response = await api.get(`/wizard/course-template/${selectedCourseId.value}`, {
+    const response = await api.get(`/planos-estudo/template/${selectedCourseId.value}`, {
       responseType: 'blob'
     })
 
