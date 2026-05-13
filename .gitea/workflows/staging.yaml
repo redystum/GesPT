@@ -22,8 +22,8 @@ jobs:
       - name: Build frontend
         run: npm run build --if-present
         env:
-          VUE_APP_BASE_URL: http://staging-${{ vars.PROJECT }}.${{ vars.STAGING_VM }}.sslip.io
-          VUE_APP_API_URL: http://staging-${{ vars.PROJECT }}.${{ vars.STAGING_VM }}.sslip.io/api
+          VITE_API_SERVER_URL: http://staging-${{ vars.PROJECT }}.${{ vars.STAGING_VM }}.sslip.io
+          VITE_API_PATH_URL: http://staging-${{ vars.PROJECT }}.${{ vars.STAGING_VM }}.sslip.io/api
         working-directory: src/frontend
       - name: rsync deployments
         uses: burnett01/rsync-deployments@7.0.0
