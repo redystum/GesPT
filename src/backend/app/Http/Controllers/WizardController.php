@@ -33,16 +33,29 @@ class WizardController extends Controller
                 'id_curso' => $course->id,
             ]);
 
+
             $ucs_to_plan_ucs = [];
             foreach ($data->ucs as $ucData) {
                 $uc = Uc::find($ucData->id);
                 if (!$uc && $ucData->isNew) {
+                    $horas = [
+                        $ucData->horas_trabalho_totais ?? 0,
+                        $ucData->t ?? 0,
+                        $ucData->tp ?? 0,
+                        $ucData->pl ?? 0,
+                        $ucData->tc ?? 0,
+                        $ucData->s ?? 0,
+                        $ucData->e ?? 0,
+                        $ucData->ot ?? 0,
+                        $ucData->o ?? 0,
+                    ];
                     $uc = Uc::create([
                         'nome' => $ucData->nome,
                         'name' => $ucData->name,
                         'sigla' => $ucData->sigla,
                         'ects' => $ucData->ects,
-                        'horas' => $ucData->horas,
+                        'horas' => json_encode($horas),
+                        'ano' => $ucData->ano,
                         'semestre' => $ucData->semestre,
                         'id_curso' => $course->id,
                     ]);
@@ -57,7 +70,7 @@ class WizardController extends Controller
             if ($data->equivalences->prevPlanId) {
                 foreach ($data->equivalences->equivalences as $equivalence) {
                     $uc_id = $ucs_to_plan_ucs[$equivalence->newUc] ?? null;
-                    if (!$uc_id){
+                    if (!$uc_id) {
                         continue;
                     }
 

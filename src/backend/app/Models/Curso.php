@@ -19,7 +19,15 @@ class Curso extends Model
         'sigla',
         'codigo',
         'id_curso_parente',
+        'horas'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'horas' => 'json',
+        ];
+    }
 
     public function parentCurso(): BelongsTo
     {

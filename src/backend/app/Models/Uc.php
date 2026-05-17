@@ -22,6 +22,7 @@ class Uc extends Model
         'id_curso',
         'semestre',
         'name',
+        'ano',
     ];
 
     public function curso(): BelongsTo

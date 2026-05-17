@@ -239,6 +239,10 @@
       "ects": "ECTS",
       "hours": "Horas",
       "semester": "Semestre",
+      "year": "Ano",
+      "workload_title": "Horas de trabalho",
+      "workload_total": "Horas de trabalho totais",
+      "contact_total": "Horas totais de contacto",
       "create_add": "Criar e Adicionar UC"
     },
     "equivalence_step": {
