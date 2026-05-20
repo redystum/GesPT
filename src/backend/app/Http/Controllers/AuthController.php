@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\LoginRequest;
 use App\Models\LoginDominios;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -46,10 +47,10 @@ class AuthController extends Controller
         $request->validated();
 
         $domains = LoginDominios::all();
+        $user_domain = explode('@', $request->email)[count(explode('@', $request->email)) - 1] ?? null;
+        $matched_domain = array_search($user_domain, $domains->pluck('dominio')->toArray());
 
-        $user_domain = explode('@', $request->email)[count(explode('@', $request->email))] ?? null;
-
-        if (!in_array($user_domain, $domains->pluck('dominio')->toArray())) {
+        if ($matched_domain === false) {
             return response()->json([
                 'message' => 'Unauthorized domain',
             ], 401);
@@ -89,6 +90,8 @@ class AuthController extends Controller
         }
 
         if ($user) {
+            // todo add blocked state here
+
             return response()->json([
                 'message' => 'Login successful',
                 'access_token' => $user->createToken('auth_token')->plainTextToken,
@@ -97,7 +100,24 @@ class AuthController extends Controller
         } else {
             // TODO add user to db and give the role by domain
 
-            return response()->json([]);
+            $user = User::create([
+                'name' => explode('@', $request->email)[0],
+                'email' => $request->email,
+                'type' => User::USER_TYPE_REMOTE,
+            ]);
+
+            $id_role= $domains[$matched_domain]['id_role'] ?? null;
+
+            UserRole::create([
+                'id_user' => $user->id,
+                'id_role' => $id_role,
+            ]);
+
+            return response()->json([
+                'message' => 'Login successful',
+                'access_token' => $user->createToken('auth_token')->plainTextToken,
+                'token_type' => 'Bearer',
+            ], 200);
         }
 
     }
