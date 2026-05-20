@@ -19,6 +19,7 @@ class UserShowResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
+            'recovery_email' => $this->recovery_email,
             'type' => $this->type,
             'roles' => RolesShowResource::collection($this->whenLoaded('roles')),
             'custom_permissions' => PermissionsResource::collection($this->whenLoaded('permissoes'))

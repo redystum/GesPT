@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace app\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -26,6 +26,7 @@ class StoreUserRequest extends FormRequest
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'type' => ['nullable', 'string'],
             'password' => ['required_if:type,local', 'string', 'min:8', 'confirmed'],
+            'recovery_email' => ['required_if:type,local', 'string', 'email', 'max:255'],
         ];
     }
 }

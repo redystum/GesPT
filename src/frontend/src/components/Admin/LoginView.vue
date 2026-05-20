@@ -352,7 +352,8 @@
                   type="email"
                   placeholder="joao.pedro@ipleiria.pt"
                   :class="{
-                    'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.email
+                    'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.email,
+                    'border-yellow-500 focus:border-yellow-500 focus:ring-yellow-500/20': warnings.email
                   }"
                   class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3.5 py-2.5 text-sm outline-none transition-shadow bg-neutral-50 dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100"
                 />
@@ -361,6 +362,12 @@
                   class="text-red-500 dark:text-red-400 text-xs mt-1.5 font-medium"
                 >
                   {{ errors.email[0] }}
+                </p>
+                <p
+                  v-if="warnings.email"
+                  class="text-yellow-600 dark:text-yellow-500 text-xs mt-1.5 font-medium"
+                >
+                  {{ $t(warnings.email[0]) }}
                 </p>
               </div>
 
@@ -440,6 +447,28 @@
                       placeholder="••••••••"
                       class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3.5 py-2.5 text-sm outline-none transition-shadow bg-neutral-50 dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100"
                     />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-xs font-semibold uppercase tracking-wider mb-1.5 text-neutral-700 dark:text-neutral-300"
+                      >{{ $t('admin.add_user_recovery_email') }}</label
+                    >
+                    <input
+                      v-model="newUser.recovery_email"
+                      @keydown.enter="addUser"
+                      type="email"
+                      placeholder="joao.pedro@ipleiria.pt"
+                      :class="{
+                        'border-red-500 focus:border-red-500 focus:ring-red-500/20': errors.recovery_email
+                      }"
+                      class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3.5 py-2.5 text-sm outline-none transition-shadow bg-neutral-50 dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                    />
+                    <p
+                      v-if="errors.recovery_email"
+                      class="text-red-500 dark:text-red-400 text-xs mt-1.5 font-medium"
+                    >
+                      {{ errors.recovery_email[0] }}
+                    </p>
                   </div>
                 </div>
               </Transition>
@@ -775,8 +804,9 @@ let searchTimeout = null
 
 const showAddModal = ref(false)
 const isAddingUser = ref(false)
-const newUser = ref({ name: '', email: '', type: 'remote', password: '', password_confirmation: '' })
+const newUser = ref({ name: '', email: '', type: 'remote', password: '', password_confirmation: '', recovery_email: '' })
 const errors = ref({})
+const warnings = ref({})
 
 const showEditUserModal = ref(false)
 const isEditingUser = ref(false)
@@ -943,21 +973,32 @@ const fetchPage = (page) => {
 
 const closeAddModal = () => {
   showAddModal.value = false
-  newUser.value = { name: '', email: '', type: 'remote', password: '', password_confirmation: '' }
+  newUser.value = { name: '', email: '', type: 'remote', password: '', password_confirmation: '', recovery_email: '' }
   errors.value = {}
+  warnings.value = {}
 }
 
 const addUser = async () => {
   isAddingUser.value = true
   errors.value = {}
+  warnings.value = {}
   try {
     const payload = { ...newUser.value }
-    if (payload.type === 'remote') {
+    if (payload.type === 'local') {
+        if (payload.email && !payload.email.endsWith('@gespt.local')) {
+            const username = payload.email.includes('@') ? payload.email.split('@')[0] : payload.email
+            newUser.value.email = `${username}@gespt.local`
+            warnings.value = { email: ['admin.add_user_email_changed'] }
+            isAddingUser.value = false
+            return
+        }
+    } else {
       delete payload.password
       delete payload.password_confirmation
+      delete payload.recovery_email
     }
 
-    await api.post('/users', payload)
+    await api.post('/admin/users', payload)
     closeAddModal()
     fetchUsers()
   } catch (error) {

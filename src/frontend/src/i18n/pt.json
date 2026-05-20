@@ -120,6 +120,8 @@
     "add_user_type_local": "Local",
     "add_user_password": "Palavra-passe",
     "add_user_password_confirm": "Confirmar Palavra-passe",
+    "add_user_recovery_email": "Email de Recuperação",
+    "add_user_email_changed": "O domínio do email foi alterado automaticamente para @gespt.local. Verifique e guarde novamente.",
     "add_user_password_mismatch": "As palavras-passe não coincidem",
     "add_user_error_general": "Ocorreu um erro inesperado. Por favor, tente novamente.",
     "final_regex": "Regex final",

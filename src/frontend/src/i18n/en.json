@@ -118,6 +118,8 @@
     "add_user_type_local": "Local",
     "add_user_password": "Password",
     "add_user_password_confirm": "Confirm Password",
+    "add_user_recovery_email": "Recovery Email",
+    "add_user_email_changed": "The email domain was automatically changed to @gespt.local. Please review and save again.",
     "add_user_password_mismatch": "Passwords do not match",
     "add_user_error_general": "An unexpected error occurred. Please try again.",
     "rule_title": "Authentication Validation Rules",
