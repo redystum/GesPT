@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Models\LoginDominios;
 use App\Models\User;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
@@ -13,7 +14,7 @@ class AuthController extends Controller
     /**
      * @param string $email
      * @param string $password
-//     * @return int `-1` no url <br> `-2` failed request <br> `0` wrong credentials <br> `1` correct credentials
+     * @return int `-1` no url <br> `-2` failed request <br> `0` wrong credentials <br> `1` correct credentials
      */
     private function requestIPLeiriaAuth(string $email, string $password)
     {
@@ -44,27 +45,60 @@ class AuthController extends Controller
     {
         $request->validated();
 
-        $response = $this->requestIPLeiriaAuth($request->email, $request->password);
+        $domains = LoginDominios::all();
 
-        dd($request->all(), $response);
+        $user_domain = explode('@', $request->email)[count(explode('@', $request->email))] ?? null;
+
+        if (!in_array($user_domain, $domains->pluck('dominio')->toArray())) {
+            return response()->json([
+                'message' => 'Unauthorized domain',
+            ], 401);
+        }
 
         $user = User::where('email', $request->email)->first();
-
         if ($user && $user->type === User::USER_TYPE_LOCAL) {
             if (auth()->attempt($request->only('email', 'password'), $request->remember)) {
+
+                // todo add blocked state here
+
                 $token = $user->createToken('auth_token')->plainTextToken;
                 return response()->json([
                     'message' => 'Login successful',
                     'access_token' => $token,
                     'token_type' => 'Bearer',
                 ], 200);
+            } else {
+                return response()->json([
+                    'message' => 'Invalid credentials',
+                ], 401);
             }
         }
 
-        // TODO: request ipleiria
+        $response = $this->requestIPLeiriaAuth($request->email, $request->password);
 
-        return response()->json([
-            'message' => 'Invalid credentials',
-        ], 401);
+        if ($response < 0) {
+            return response()->json([
+                'message' => 'Authentication failed',
+            ], 401);
+        }
+
+        if ($response === 0) {
+            return response()->json([
+                'message' => 'Invalid credentials',
+            ], 401);
+        }
+
+        if ($user) {
+            return response()->json([
+                'message' => 'Login successful',
+                'access_token' => $user->createToken('auth_token')->plainTextToken,
+                'token_type' => 'Bearer',
+            ], 200);
+        } else {
+            // TODO add user to db and give the role by domain
+
+            return response()->json([]);
+        }
+
     }
 }
