@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\Admin\StoreRoleRequest;
 use App\Http\Resources\Admin\RolesResource;
 use App\Http\Resources\Admin\RolesShowResource;
-use App\Http\Resources\RoleResource;
 use App\Models\Role;
 use App\Models\RolePermissoes;
 use Illuminate\Http\Request;
@@ -62,7 +61,7 @@ class RolesController extends Controller
             ]);
         }
 
-        return response()->json([ 'data' => new RolesResource($role) ], 201);
+        return response()->json(['data' => new RolesResource($role)], 201);
 
     }
 
@@ -84,7 +83,7 @@ class RolesController extends Controller
     {
         $request->validated();
 
-        if ($role->id === 1){
+        if ($role->id === 1) {
             return response()->json([
                 'message' => __('messages.role_admin_edit_forbidden'),
             ], 403);
@@ -101,7 +100,7 @@ class RolesController extends Controller
             ]);
         }
 
-        return response()->json([ 'data' => new RolesResource($role) ], 200);
+        return response()->json(['data' => new RolesResource($role)], 200);
     }
 
     /**
@@ -109,7 +108,7 @@ class RolesController extends Controller
      */
     public function destroy(Role $role)
     {
-        if ($role->id === 1){
+        if ($role->id === 1) {
             return response()->json([
                 'message' => __('messages.role_admin_delete_forbidden'),
             ], 403);
@@ -119,5 +118,12 @@ class RolesController extends Controller
         return response()->json([
             'message' => __('messages.role_deleted_success'),
         ], 200);
+    }
+
+    public function all()
+    {
+        return response()->json([
+            'data' => RolesResource::collection(Role::all()),
+        ]);
     }
 }

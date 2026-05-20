@@ -54,10 +54,18 @@ class WizardController extends Controller
                         'name' => $ucData->name,
                         'sigla' => $ucData->sigla,
                         'ects' => $ucData->ects,
-                        'horas' => json_encode($horas),
                         'ano' => $ucData->ano,
                         'semestre' => $ucData->semestre,
                         'id_curso' => $course->id,
+                        'horas' => $ucData->horas_trabalho_totais ?? 0,
+                        'horas_t' => $ucData->t ?? 0,
+                        'horas_tp' => $ucData->tp ?? 0,
+                        'horas_pl' => $ucData->pl ?? 0,
+                        'horas_tc' => $ucData->tc ?? 0,
+                        'horas_s' => $ucData->s ?? 0,
+                        'horas_e' => $ucData->e ?? 0,
+                        'horas_ot' => $ucData->ot ?? 0,
+                        'horas_o' => $ucData->o ?? 0,
                     ]);
                 }
                 $plan_uc = PlanoUc::create([
@@ -85,7 +93,6 @@ class WizardController extends Controller
                         'observacao' => $equivalence->observacoes ?? null,
                     ]);
 
-                    // TODO: (also todo on frontend) add observação
                     foreach ($equivalence->oldUcs as $oldUc) {
                         $old_plan_uc = PlanoUc::where('id_plano', $data->equivalences->prevPlanId)
                             ->where('id_uc', $oldUc)

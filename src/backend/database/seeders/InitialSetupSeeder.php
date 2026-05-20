@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Configuration;
+use App\Models\LoginDominios;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
@@ -35,6 +36,11 @@ class InitialSetupSeeder extends Seeder
         $this->call([
             PermissionsSeeder::class,
         ]);
+
+        LoginDominios::firstOrCreate(
+            ['dominio' => 'gespt.local', 'id_role' => 1],
+            ['dominio' => 'gespt.local', 'id_role' => 1]
+        );
 
         UserRole::firstOrCreate(
             ['id_user' => $user->id, 'id_role' => 1],

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\RegexController;
 use App\Http\Controllers\Admin\PermitionsController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UserController;
@@ -45,11 +46,17 @@ Route::post('wizard', [WizardController::class, 'store']);
 Route::prefix('admin')->group(function () {
     Route::apiResource('users', UserController::class);
 
-    Route::prefix('regex/')->group(function () {
-        Route::post('test', [LoginController::class, 'testRegex']);
-        Route::post('update', [LoginController::class, 'updateRegex']);
-        Route::get('get', [LoginController::class, 'get']);
+    Route::prefix('login')->group(function () {
+        Route::get('/', [LoginController::class, 'get']);
+        Route::post('/', [LoginController::class, 'store']);
     });
+
+    Route::prefix('regex/')->group(function () {
+        Route::post('test', [RegexController::class, 'testRegex']);
+        Route::post('update', [RegexController::class, 'updateRegex']);
+        Route::get('get', [RegexController::class, 'get']);
+    });
+    Route::get('roles/all', [RolesController::class, 'all']);
     Route::apiResource('roles', RolesController::class);
     Route::get('permissions', [PermitionsController::class, 'index']);
 

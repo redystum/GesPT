@@ -10,4 +10,5 @@ return [
     'user_updated_error' => 'Erro ao atualizar o user.',
     'user_updated_admin_forbidden' => 'Editar o user Administrador não é permitido.',
     'user_admin_deleted_forbidden' => 'Eliminar o user Administrador não é permitido.',
+    'login_domains_update_failed' => 'Erro ao atualizar os domínios de login.',
 ];

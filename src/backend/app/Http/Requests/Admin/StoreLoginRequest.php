@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
-class StoreRoleRequest extends FormRequest
+class StoreLoginRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,11 +22,9 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'string', 'max:255',
-                Rule::unique('roles', 'nome')->ignore($this->route('role'))],
-            'descricao' => 'nullable|string|max:255',
-            'permissoes' => 'required|array',
-            'permissoes.*' => 'integer|exists:permissoes,id',
+            '*' => 'array',
+            '*.dominio' => 'required|string',
+            '*.role_id' => 'nullable|integer|exists:roles,id',
         ];
     }
 }
