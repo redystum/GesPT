@@ -15,4 +15,9 @@ return [
     'user_admin_unblocked_forbidden' => 'Unblocking the Administrator user is not allowed.',
     'user_unblocked_success' => 'User unblocked successfully!',
     'login_domains_update_failed' => 'Error updating login domains.',
+    'login_unauthorized_domain' => 'The provided email domain is not authorized to access this platform.',
+    'login_user_blocked' => 'Your account has been temporarily blocked. Please contact support.',
+    'login_invalid_credentials' => 'Invalid email or password. Please check your credentials and try again.',
+    'login_auth_failed' => 'Authentication failed due to a system error. Please try again later.',
+    'login_success' => 'Login successful.',
 ];

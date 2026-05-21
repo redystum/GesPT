@@ -52,7 +52,7 @@ class AuthController extends Controller
 
         if ($matched_domain === false) {
             return response()->json([
-                'message' => 'Unauthorized domain',
+                'message' => __('messages.login_unauthorized_domain'),
             ], 401);
         }
 
@@ -60,17 +60,21 @@ class AuthController extends Controller
         if ($user && $user->type === User::USER_TYPE_LOCAL) {
             if (auth()->attempt($request->only('email', 'password'), $request->remember)) {
 
-                // todo add blocked state here
+                if ($user->blocked){
+                    return response()->json([
+                        'message' => __('messages.login_user_blocked'),
+                    ], 403);
+                }
 
                 $token = $user->createToken('auth_token')->plainTextToken;
                 return response()->json([
-                    'message' => 'Login successful',
+                    'message' => __('messages.login_success'),
                     'access_token' => $token,
                     'token_type' => 'Bearer',
                 ], 200);
             } else {
                 return response()->json([
-                    'message' => 'Invalid credentials',
+                    'message' => __('messages.login_invalid_credentials'),
                 ], 401);
             }
         }
@@ -79,27 +83,29 @@ class AuthController extends Controller
 
         if ($response < 0) {
             return response()->json([
-                'message' => 'Authentication failed',
+                'message' => __('messages.login_auth_failed'),
             ], 401);
         }
 
         if ($response === 0) {
             return response()->json([
-                'message' => 'Invalid credentials',
+                'message' => __('messages.login_invalid_credentials'),
             ], 401);
         }
 
         if ($user) {
-            // todo add blocked state here
+            if ($user->blocked){
+                return response()->json([
+                    'message' => __('messages.login_user_blocked'),
+                ], 403);
+            }
 
             return response()->json([
-                'message' => 'Login successful',
+                'message' => __('messages.login_success'),
                 'access_token' => $user->createToken('auth_token')->plainTextToken,
                 'token_type' => 'Bearer',
             ], 200);
         } else {
-            // TODO add user to db and give the role by domain
-
             $user = User::create([
                 'name' => explode('@', $request->email)[0],
                 'email' => $request->email,
@@ -114,7 +120,7 @@ class AuthController extends Controller
             ]);
 
             return response()->json([
-                'message' => 'Login successful',
+                'message' => __('messages.login_success'),
                 'access_token' => $user->createToken('auth_token')->plainTextToken,
                 'token_type' => 'Bearer',
             ], 200);

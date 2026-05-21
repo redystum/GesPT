@@ -15,4 +15,9 @@ return [
     'user_admin_unblocked_forbidden' => 'Desbloquear o user Administrador não é permitido.',
     'user_unblocked_success' => 'User desbloqueado com sucesso!',
     'login_domains_update_failed' => 'Erro ao atualizar os domínios de login.',
+    'login_unauthorized_domain' => 'O domínio do email fornecido não está autorizado a aceder a esta plataforma.',
+    'login_user_blocked' => 'A sua conta foi temporariamente bloqueada. Por favor, contacte o suporte.',
+    'login_invalid_credentials' => 'Email ou palavra-passe inválidos. Verifique as suas credenciais e tente novamente.',
+    'login_auth_failed' => 'A autenticação falhou devido a um erro de sistema. Por favor, tente novamente mais tarde.',
+    'login_success' => 'Início de sessão bem-sucedido.',
 ];

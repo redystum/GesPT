@@ -49,7 +49,11 @@
     "submit": "Iniciar sessão",
     "forgot": "Esqueceu-se da palavra-passe?",
     "remember": "Lembrar-me",
-    "error": "Email ou palavra-passe inválidos. Por favor, tente novamente."
+    "error": "Email ou palavra-passe inválidos. Por favor, tente novamente.",
+    "unauthorized_domain": "O domínio do email fornecido não está autorizado a aceder a esta plataforma.",
+    "user_blocked": "A sua conta foi temporariamente bloqueada. Por favor, contacte o suporte.",
+    "invalid_credentials": "Email ou palavra-passe inválidos. Verifique as suas credenciais e tente novamente.",
+    "auth_failed": "A autenticação falhou devido a um erro de sistema. Por favor, tente novamente mais tarde."
   },
   "home": {
     "kicker": "Gestão Académica",
