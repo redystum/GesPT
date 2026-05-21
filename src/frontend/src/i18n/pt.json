@@ -279,5 +279,11 @@
       "add_button": "Adicionar Equivalência",
       "add_button_full": "+ Adicionar Equivalência"
     }
+  },
+  "error": {
+    "unexpected": "Ocorreu um erro inesperado. Por favor, tente novamente.",
+    "failedToSaveConfig": "Falha ao guardar a configuração.",
+    "failedToDeleteUser": "Falha ao eliminar utilizador.",
+    "failedToSaveUser": "Falha ao guardar utilizador."
   }
 }

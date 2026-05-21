@@ -785,8 +785,10 @@
 
 <script setup>
 import { ref, watch, onMounted, onUnmounted, inject, computed } from 'vue'
+import { useI18n } from '@/i18n'
 import SearchableDropdown from '../SearchableDropdown.vue'
 
+const { t } = useI18n()
 const api = inject('api')
 
 const domains = ref([])
@@ -1008,7 +1010,7 @@ const addUser = async () => {
          errors.value = { general: error.response.data.message }
       }
     } else {
-      errors.value = { general: 'An unexpected error occurred. Please try again.' }
+      errors.value = { general: t('error.unexpected') }
       console.error('Error adding user:', error)
     }
   } finally {
@@ -1060,7 +1062,7 @@ const saveUser = async () => {
     closeEditUserModal()
   } catch (error) {
     console.error('Error saving user:', error)
-    editUserError.value = error.response?.data?.message || 'Failed to save user.'
+    editUserError.value = error.response?.data?.message || t('error.failedToSaveUser')
   } finally {
     isEditingUser.value = false
   }
@@ -1088,7 +1090,7 @@ const deleteUser = async () => {
     closeDeleteModal()
   } catch (error) {
     console.error('Error deleting user:', error)
-    deleteError.value = error.response?.data?.message || 'Failed to delete user.'
+    deleteError.value = error.response?.data?.message || t('error.failedToDeleteUser')
   } finally {
     isDeleting.value = false
   }
@@ -1117,7 +1119,7 @@ const saveConfig = async () => {
     if (error.response?.data?.message) {
       configError.value = error.response.data.message
     } else {
-      configError.value = 'Failed to save configuration.'
+      configError.value = t('error.failedToSaveConfig')
     }
   } finally {
     isSavingConfig.value = false

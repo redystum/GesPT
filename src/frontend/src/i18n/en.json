@@ -278,5 +278,11 @@
       "add_button": "Add Equivalence",
       "add_button_full": "+ Add Equivalence"
     }
+  },
+  "error": {
+    "unexpected": "An unexpected error occurred. Please try again.",
+    "failedToSaveConfig": "Failed to save configuration.",
+    "failedToDeleteUser": "Failed to delete user.",
+    "failedToSaveUser": "Failed to save user."
   }
 }
