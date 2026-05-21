@@ -5,11 +5,12 @@
     "app_title": "GesPT | Plataforma Académica do IPLeiria"
   },
   "nav": {
-    "catalog": "Catálogo",
+    "home": "Inicio",
     "admin": "Administração",
     "compare": "Comparação",
     "wizard": "Criar Plano",
     "login": "Entrar",
+    "logout": "Terminar sessão",
     "theme_light": "Mudar para modo claro",
     "theme_dark": "Mudar para modo escuro",
     "language_toggle": "Mudar idioma"

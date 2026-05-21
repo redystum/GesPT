@@ -93,10 +93,12 @@
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const api = inject('api')
 const { t } = useI18n()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
@@ -112,6 +114,10 @@ const handleLogin = async () => {
       remember: rememberMe.value
     })
     console.log('Login successful:', response.data)
+
+    // Save the entire response object (including user and access_token) to the store
+    authStore.login(response.data)
+
     // Redirect to home or dashboard on successful login
     router.push('/')
   } catch (error) {

@@ -81,11 +81,35 @@
               />
             </button>
 
-            <div
-              class="ml-1 inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-xs font-semibold text-[color:var(--muted)]"
-            >
-              IP
+            <div v-if="authStore.isLoggedIn" class="relative ml-1" ref="dropdownRef">
+              <div
+                @click="toggleDropdown"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-xs font-semibold text-[color:var(--muted)] cursor-pointer"
+              >
+                {{ authStore.initials || 'U' }}
+              </div>
+
+              <!-- Dropdown for logout -->
+              <div
+                v-show="isDropdownOpen"
+                class="absolute right-0 top-full mt-1 w-32 rounded-md bg-white dark:bg-neutral-900 shadow-lg border border-neutral-200 dark:border-neutral-800"
+              >
+                <button
+                  @click="logout"
+                  class="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
+
+            <router-link
+              v-else
+              to="/login"
+              class="ml-1 inline-flex h-9 items-center justify-center rounded-md bg-neutral-900 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
+            >
+              {{ $t('nav.login') }}
+            </router-link>
           </div>
         </div>
       </div>
@@ -94,24 +118,61 @@
 </template>
 
 <script setup>
-import { computed } from 'vue'
+import { computed, ref, onMounted, onUnmounted } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
 import { useTheme } from '@/composables/useTheme'
+import { useAuthStore } from '@/stores/auth'
 
+const router = useRouter()
 const LOCALE_STORAGE_KEY = 'gespt.locale'
 const { locale, t } = useI18n()
 const { isDark, toggleTheme } = useTheme()
+const authStore = useAuthStore()
 
-const navLinks = computed(() => [
-  { name: t('nav.catalog'), path: '/' },
-  { name: t('nav.admin'), path: '/admin' },
-  { name: t('nav.compare'), path: '/compare' },
-  { name: t('nav.wizard'), path: '/wizard' },
-  { name: t('nav.login'), path: '/login' }
-])
+const isDropdownOpen = ref(false)
+const dropdownRef = ref(null)
+
+const toggleDropdown = () => {
+  isDropdownOpen.value = !isDropdownOpen.value
+}
+
+const closeDropdown = (event) => {
+  if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
+    isDropdownOpen.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', closeDropdown)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', closeDropdown)
+})
+
+const navLinks = computed(() => {
+  const links = [
+    { name: t('nav.home'), path: '/' },
+    { name: t('nav.compare'), path: '/compare' },
+    { name: t('nav.wizard'), path: '/wizard' },
+  ]
+
+  if (authStore.isLoggedIn) {
+    links.push({ name: t('nav.admin'), path: '/admin' })
+  }
+
+  return links
+})
 
 const toggleLanguage = () => {
   locale.value = locale.value === 'pt' ? 'en' : 'pt'
   localStorage.setItem(LOCALE_STORAGE_KEY, locale.value)
+}
+
+const logout = () => {
+  authStore.logout()
+  isDropdownOpen.value = false
+  router.push('/')
 }
 </script>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\LoginRequest;
+use App\Http\Resources\Admin\UserShowResource;
 use App\Models\LoginDominios;
 use App\Models\User;
 use App\Models\UserRole;
@@ -71,6 +72,7 @@ class AuthController extends Controller
                     'message' => __('messages.login_success'),
                     'access_token' => $token,
                     'token_type' => 'Bearer',
+                    'user' => UserShowResource::make($user->load('roles', 'permissoes')),
                 ], 200);
             } else {
                 return response()->json([
@@ -99,15 +101,11 @@ class AuthController extends Controller
                     'message' => __('messages.login_user_blocked'),
                 ], 403);
             }
-
-            return response()->json([
-                'message' => __('messages.login_success'),
-                'access_token' => $user->createToken('auth_token')->plainTextToken,
-                'token_type' => 'Bearer',
-            ], 200);
         } else {
+            $name = explode('@', $request->email)[0];
+            $name = str_replace('.', ' ', $name);
             $user = User::create([
-                'name' => explode('@', $request->email)[0],
+                'name' => $name,
                 'email' => $request->email,
                 'type' => User::USER_TYPE_REMOTE,
             ]);
@@ -118,13 +116,14 @@ class AuthController extends Controller
                 'id_user' => $user->id,
                 'id_role' => $id_role,
             ]);
-
-            return response()->json([
-                'message' => __('messages.login_success'),
-                'access_token' => $user->createToken('auth_token')->plainTextToken,
-                'token_type' => 'Bearer',
-            ], 200);
         }
+
+        return response()->json([
+            'message' => __('messages.login_success'),
+            'access_token' => $user->createToken('auth_token')->plainTextToken,
+            'token_type' => 'Bearer',
+            'user' => UserShowResource::make($user->load('roles', 'permissoes')),
+        ], 200);
 
     }
 }
