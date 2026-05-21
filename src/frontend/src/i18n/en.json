@@ -154,7 +154,17 @@
     "delete_user_title": "Delete User",
     "delete_user_desc": "Are you sure you want to delete this user? This action cannot be undone.",
     "delete_user_confirm": "Delete User",
-    "role_permissions_warning": "Permissions inherited from roles cannot be removed manually. You can assign additional custom permissions below."
+    "role_permissions_warning": "Permissions inherited from roles cannot be removed manually. You can assign additional custom permissions below.",
+    "unblock": "Unblock",
+    "block": "Block",
+    "block_user_title": "Block User",
+    "unblock_user_title": "Unblock User",
+    "block_reason_label": "Reason (optional)",
+    "block_reason_placeholder": "Add a reason for blocking",
+    "block_reason_title": "Block reason",
+    "block_reason_empty": "No reason provided.",
+    "block_confirm": "Block",
+    "unblock_confirm": "Unblock"
   },
   "compare": {
     "kicker": "Curriculum Analysis",
@@ -172,7 +182,8 @@
     "ects": "ECTS",
     "empty_hint": "No equivalences were found for the selected combination.",
     "select_prompt_title": "Select a course and plans to compare",
-    "select_prompt_subtitle": "Choose the course and curriculum plans to open detailed analysis."
+    "select_prompt_subtitle": "Choose the course and curriculum plans to open detailed analysis.",
+    "semester": "Semester"
   },
   "wizard": {
     "kicker": "Guided Setup",

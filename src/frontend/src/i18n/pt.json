@@ -154,7 +154,17 @@
     "delete_user_title": "Eliminar Utilizador",
     "delete_user_desc": "Tem a certeza de que deseja eliminar este utilizador? Esta ação não pode ser desfeita.",
     "delete_user_confirm": "Eliminar Utilizador",
-    "role_permissions_warning": "As permissões herdadas de roles não podem ser removidas individualmente. Pode atribuir permissões individuais adicionais abaixo."
+    "role_permissions_warning": "As permissões herdadas de roles não podem ser removidas individualmente. Pode atribuir permissões individuais adicionais abaixo.",
+    "unblock": "Desbloquear",
+    "block": "Bloquear",
+    "block_user_title": "Bloquear Utilizador",
+    "unblock_user_title": "Desbloquear Utilizador",
+    "block_reason_label": "Motivo (opcional)",
+    "block_reason_placeholder": "Adicione um motivo para o bloqueio",
+    "block_reason_title": "Motivo do bloqueio",
+    "block_reason_empty": "Nenhum motivo fornecido.",
+    "block_confirm": "Bloquear",
+    "unblock_confirm": "Desbloquear"
   },
   "compare": {
     "kicker": "Análise Curricular",

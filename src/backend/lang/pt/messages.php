@@ -10,5 +10,9 @@ return [
     'user_updated_error' => 'Erro ao atualizar o user.',
     'user_updated_admin_forbidden' => 'Editar o user Administrador não é permitido.',
     'user_admin_deleted_forbidden' => 'Eliminar o user Administrador não é permitido.',
+    'user_admin_blocked_forbidden' => 'Bloquear o user Administrador não é permitido.',
+    'user_blocked_success' => 'User bloqueado com sucesso!',
+    'user_admin_unblocked_forbidden' => 'Desbloquear o user Administrador não é permitido.',
+    'user_unblocked_success' => 'User desbloqueado com sucesso!',
     'login_domains_update_failed' => 'Erro ao atualizar os domínios de login.',
 ];

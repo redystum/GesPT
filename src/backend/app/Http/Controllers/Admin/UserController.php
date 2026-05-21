@@ -100,4 +100,42 @@ class UserController extends Controller
             'message' => __('messages.user_deleted_success'),
         ], 200);
     }
+
+    public function block(User $user, Request $request)
+    {
+        if ($user->id == 1){
+            return response()->json([
+                'message' => __('messages.user_admin_blocked_forbidden'),
+            ], 403);
+        }
+
+        $user->update([
+            'blocked' => true,
+            'blocked_reason' => $request->input('reason'),
+            'blocked_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => __('messages.user_blocked_success'),
+        ], 200);
+    }
+
+    public function unblock(User $user)
+    {
+        if ($user->id == 1){
+            return response()->json([
+                'message' => __('messages.user_admin_unblocked_forbidden'),
+            ], 403);
+        }
+
+        $user->update([
+            'blocked' => false,
+            'blocked_reason' => null,
+            'blocked_at' => null,
+        ]);
+
+        return response()->json([
+            'message' => __('messages.user_unblocked_success'),
+        ], 200);
+    }
 }

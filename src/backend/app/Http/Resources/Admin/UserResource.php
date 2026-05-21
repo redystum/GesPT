@@ -20,6 +20,7 @@ class UserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'type' => $this->type,
+            'blocked' => $this->blocked,
             'roles' => RoleResource::collection($this->whenLoaded('roles')),
             'custom_permissions' => $this->relationLoaded('permissoes') ? $this->permissoes->count() : 0
         ];

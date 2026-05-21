@@ -168,6 +168,7 @@
               v-for="user in users"
               :key="user.id"
               class="transition-colors hover:bg-neutral-50 dark:hover:bg-neutral-800/30 group"
+              :class="{ 'opacity-50': isUserBlocked(user) }"
             >
               <td class="px-6 py-3.5">
                 <div class="flex items-center gap-2.5">
@@ -226,6 +227,22 @@
                     class="text-sm"
                   />
                   <font-awesome-icon v-else :icon="['fas', 'pen']" class="text-sm" />
+                </button>
+                <button
+                  @click="openBlockModal(user)"
+                  :disabled="user.id === 1"
+                  class="inline-flex items-center justify-center w-8 h-8 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+                  :class="[
+                    isUserBlocked(user)
+                      ? 'text-red-500 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20'
+                      : 'text-neutral-400 hover:text-amber-600 dark:hover:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20'
+                  ]"
+                  :title="isUserBlocked(user) ? ($t('admin.unblock') || 'Unblock') : ($t('admin.block') || 'Block')"
+                >
+                  <font-awesome-icon
+                    :icon="['fas', isUserBlocked(user) ? 'unlock' : 'lock']"
+                    class="text-sm"
+                  />
                 </button>
                 <button
                   @click="confirmDelete(user)"
@@ -780,6 +797,103 @@
         </div>
       </div>
     </Transition>
+
+    <!-- Block/Unblock Confirmation Modal -->
+    <Transition
+      enter-active-class="transition duration-200 ease-out"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition duration-150 ease-in"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
+    >
+      <div
+        v-if="showBlockModal"
+        class="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6"
+      >
+        <div
+          class="absolute inset-0 bg-neutral-900/40 backdrop-blur-sm"
+          @click="closeBlockModal"
+        ></div>
+        <div
+          class="relative w-full max-w-md bg-white dark:bg-[#1a1a1a] rounded-2xl shadow-xl overflow-hidden border border-neutral-200 dark:border-neutral-800 p-6"
+        >
+          <div class="flex flex-col gap-4">
+            <div class="flex items-start gap-3">
+              <div
+                class="w-10 h-10 rounded-full bg-amber-100 dark:bg-amber-900/30 flex items-center justify-center text-amber-600 dark:text-amber-400"
+              >
+                <font-awesome-icon :icon="['fas', blockAction === 'block' ? 'lock' : 'unlock']" />
+              </div>
+              <div>
+                <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                  {{
+                    blockAction === 'block'
+                      ? ($t('admin.block_user_title') || 'Block User')
+                      : ($t('admin.unblock_user_title') || 'Unblock User')
+                  }}
+                </h3>
+                <p class="text-sm text-neutral-500 dark:text-neutral-400">
+                  {{ blockUser?.name }}
+                </p>
+              </div>
+            </div>
+
+            <div v-if="blockAction === 'block'" class="space-y-2">
+              <label
+                class="block text-xs font-semibold uppercase tracking-wider text-neutral-700 dark:text-neutral-300"
+              >
+                {{ $t('admin.block_reason_label') || 'Reason (optional)' }}
+              </label>
+              <textarea
+                v-model="blockReasonInput"
+                rows="3"
+                class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3.5 py-2.5 text-sm outline-none transition-shadow bg-neutral-50 dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100"
+                :placeholder="$t('admin.block_reason_placeholder') || 'Add a reason for blocking'"
+              ></textarea>
+            </div>
+
+            <div v-else class="text-sm text-neutral-600 dark:text-neutral-300">
+              <p class="font-semibold text-neutral-800 dark:text-neutral-200">
+                {{ $t('admin.block_reason_title') || 'Block reason' }}
+              </p>
+              <p class="mt-1">
+                {{ blockReasonDisplay || ($t('admin.block_reason_empty') || 'No reason provided.') }}
+              </p>
+            </div>
+
+            <div
+              v-if="blockError"
+              class="w-full px-4 py-3 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/20 rounded-lg text-red-600 dark:text-red-400 text-sm flex items-start gap-2"
+            >
+              <font-awesome-icon :icon="['fas', 'circle-exclamation']" class="mt-0.5 shrink-0" />
+              <span>{{ blockError }}</span>
+            </div>
+
+            <div class="flex gap-3 w-full pt-2">
+              <button
+                @click="closeBlockModal"
+                class="flex-1 px-4 py-2 text-sm font-medium rounded-lg text-neutral-600 dark:text-neutral-400 bg-neutral-100 dark:bg-neutral-800 hover:bg-neutral-200 dark:hover:bg-neutral-700 transition-colors cursor-pointer"
+              >
+                {{ $t('common.cancel') || 'Cancel' }}
+              </button>
+              <button
+                @click="confirmBlockAction"
+                class="flex-1 inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors bg-amber-600 text-white hover:bg-amber-700 shadow-sm"
+                :disabled="isBlocking"
+              >
+                <font-awesome-icon v-if="isBlocking" :icon="['fas', 'spinner']" spin />
+                {{
+                  blockAction === 'block'
+                    ? ($t('admin.block_confirm') || 'Block')
+                    : ($t('admin.unblock_confirm') || 'Unblock')
+                }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
@@ -819,6 +933,14 @@ const showDeleteModal = ref(false)
 const userToDelete = ref(null)
 const isDeleting = ref(false)
 const deleteError = ref(null)
+
+const showBlockModal = ref(false)
+const isBlocking = ref(false)
+const blockUser = ref(null)
+const blockAction = ref('block')
+const blockReasonInput = ref('')
+const blockReasonDisplay = ref('')
+const blockError = ref(null)
 
 const editUserForm = ref({
   id: null,
@@ -1093,6 +1215,68 @@ const deleteUser = async () => {
     deleteError.value = error.response?.data?.message || t('error.failedToDeleteUser')
   } finally {
     isDeleting.value = false
+  }
+}
+
+const isUserBlocked = (user) => {
+  if (!user) return false
+  return Boolean(user.blocked_at || user.is_blocked || user.blocked)
+}
+
+const extractBlockReason = (userData) => {
+  return userData?.block_reason || userData?.blockReason || userData?.blocked_reason || ''
+}
+
+const openBlockModal = async (user) => {
+  blockUser.value = user
+  blockError.value = null
+  blockReasonInput.value = ''
+  blockReasonDisplay.value = ''
+  isBlocking.value = false
+
+  try {
+    const response = await api.get(`/admin/users/${user.id}`)
+    const userData = response.data?.data || response.data || {}
+    const blocked = Boolean(
+      userData.blocked_at || userData.is_blocked || userData.blocked || isUserBlocked(user)
+    )
+    blockAction.value = blocked ? 'unblock' : 'block'
+    blockReasonDisplay.value = extractBlockReason(userData)
+  } catch (error) {
+    console.error('Error loading user block info:', error)
+    blockAction.value = isUserBlocked(user) ? 'unblock' : 'block'
+  }
+
+  showBlockModal.value = true
+}
+
+const closeBlockModal = () => {
+  showBlockModal.value = false
+  blockUser.value = null
+  blockError.value = null
+  blockReasonInput.value = ''
+  blockReasonDisplay.value = ''
+}
+
+const confirmBlockAction = async () => {
+  if (!blockUser.value) return
+  isBlocking.value = true
+  blockError.value = null
+
+  try {
+    if (blockAction.value === 'unblock') {
+      await api.post(`/admin/users/${blockUser.value.id}/unblock`)
+    } else {
+      const payload = { reason: blockReasonInput.value || null }
+      await api.post(`/admin/users/${blockUser.value.id}/block`, payload)
+    }
+    await fetchUsers(pagination.value.current_page)
+    closeBlockModal()
+  } catch (error) {
+    console.error('Error updating block status:', error)
+    blockError.value = error.response?.data?.message || t('error.unexpected')
+  } finally {
+    isBlocking.value = false
   }
 }
 
