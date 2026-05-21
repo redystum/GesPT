@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUcRequest;
 use App\Http\Requests\UpdateUcRequest;
 use App\Http\Resources\UcResource;
+use App\Models\PlanoUc;
 use Illuminate\Http\Request;
 use App\Models\Uc;
 
@@ -36,7 +37,24 @@ class UnidadeCurricularController extends Controller
 
     public function store(StoreUcRequest $request)
     {
-        $uc = Uc::create($request->validated());
+        $uc = Uc::create([
+            'nome' => $request->nome,
+            'name' => $request->name,
+            'sigla' => $request->sigla,
+            'ects' => $request->ects,
+            'ano' => $request->ano,
+            'semestre' => $request->semestre,
+            'id_curso' => $request->id_curso,
+            'horas' => $request->horas ?? 0,
+            'horas_t' => $request->t ?? 0,
+            'horas_tp' => $request->tp ?? 0,
+            'horas_pl' => $request->pl ?? 0,
+            'horas_tc' => $request->tc ?? 0,
+            'horas_s' => $request->s ?? 0,
+            'horas_e' => $request->e ?? 0,
+            'horas_ot' => $request->ot ?? 0,
+            'horas_o' => $request->o ?? 0,
+        ]);
 
         return response()->json([
             'message' => 'Unidade curricular criada com sucesso!',

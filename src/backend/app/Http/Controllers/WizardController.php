@@ -38,17 +38,6 @@ class WizardController extends Controller
             foreach ($data->ucs as $ucData) {
                 $uc = Uc::find($ucData->id);
                 if (!$uc && $ucData->isNew) {
-                    $horas = [
-                        $ucData->horas_trabalho_totais ?? 0,
-                        $ucData->t ?? 0,
-                        $ucData->tp ?? 0,
-                        $ucData->pl ?? 0,
-                        $ucData->tc ?? 0,
-                        $ucData->s ?? 0,
-                        $ucData->e ?? 0,
-                        $ucData->ot ?? 0,
-                        $ucData->o ?? 0,
-                    ];
                     $uc = Uc::create([
                         'nome' => $ucData->nome,
                         'name' => $ucData->name,

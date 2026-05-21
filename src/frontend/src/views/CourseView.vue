@@ -92,7 +92,7 @@
                 {{ $t('course_detail.ucs_table_title') }}
               </h2>
               <p class="text-xs text-neutral-400 mt-0.5">
-                {{ ucs.length }} {{ $t('course_detail.ucs_table_title').toLowerCase() }} configured
+                {{ ucs.length }} {{ $t('course_detail.ucs_table_title').toLowerCase() }}
               </p>
             </div>
             <button
@@ -203,16 +203,15 @@
                 {{ $t('course_detail.plans_table_title') }}
               </h2>
               <p class="text-xs text-neutral-400 mt-0.5">
-                {{ planos.length }} {{ $t('course_detail.plans_table_title').toLowerCase() }} configured
+                {{ planos.length }} {{ $t('course_detail.plans_table_title').toLowerCase() }}
               </p>
             </div>
-            <button
-              @click="openAddPlanModal"
+            <router-link :to="{ name: 'wizard'}"
               class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 cursor-pointer"
             >
               <font-awesome-icon :icon="['fas', 'plus']" class="text-[10px]" />
               {{ $t('course_detail.add_plan') }}
-            </button>
+            </router-link>
           </div>
 
           <!-- Loader for Planos -->
@@ -665,7 +664,7 @@ import { useI18n } from '@/i18n'
 
 const route = useRoute()
 const router = useRouter()
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const api = inject('api')
 
 const courseId = computed(() => route.params.id)
@@ -823,7 +822,7 @@ const saveCourse = async () => {
 const openDeleteCourseModal = () => {
   deleteConfig.type = 'course'
   deleteConfig.targetId = courseId.value
-  deleteConfig.message = useI18n().t('course_detail.confirm_delete_course')
+  deleteConfig.message = t('course_detail.confirm_delete_course')
   modals.delete = true
 }
 
@@ -927,22 +926,13 @@ const saveUc = async () => {
 const openDeleteUcModal = (uc) => {
   deleteConfig.type = 'uc'
   deleteConfig.targetId = uc.id
-  deleteConfig.message = useI18n().t('course_detail.confirm_delete_uc') + ` (${uc.nome})`
+  deleteConfig.message = t('course_detail.confirm_delete_uc') + ` (${uc.nome})`
   modals.delete = true
 }
 
 // -------------------------------------------------------------
 // Study Plan Actions
 // -------------------------------------------------------------
-const openAddPlanModal = () => {
-  isEditing.value = false
-  modalError.value = null
-  modalData.plan = {
-    id: null,
-    ano: ''
-  }
-  modals.plan = true
-}
 
 const openEditPlanModal = (plan) => {
   isEditing.value = true
@@ -999,7 +989,7 @@ const savePlan = async () => {
 const openDeletePlanModal = (plan) => {
   deleteConfig.type = 'plan'
   deleteConfig.targetId = plan.id
-  deleteConfig.message = useI18n().t('course_detail.confirm_delete_plan') + ` (${plan.ano})`
+  deleteConfig.message = t('course_detail.confirm_delete_plan') + ` (${plan.ano})`
   modals.delete = true
 }
 

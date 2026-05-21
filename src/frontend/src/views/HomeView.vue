@@ -22,7 +22,10 @@
             />
           </div>
 
-          <button class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap">
+          <button
+            @click="openCreateModal"
+            class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap cursor-pointer"
+          >
             <font-awesome-icon :icon="['fas', 'plus']" class="text-base leading-none" />
             {{ $t('home.new_course') }}
           </button>
@@ -68,7 +71,7 @@
 
         <div class="mb-4 flex flex-wrap gap-2">
           <router-link
-            v-for="plano in course.planos_estudo"
+            v-for="plano in (course.planos_estudo || [])"
             :to="{ path: '/compare', query: { course: course.id, plan: plano.id } }"
             :key="plano.id"
             class="inline-flex items-center rounded-md border border-neutral-600 px-2.5 py-1 text-xs font-medium transition-colors duration-150 hover:text-[color:var(--primary)]"
@@ -78,22 +81,149 @@
         </div>
 
         <div class="border-t border-neutral-600 pt-3 flex justify-between items-center text-sm text-neutral-500">
-          <span>{{ course.planos_estudo.length }} {{ $t('home.planos') }}</span>
+          <span>{{ (course.planos_estudo || []).length }} {{ $t('home.planos') }}</span>
           <router-link :to="{ name: 'course', params: { id: course.id } }" class="text-xs font-semibold text-neutral-900 dark:text-neutral-200 hover:underline">
             {{ $t('course_detail.title') }} &rarr;
           </router-link>
         </div>
       </article>
     </div>
+    
+    <!-- CREATE COURSE MODAL -->
+    <Transition name="fade">
+      <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+        <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-lg w-full overflow-hidden animate-zoom-in">
+          <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+              {{ $t('home.new_course') }}
+            </h3>
+            <button @click="showCreateModal = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
+              <font-awesome-icon :icon="['fas', 'times']" />
+            </button>
+          </div>
+          
+          <form @submit.prevent="createCourse" class="p-6 space-y-4">
+            <div v-if="createError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
+              {{ createError }}
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                {{ $t('course_detail.pt_name') }} *
+              </label>
+              <input
+                v-model="newCourseData.nome"
+                type="text"
+                required
+                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                {{ $t('course_detail.en_name') }}
+              </label>
+              <input
+                v-model="newCourseData.name"
+                type="text"
+                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+              />
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('course_detail.acronym') }} *
+                </label>
+                <input
+                  v-model="newCourseData.sigla"
+                  type="text"
+                  required
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('course_detail.code') }} *
+                </label>
+                <input
+                  v-model="newCourseData.codigo"
+                  type="text"
+                  required
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
+              <button
+                type="button"
+                @click="showCreateModal = false"
+                class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+              >
+                {{ $t('common.cancel') }}
+              </button>
+              <button
+                type="submit"
+                :disabled="creating"
+                class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
+              >
+                <font-awesome-icon v-if="creating" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
+                {{ $t('common.save') }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
 
 <script setup>
 import { inject, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
 
 const { locale } = useI18n()
 const api = inject('api')
+const router = useRouter()
+
+const showCreateModal = ref(false)
+const creating = ref(false)
+const createError = ref(null)
+const newCourseData = ref({
+  nome: '',
+  name: '',
+  sigla: '',
+  codigo: ''
+})
+
+function openCreateModal() {
+  createError.value = null
+  newCourseData.value = {
+    nome: '',
+    name: '',
+    sigla: '',
+    codigo: ''
+  }
+  showCreateModal.value = true
+}
+
+async function createCourse() {
+  creating.value = true
+  createError.value = null
+  try {
+    const response = await api.post('/cursos', newCourseData.value)
+    const createdCourse = response.data.data
+    showCreateModal.value = false
+    router.push({ name: 'course', params: { id: createdCourse.id } })
+  } catch (err) {
+    console.error('Failed to create course:', err)
+    createError.value = err.response?.data?.message || 'An error occurred while creating the course.'
+  } finally {
+    creating.value = false
+  }
+}
 
 const courses = ref([])
 const searchInput = ref('')
