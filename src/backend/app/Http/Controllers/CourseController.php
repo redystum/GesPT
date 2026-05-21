@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreCourseRequest;
 use App\Http\Requests\UpdateCourseRequest;
 use App\Http\Resources\CursoResource;
+use App\Http\Resources\PlanoEstudoByCursoResource;
 use App\Http\Resources\PlanoEstudoResource;
+use App\Http\Resources\UcResource;
 use App\Models\Curso;
 use App\Models\PlanoEstudo;
 use Illuminate\Http\Request;
@@ -88,5 +90,21 @@ class CourseController extends Controller
             'data' => PlanoEstudoResource::make($plano),
         ], 200);
 
+    }
+
+    public function ucs(Curso $curso)
+    {
+        $ucs = $curso->ucs;
+        return response()->json([
+            'data' => UcResource::collection($ucs),
+        ], 200);
+    }
+
+    public function planos(Curso $curso)
+    {
+        $planos = $curso->load('planoEstudos.planoUcs')->planoEstudos;
+        return response()->json([
+            'data' => PlanoEstudoByCursoResource::collection($planos),
+        ], 200);
     }
 }

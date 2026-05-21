@@ -24,13 +24,15 @@ Route::post('login', [AuthController::class, 'login']);;
 Route::get('/compare', [EquivalencesController::class, 'compare']);
 
 // Routes for courses
-Route::apiResource('cursos', CourseController::class);
 Route::get('/cursos/{curso}/latest-plan', [CourseController::class, 'getLatestPlan']);
+Route::get('/cursos/{curso}/ucs', [CourseController::class, 'ucs']);
+Route::get('/cursos/{curso}/planos', [CourseController::class, 'planos']);
+Route::apiResource('cursos', CourseController::class);
 
 // Routes for Planos de Estudo
+Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'getUcs']);
 Route::apiResource('planos-estudo', PlanoEstudoController::class)
     ->parameters(['planos-estudo' => 'planoEstudo']);
-Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'getUcs']);
 
 // Routes for UCs
 Route::apiResource('ucs', UnidadeCurricularController::class);

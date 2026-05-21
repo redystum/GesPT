@@ -26,6 +26,7 @@ class UpdateCourseRequest extends FormRequest
 
         return [
             'nome' => ['sometimes', 'string', 'max:255'],
+            'name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'sigla' => [
                 'sometimes', 
                 'string', 

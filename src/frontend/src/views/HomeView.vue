@@ -56,12 +56,12 @@
         style="animation: fade-in-up 0.45s ease-out backwards"
         :style="{ animationDelay: `${(course.id % 4) * 55}ms` }"
       >
-        <router-link :to="{ path: '/compare', query: { course: course.id } }" class="mb-3 block">
+        <router-link :to="{ name: 'course', params: { id: course.id } }" class="mb-3 block group">
           <div class="mb-3 flex items-start justify-between gap-2">
             <span class="inline-flex items-center rounded-md px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.06em] bg-neutral-200 dark:bg-neutral-800 text-neutral-700 dark:text-neutral-300">{{ course.sigla }} · {{ course.codigo }}</span>
           </div>
 
-          <h3 class="text-lg font-bold leading-tight">
+          <h3 class="text-lg font-bold leading-tight group-hover:text-neutral-600 dark:group-hover:text-neutral-300 transition-colors">
             {{ locale === 'pt' ? course.nome : course.name }}
           </h3>
         </router-link>
@@ -77,8 +77,11 @@
           </router-link>
         </div>
 
-        <div class="border-t border-neutral-600 pt-3 text-sm text-neutral-500">
-          {{ course.planos_estudo.length }} {{ $t('home.planos') }}
+        <div class="border-t border-neutral-600 pt-3 flex justify-between items-center text-sm text-neutral-500">
+          <span>{{ course.planos_estudo.length }} {{ $t('home.planos') }}</span>
+          <router-link :to="{ name: 'course', params: { id: course.id } }" class="text-xs font-semibold text-neutral-900 dark:text-neutral-200 hover:underline">
+            {{ $t('course_detail.title') }} &rarr;
+          </router-link>
         </div>
       </article>
     </div>

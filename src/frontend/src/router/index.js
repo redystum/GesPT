@@ -9,7 +9,8 @@ const router = createRouter({
     { path: '/admin', name: 'admin', component: () => import('../views/AdminView.vue') },
     { path: '/plano/:id', name: 'compare', component: () => import('../views/PlanoView.vue') },
     { path: '/compare', name: 'compare', component: () => import('../views/ComparingView.vue') },
-    { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') }
+    { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') },
+    { path: '/curso/:id', name: 'course', component: () => import('../views/CourseView.vue') }
   ]
 })
 

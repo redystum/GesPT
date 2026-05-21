@@ -26,6 +26,7 @@ class UpdateUcRequest extends FormRequest
 
         return [
             'nome' => ['sometimes', 'string', 'max:255'],
+            'name' => ['sometimes', 'nullable', 'string', 'max:255'],
             'sigla' => [
                 'sometimes',
                 'string',
@@ -35,6 +36,16 @@ class UpdateUcRequest extends FormRequest
             'ects' => ['sometimes', 'integer', 'min:1'],
             'horas' => ['sometimes', 'integer', 'min:1'],
             'id_curso' => ['sometimes', 'integer', 'exists:cursos,id'],
+            'semestre' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:2'],
+            'ano' => ['sometimes', 'nullable', 'integer', 'min:1', 'max:6'],
+            'horas_t' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_tp' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_pl' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_tc' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_s' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_e' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_ot' => ['sometimes', 'nullable', 'integer', 'min:0'],
+            'horas_o' => ['sometimes', 'nullable', 'integer', 'min:0'],
         ];
     }
 }
