@@ -17,45 +17,122 @@ class PermissionsSeeder extends Seeder
     public function run(): void
     {
         $categories = [
-            ['id' => 1, 'nome' => 'Utilizadores', 'name' => 'Users'],
-            ['id' => 2, 'nome' => 'Cursos e UCs', 'name' => 'Courses and UCs'],
+            ['id' => 1, 'nome' => 'Cursos', 'name' => 'Courses'],
+            ['id' => 2, 'nome' => 'UCs', 'name' => 'UCs'],
             ['id' => 3, 'nome' => 'Planos de estudo', 'name' => 'Study plans'],
-            ['id' => 4, 'nome' => 'Estudantes e Opções', 'name' => 'Students and Options'],
-            ['id' => 5, 'nome' => 'Equivalências', 'name' => 'Equivalences'],
+            ['id' => 4, 'nome' => 'Utilizadores', 'name' => 'Users'],
+            ['id' => 5, 'nome' => 'Roles', 'name' => 'Roles'],
             ['id' => 6, 'nome' => 'Configurações de sistema', 'name' => 'System settings'],
             ['id' => 7, 'nome' => 'Outras', 'name' => 'Others'],
+
+            // TODO: ao adicionar estudantes e opções...
+//            ['id' => -1, 'nome' => 'Estudantes e Opções', 'name' => 'Students and Options'],
         ];
 
-        $permissoes = [
-            // --- User Management (Internal Control) ---
-            ['id_categoria' => 1, 'nome' => 'Adicionar Utilizadores', 'permissao' => 'can_create_users', 'descricao' => 'Permite adicionar utilizadores ao sistema'],
-            ['id_categoria' => 1, 'nome' => 'Remover Utilizadores', 'permissao' => 'can_delete_users', 'descricao' => 'Permite remover permanentemente utilizadores'],
-            ['id_categoria' => 1, 'nome' => 'Bloquear Utilizadores', 'permissao' => 'can_block_users', 'descricao' => 'Permite suspender o acesso de um utilizador'],
-            ['id_categoria' => 1, 'nome' => 'Gerir Cargos', 'permissao' => 'can_manage_roles', 'descricao' => 'Permite Criar, editar e eliminar cargos'],
-            ['id_categoria' => 1, 'nome' => 'Atribuir Cargos', 'permissao' => 'can_give_roles', 'descricao' => 'Permite atribuir cargos a utilizadores'],
-            ['id_categoria' => 1, 'nome' => 'Atribuir permissões individuais', 'permissao' => 'can_give_permitions', 'descricao' => 'Permite dar permissões específicas a utilizadores'],
+        $policyResources = [
+            'Curso' => [
+                'slug' => 'cursos', 'id_categoria' => 1, 'singular' => 'Curso', 'plural' => 'Cursos',
+                'abilities' => ['viewAny', 'view', 'create', 'update', 'delete']
+            ],
 
-            // --- Cursos & UCs ---
-            ['id_categoria' => 2, 'nome' => 'Gerir Cursos', 'permissao' => 'can_manage_cursos', 'descricao' => 'Permite criar, editar e eliminar cursos'],
-            ['id_categoria' => 2, 'nome' => 'Gerir Unidades Curriculares', 'permissao' => 'can_manage_ucs', 'descricao' => 'Permite gerir as cadeiras (UCs) do sistema'],
+            'Uc' => [
+                'slug' => 'ucs', 'id_categoria' => 2, 'singular' => 'Unidade Curricular', 'plural' => 'Unidades Curriculares',
+                'abilities' => ['viewAny', 'view', 'create', 'update', 'delete']
+            ],
 
-            // --- Planos de Estudo ---
-            ['id_categoria' => 3, 'nome' => 'Criar Planos de Estudo', 'permissao' => 'can_create_planos', 'descricao' => 'Permite criar novos planos de estudo'],
-            ['id_categoria' => 3, 'nome' => 'Editar Planos de Estudo', 'permissao' => 'can_edit_planos', 'descricao' => 'Permite alterar a estrutura de planos existentes'],
-            ['id_categoria' => 3, 'nome' => 'Visualizar Planos', 'permissao' => 'can_view_planos', 'descricao' => 'Permite consultar a lista de planos e cadeiras'],
+            'PlanoEstudo' => [
+                'slug' => 'planos_estudo', 'id_categoria' => 3, 'singular' => 'Plano de Estudo', 'plural' => 'Planos de Estudo',
+                'abilities' => ['viewAny', 'view', 'create', 'update', 'delete']
+            ],
 
-            // --- Estudantes & Opções ---
-            ['id_categoria' => 4, 'nome' => 'Gerir Estudantes', 'permissao' => 'can_manage_estudantes', 'descricao' => 'Permite associar estudantes a planos'],
-            ['id_categoria' => 4, 'nome' => 'Validar Opções', 'permissao' => 'can_validate_options', 'descricao' => 'Permite validar as escolhas de opcionais dos alunos'],
+            'User' => [
+                'slug' => 'users', 'id_categoria' => 4, 'singular' => 'Utilizador', 'plural' => 'Utilizadores',
+                'abilities' => [
+                    'viewAny', 'create', 'update', 'delete',
+                    ['action' => 'block', 'nome' => 'Bloquear Utilizador', 'descricao' => 'Permite bloquear um utilizador', 'required' => ['view_any']]
+                ]
+            ],
 
-            // --- Equivalências ---
-            ['id_categoria' => 5, 'nome' => 'Criar Equivalências', 'permissao' => 'can_create_equivalencias', 'descricao' => 'Permite criar regras de equivalência entre planos'],
-            ['id_categoria' => 5, 'nome' => 'Editar Equivalências', 'permissao' => 'can_edit_equivalencias', 'descricao' => 'Permite alterar regras de equivalência'],
-            ['id_categoria' => 5, 'nome' => 'Eliminar Equivalências', 'permissao' => 'can_delete_equivalencias', 'descricao' => 'Permite remover regras de equivalência'],
+            'UserRole' => [
+                'slug' => 'user_roles', 'id_categoria' => 4, 'singular' => 'Role ao Utilizador', 'plural' => 'Roles ao Utilizador',
+                'abilities' => ['add', 'remove']
+            ],
 
-            // --- Configurações de Sistema ---
-            ['id_categoria' => 6, 'nome' => 'Visualizar Logs', 'permissao' => 'can_view_logs', 'descricao' => 'Permite ver o histórico de alterações no sistema'],
+            'UserPermissoes' => [
+                'slug' => 'user_permissoes', 'id_categoria' => 4, 'singular' => 'Permissão ao Utilizador', 'plural' => 'Permissões ao Utilizador',
+                'abilities' => ['add', 'remove']
+            ],
+
+            'Role' => [
+                'slug' => 'roles', 'id_categoria' => 5, 'singular' => 'Role', 'plural' => 'Roles',
+                'abilities' => ['viewAny', 'create', 'update', 'delete']
+            ],
+
+            'LoginDominios' => [
+                'slug' => 'login_dominios', 'id_categoria' => 6, 'singular' => 'Domínio de Login', 'plural' => 'Domínios de Login',
+                'abilities' => ['viewAny', 'create', 'update', 'delete']
+            ],
+
+            // TODO: ao adicionar estudantes e opções...
+//            'Opcoes' => [
+//                'slug' => 'opcoes', 'id_categoria' => 6, 'singular' => 'Opção', 'plural' => 'Opções',
+//                'abilities' => ['viewAny', 'view', 'create', 'update', 'delete']
+//            ],
         ];
+
+        $abilities = [
+            'viewAny' => ['action' => 'view_any', 'nome' => 'Ver lista de :plural', 'descricao' => 'Permite consultar a lista de :plural'],
+            'view' => ['action' => 'view', 'nome' => 'Ver :singular', 'descricao' => 'Permite consultar :singular individuais', 'required' => ['view_any']],
+            'create' => ['action' => 'create', 'nome' => 'Criar :singular', 'descricao' => 'Permite criar :singular', 'required' => ['view_any']],
+            'update' => ['action' => 'update', 'nome' => 'Editar :singular', 'descricao' => 'Permite editar :singular', 'required' => ['view_any', 'view']],
+            'delete' => ['action' => 'delete', 'nome' => 'Eliminar :singular', 'descricao' => 'Permite eliminar :singular', 'required' => ['view_any']],
+            //'forceDelete' => ['action' => 'force_delete', 'nome' => 'Eliminar permanentemente :singular', 'descricao' => 'Permite eliminar permanentemente :singular'],
+
+            'add' => ['action' => 'add', 'nome' => 'Adicionar :singular', 'descricao' => 'Permite adicionar :singular', 'required' => ['view_any']],
+            'remove' => ['action' => 'remove', 'nome' => 'Remover :singular', 'descricao' => 'Permite remover :singular', 'required' => ['view_any']],
+        ];
+
+        $permissoes = [];
+        foreach ($policyResources as $resource) {
+            // Use specified abilities if provided, otherwise use all default abilities
+            $resourceAbilities = $resource['abilities'] ?? array_keys($abilities);
+
+            foreach ($resourceAbilities as $abilityDefinition) {
+                $ability = null;
+
+                if (is_string($abilityDefinition) && isset($abilities[$abilityDefinition])) {
+                    // Ability defined by string key (e.g. 'view', 'create')
+                    $ability = $abilities[$abilityDefinition];
+                } elseif (is_array($abilityDefinition)) {
+                    // Custom ability defined directly in the resource
+                    $ability = $abilityDefinition;
+                }
+
+                if ($ability) {
+                    $required = [];
+
+                    foreach ($ability['required'] ?? [] as $req) {
+                        $required[] = $resource['slug'] . '.' . $req;
+                    }
+
+                    $permissoes[] = [
+                        'id_categoria' => $resource['id_categoria'],
+                        'nome' => str_replace(
+                            [':singular', ':plural'],
+                            [$resource['singular'], $resource['plural']],
+                            $ability['nome']
+                        ),
+                        'permissao' => $resource['slug'] . '.' . $ability['action'],
+                        'descricao' => str_replace(
+                            [':singular', ':plural'],
+                            [$resource['singular'], $resource['plural']],
+                            $ability['descricao']
+                        ),
+                        'required' => $required
+                    ];
+                }
+            }
+        }
 
         $roles = [
             ['id' => 1, 'nome' => 'Administrador', 'descricao' => 'Acesso total ao sistema.'],
@@ -79,7 +156,8 @@ class PermissionsSeeder extends Seeder
                     'nome' => $p['nome'],
                     'permissao' => $p['permissao'],
                     'descricao' => $p['descricao'],
-                    'id_categoria' => $p['id_categoria']
+                    'id_categoria' => $p['id_categoria'],
+                    'required_roles' => $p['required'] ?? null
                 ]
             );
         }
@@ -96,7 +174,7 @@ class PermissionsSeeder extends Seeder
         }
 
         // give all permissions to admin
-        foreach(Permissoes::all() as $p){
+        foreach (Permissoes::all() as $p) {
             RolePermissoes::updateOrCreate(
                 ['id_role' => 1, 'id_permissao' => $p->id],
                 [

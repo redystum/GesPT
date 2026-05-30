@@ -47,6 +47,10 @@ class AuthController extends Controller
     {
         $request->validated();
 
+        if (auth('sanctum')->check()) {
+            return response()->json(['message' => 'You are already logged in.'], 403);
+        }
+
         $domains = LoginDominios::all();
         $user_domain = explode('@', $request->email)[count(explode('@', $request->email)) - 1] ?? null;
         $matched_domain = array_search($user_domain, $domains->pluck('dominio')->toArray());

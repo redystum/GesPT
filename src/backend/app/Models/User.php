@@ -64,4 +64,17 @@ class User extends Authenticatable
     {
         return $this->hasManyThrough(Role::class, UserRole::class, 'id_user', 'id', 'id', 'id_role');
     }
+
+    public function allPermissoes()
+    {
+        return $this->permissoes()->get()->merge($this->roles()->with('permissoes')->get()->pluck('permissoes')->flatten())->unique('id');
+    }
+
+    public function hasPermission($permission)
+    {
+        if (is_array($permission)) {
+            return $this->allPermissoes()->whereIn('nome', $permission)->isNotEmpty();
+        }
+        return $this->allPermissoes()->contains('nome', $permission);
+    }
 }
