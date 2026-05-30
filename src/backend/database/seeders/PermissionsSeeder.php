@@ -157,7 +157,7 @@ class PermissionsSeeder extends Seeder
                     'permissao' => $p['permissao'],
                     'descricao' => $p['descricao'],
                     'id_categoria' => $p['id_categoria'],
-                    'required_roles' => $p['required'] ?? null
+                    'required_permissoes' => $p['required'] ?? null
                 ]
             );
         }

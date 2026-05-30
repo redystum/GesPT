@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreRoleRequest;
 use App\Http\Resources\Admin\RolesResource;
 use App\Http\Resources\Admin\RolesShowResource;
+use App\Models\Permissoes;
 use App\Models\Role;
 use App\Models\RolePermissoes;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class RolesController extends Controller
 {
@@ -52,17 +54,15 @@ class RolesController extends Controller
     {
         $request->validated();
 
-        $role = Role::create($request->only(['nome', 'descricao']));
+        return DB::transaction(function () use ($request) {
+            $role = Role::create($request->only(['nome', 'descricao']));
 
-        foreach ($request->permissoes as $permissao) {
-            RolePermissoes::create([
-                'id_role' => $role->id,
-                'id_permissao' => $permissao,
-            ]);
-        }
+            $ids_to_add = [];
 
-        return response()->json(['data' => new RolesResource($role)], 201);
+            $this->storeRolePermissions($request, $ids_to_add, $role);
 
+            return response()->json(['data' => new RolesResource($role)], 201);
+        });
     }
 
     /**
@@ -89,18 +89,16 @@ class RolesController extends Controller
             ], 403);
         }
 
-        $role->update($request->only(['nome', 'descricao']));
+        return DB::transaction(function () use ($request, $role) {
+            $role->update($request->only(['nome', 'descricao']));
 
-        // Atualizar as permissões associadas
-        RolePermissoes::where('id_role', $role->id)->delete();
-        foreach ($request->permissoes as $permissao) {
-            RolePermissoes::create([
-                'id_role' => $role->id,
-                'id_permissao' => $permissao,
-            ]);
-        }
+            $ids_to_add = [];
 
-        return response()->json(['data' => new RolesResource($role)], 200);
+            RolePermissoes::where('id_role', $role->id)->delete();
+            $this->storeRolePermissions($request, $ids_to_add, $role);
+
+            return response()->json(['data' => new RolesResource($role)], 200);
+        });
     }
 
     /**
@@ -125,5 +123,38 @@ class RolesController extends Controller
         return response()->json([
             'data' => RolesResource::collection(Role::all()),
         ]);
+    }
+
+    /**
+     * @param StoreRoleRequest $request
+     * @param array $ids_to_add
+     * @param Role $role
+     * @return void
+     */
+    private function storeRolePermissions(StoreRoleRequest $request, array $ids_to_add, Role $role): void
+    {
+        foreach ($request->permissoes as $permissao) {
+            $perm = Permissoes::find($permissao);
+            if ($perm && $perm->required_permissoes) {
+                foreach ($perm->required_permissoes as $required) {
+                    $req_perm = Permissoes::where('permissao', $required)->first()->id;
+                    $ids_to_add[] = $req_perm;
+                }
+            }
+
+            $ids_to_add[] = $permissao;
+        }
+
+        $ids_to_add = array_unique($ids_to_add);
+
+        foreach ($ids_to_add as $id) {
+            RolePermissoes::createOrFirst([
+                'id_role' => $role->id,
+                'id_permissao' => $id,
+            ], [
+                'id_role' => $role->id,
+                'id_permissao' => $id,
+            ]);
+        }
     }
 }

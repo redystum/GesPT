@@ -179,7 +179,12 @@
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <label v-for="perm in category.permissoes" :key="perm.id" class="flex items-start gap-3 cursor-pointer group p-3 rounded-lg border border-neutral-100 dark:border-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-600 transition-colors bg-white dark:bg-[#1a1a1a] hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
                       <div class="relative flex items-center justify-center mt-0.5">
-                        <input type="checkbox" :value="perm.id" v-model="roleForm.permissions" class="peer sr-only" />
+                        <input
+                          type="checkbox"
+                          :checked="roleForm.permissions.includes(perm.id)"
+                          @change="togglePermission(perm)"
+                          class="peer sr-only"
+                        />
                         <div class="w-5 h-5 rounded border-2 border-neutral-300 dark:border-neutral-600 peer-checked:bg-neutral-900 peer-checked:border-neutral-900 dark:peer-checked:bg-neutral-100 dark:peer-checked:border-neutral-100 peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2 peer-focus-visible:ring-neutral-900 transition-colors flex items-center justify-center peer-checked:[&>svg]:opacity-100">
                           <svg class="text-white dark:text-neutral-900 w-3 h-3 opacity-0 transition-opacity" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="20 6 9 17 4 12"></polyline>
@@ -353,6 +358,62 @@ const fetchPermissions = async () => {
   } catch (error) {
     console.error('Error fetching permissions:', error)
   }
+}
+
+const findPermissionByCode = (code) => {
+  for (const category of permissionCategories.value) {
+    if (category.permissoes) {
+      const found = category.permissoes.find(p => p.permissao === code)
+      if (found) return found
+    }
+  }
+  return null
+}
+
+const activatePermissionRecursive = (perm, activeSet) => {
+  if (activeSet.has(perm.id)) return
+  activeSet.add(perm.id)
+
+  if (perm.required_permissoes && perm.required_permissoes.length > 0) {
+    perm.required_permissoes.forEach(reqPermCode => {
+      const reqPerm = findPermissionByCode(reqPermCode)
+      if (reqPerm) {
+        activatePermissionRecursive(reqPerm, activeSet)
+      }
+    })
+  }
+}
+
+const deactivatePermissionRecursive = (permCode, activeSet) => {
+  const perm = findPermissionByCode(permCode)
+  if (!perm) return
+
+  if (!activeSet.has(perm.id)) return
+  activeSet.delete(perm.id)
+
+  permissionCategories.value.forEach(category => {
+    if (category.permissoes) {
+      category.permissoes.forEach(p => {
+        if (p.required_permissoes && p.required_permissoes.includes(permCode)) {
+          deactivatePermissionRecursive(p.permissao, activeSet)
+        }
+      })
+    }
+  })
+}
+
+const togglePermission = (perm) => {
+  const activeSet = new Set(roleForm.value.permissions)
+  if (activeSet.has(perm.id)) {
+    if (perm.permissao) {
+      deactivatePermissionRecursive(perm.permissao, activeSet)
+    } else {
+      activeSet.delete(perm.id)
+    }
+  } else {
+    activatePermissionRecursive(perm, activeSet)
+  }
+  roleForm.value.permissions = Array.from(activeSet)
 }
 
 const fetchPage = (page) => {

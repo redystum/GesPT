@@ -19,13 +19,13 @@ class Permissoes extends Model
         'nome',
         'descricao',
         'id_categoria',
-        'required_roles'
+        'required_permissoes'
     ];
 
     protected function casts(): array
     {
         return [
-            'required_roles' => 'array',
+            'required_permissoes' => 'array',
         ];
     }
 
