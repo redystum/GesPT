@@ -13,7 +13,7 @@ class PlanoEstudoPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermission('planos_estudo.view_any');
     }
 
     /**
@@ -21,7 +21,7 @@ class PlanoEstudoPolicy
      */
     public function view(User $user, PlanoEstudo $planoEstudo): bool
     {
-        return false;
+        return $user->hasPermission('planos_estudo.view');
     }
 
     /**
@@ -29,7 +29,7 @@ class PlanoEstudoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermission('planos_estudo.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class PlanoEstudoPolicy
      */
     public function update(User $user, PlanoEstudo $planoEstudo): bool
     {
-        return false;
+        return $user->hasPermission('planos_estudo.update');
     }
 
     /**
@@ -45,22 +45,6 @@ class PlanoEstudoPolicy
      */
     public function delete(User $user, PlanoEstudo $planoEstudo): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, PlanoEstudo $planoEstudo): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, PlanoEstudo $planoEstudo): bool
-    {
-        return false;
+        return $user->hasPermission('planos_estudo.delete');
     }
 }

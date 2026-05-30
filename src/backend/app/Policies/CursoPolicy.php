@@ -13,7 +13,7 @@ class CursoPolicy
      */
     public function viewAny(User $user): bool
     {
-        return allPermissioes;
+        return $user->hasPermission('cursos.view_any');
     }
 
     /**
@@ -21,7 +21,7 @@ class CursoPolicy
      */
     public function view(User $user, Curso $curso): bool
     {
-        return false;
+        return $user->hasPermission('cursos.view');
     }
 
     /**
@@ -29,7 +29,7 @@ class CursoPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermission('cursos.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class CursoPolicy
      */
     public function update(User $user, Curso $curso): bool
     {
-        return false;
+        return $user->hasPermission('cursos.update');
     }
 
     /**
@@ -45,22 +45,6 @@ class CursoPolicy
      */
     public function delete(User $user, Curso $curso): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Curso $curso): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Curso $curso): bool
-    {
-        return false;
+        return $user->hasPermission('cursos.delete');
     }
 }

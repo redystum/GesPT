@@ -13,7 +13,7 @@ class UcPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
+        return $user->hasPermission('ucs.view_any');
     }
 
     /**
@@ -21,7 +21,7 @@ class UcPolicy
      */
     public function view(User $user, Uc $uc): bool
     {
-        return false;
+        return $user->hasPermission('ucs.view');
     }
 
     /**
@@ -29,7 +29,7 @@ class UcPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermission('ucs.create');
     }
 
     /**
@@ -37,7 +37,7 @@ class UcPolicy
      */
     public function update(User $user, Uc $uc): bool
     {
-        return false;
+        return $user->hasPermission('ucs.update');
     }
 
     /**
@@ -45,22 +45,6 @@ class UcPolicy
      */
     public function delete(User $user, Uc $uc): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Uc $uc): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Uc $uc): bool
-    {
-        return false;
+        return $user->hasPermission('ucs.delete');
     }
 }

@@ -13,15 +13,7 @@ class LoginDominiosPolicy
      */
     public function viewAny(User $user): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can view the model.
-     */
-    public function view(User $user, LoginDominios $loginDominios): bool
-    {
-        return false;
+        return $user->hasPermission('login_dominios.view_any');
     }
 
     /**
@@ -29,7 +21,7 @@ class LoginDominiosPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->hasPermission('login_dominios.create');
     }
 
     /**
@@ -37,7 +29,7 @@ class LoginDominiosPolicy
      */
     public function update(User $user, LoginDominios $loginDominios): bool
     {
-        return false;
+        return $user->hasPermission('login_dominios.update');
     }
 
     /**
@@ -45,22 +37,6 @@ class LoginDominiosPolicy
      */
     public function delete(User $user, LoginDominios $loginDominios): bool
     {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, LoginDominios $loginDominios): bool
-    {
-        return false;
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, LoginDominios $loginDominios): bool
-    {
-        return false;
+        return $user->hasPermission('login_dominios.delete');
     }
 }
