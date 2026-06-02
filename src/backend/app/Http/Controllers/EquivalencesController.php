@@ -15,7 +15,7 @@ class EquivalencesController extends Controller
     public function compare(Request $request)
     {
         $request->validate([
-            'estudante_id' => 'required|integer|exists:estudantes,id',
+            'estudante_id' => 'nullable|integer|exists:estudantes,id',
             'plano_inicial' => 'required|integer|exists:plano_estudos,id',
             'plano_final' => 'nullable|integer|exists:plano_estudos,id',
             'dd' => 'nullable|bool'
@@ -27,6 +27,10 @@ class EquivalencesController extends Controller
         $planoFinal = PlanoEstudo::where('id', $request->plano_final)
             ->with(['planoUcs', 'planoUcs.uc'])
             ->first();
+
+        if (!$request->estudante_id){
+            $request->estudante_id = 1;
+        }
 
         $opInicial = OpcoesEstudante::where('id_estudante', $request->estudante_id)
             ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
