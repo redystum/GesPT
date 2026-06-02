@@ -60,8 +60,9 @@
           </p>
         </div>
 
-        <div class="flex flex-wrap gap-3 shrink-0">
+        <div class="flex flex-wrap gap-3 shrink-0" v-if="authStore.hasPermission('cursos.update') || authStore.hasPermission('cursos.delete')">
           <button
+            v-if="authStore.hasPermission('cursos.update')"
             @click="openEditCourseModal"
             class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all bg-white dark:bg-neutral-800 text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-700/80 border border-neutral-300 dark:border-neutral-700 cursor-pointer shadow-xs"
           >
@@ -69,6 +70,7 @@
             {{ $t('course_detail.edit_course') }}
           </button>
           <button
+            v-if="authStore.hasPermission('cursos.delete')"
             @click="openDeleteCourseModal"
             class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 hover:bg-red-100 dark:hover:bg-red-900/30 border border-red-200 dark:border-red-900/50 cursor-pointer"
           >
@@ -96,6 +98,7 @@
               </p>
             </div>
             <button
+              v-if="authStore.hasPermission('ucs.create')"
               @click="openAddUcModal"
               class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 cursor-pointer"
             >
@@ -130,7 +133,7 @@
                   <th class="px-6 py-4 text-center">{{ $t('course_detail.ects') }}</th>
                   <th class="px-6 py-4 text-center">{{ $t('course_detail.semester') }}</th>
                   <th class="px-6 py-4 text-center">{{ $t('course_detail.hours') }}</th>
-                  <th class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
+                  <th v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800/60">
@@ -167,9 +170,10 @@
                   <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
                     {{ uc.horas }}h
                   </td>
-                  <td class="px-6 py-3.5 text-right whitespace-nowrap">
+                  <td v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-3.5 text-right whitespace-nowrap">
                     <div class="inline-flex gap-2">
                       <button
+                        v-if="authStore.hasPermission('ucs.update')"
                         @click="openEditUcModal(uc)"
                         class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
                         :title="$t('course_detail.edit_uc')"
@@ -177,6 +181,7 @@
                         <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
                       </button>
                       <button
+                        v-if="authStore.hasPermission('ucs.delete')"
                         @click="openDeleteUcModal(uc)"
                         class="p-1.5 rounded-md text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
                         :title="$t('course_detail.delete_uc')"
@@ -206,7 +211,7 @@
                 {{ planos.length }} {{ $t('course_detail.plans_table_title').toLowerCase() }}
               </p>
             </div>
-            <router-link :to="{ name: 'wizard'}"
+            <router-link v-if="authStore.hasPermission('planos_estudo.create')" :to="{ name: 'wizard'}"
               class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 cursor-pointer"
             >
               <font-awesome-icon :icon="['fas', 'plus']" class="text-[10px]" />
@@ -267,6 +272,7 @@
                         <font-awesome-icon :icon="['fas', 'eye']" class="w-3.5 h-3.5" />
                       </router-link>
                       <button
+                        v-if="authStore.hasPermission('planos_estudo.update')"
                         @click="openEditPlanModal(plan)"
                         class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
                         :title="$t('course_detail.edit_plan')"
@@ -274,6 +280,7 @@
                         <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
                       </button>
                       <button
+                        v-if="authStore.hasPermission('planos_estudo.delete')"
                         @click="openDeletePlanModal(plan)"
                         class="p-1.5 rounded-md text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
                         :title="$t('course_detail.delete_plan')"
@@ -661,11 +668,13 @@
 import { inject, ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
 const router = useRouter()
 const { locale, t } = useI18n()
 const api = inject('api')
+const authStore = useAuthStore()
 
 const courseId = computed(() => route.params.id)
 

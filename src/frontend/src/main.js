@@ -78,4 +78,20 @@ library.add(fas, far, fab)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
 
+// Refresh permissions on startup if logged in
+const authStore = useAuthStore(pinia)
+if (authStore.isLoggedIn) {
+  api.get('/me')
+    .then((response) => {
+      authStore.setPermissions(response.data)
+    })
+    .catch((error) => {
+      console.error('Failed to fetch permissions on startup:', error)
+      if (error.response && error.response.status === 401) {
+        authStore.logout()
+        router.push('/login')
+      }
+    })
+}
+
 app.mount('#app')

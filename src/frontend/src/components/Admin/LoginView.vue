@@ -47,7 +47,7 @@
 
           <div v-if="domains.length" class="space-y-3">
             <div
-              v-for="(domainEntry, _) in domains"
+              v-for="domainEntry in domains"
               :key="domainEntry.domain"
               class="rounded-lg border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-xs bg-neutral-50 dark:bg-neutral-900/50"
             >

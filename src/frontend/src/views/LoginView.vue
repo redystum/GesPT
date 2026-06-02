@@ -115,8 +115,16 @@ const handleLogin = async () => {
     })
     console.log('Login successful:', response.data)
 
-    // Save the entire response object (including user and access_token) to the store
+    // Save the credentials and token to store
     authStore.login(response.data)
+
+    // Fetch and store permissions
+    try {
+      const meResponse = await api.get('/me')
+      authStore.setPermissions(meResponse.data)
+    } catch (e) {
+      console.error('Failed to load permissions during login:', e)
+    }
 
     // Redirect to home or dashboard on successful login
     router.push('/')

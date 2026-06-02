@@ -8,8 +8,8 @@
           <p class="mt-2 text-sm sm:text-base text-neutral-500 dark:text-neutral-400">{{ $t('home.subtitle') }}</p>
         </div>
 
-        <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto">
-          <div class="relative w-full sm:w-80">
+        <div class="flex w-full flex-col gap-3 sm:flex-row lg:w-auto" v-if="authStore.hasPermission('cursos.view_any') || authStore.hasPermission('cursos.create')">
+          <div class="relative w-full sm:w-80" v-if="authStore.hasPermission('cursos.view_any')">
             <span class="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2">
               <font-awesome-icon :icon="['fas', 'search']" />
             </span>
@@ -23,6 +23,7 @@
           </div>
 
           <button
+            v-if="authStore.hasPermission('cursos.create')"
             @click="openCreateModal"
             class="inline-flex items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 whitespace-nowrap cursor-pointer"
           >
@@ -33,7 +34,13 @@
       </div>
     </section>
 
-    <div v-if="loading" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
+    <div v-if="!authStore.hasPermission('cursos.view_any')" class="flex flex-col items-center justify-center h-[300px] rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900/30 p-6 text-center mb-6">
+      <font-awesome-icon :icon="['fas', 'lock']" class="text-4xl text-neutral-400 mb-4" />
+      <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">Access Denied</h3>
+      <p class="mt-2 text-sm text-neutral-500 max-w-md">You do not have permission to view the course catalog.</p>
+    </div>
+
+    <div v-else-if="loading" class="flex items-start gap-3 rounded-md border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50 px-4 py-3 text-sm text-neutral-500 dark:text-neutral-400 mb-6">
       <font-awesome-icon :icon="['fas', 'circle-notch']" spin class="mt-0.5" />
       <p>{{ $t('common.loading') }}</p>
     </div>
@@ -183,10 +190,12 @@
 import { inject, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 const { locale } = useI18n()
 const api = inject('api')
 const router = useRouter()
+const authStore = useAuthStore()
 
 const showCreateModal = ref(false)
 const creating = ref(false)
@@ -231,22 +240,26 @@ const loading = ref(true)
 const error = ref(null)
 let searchTimeout = null
 
-api
-  .get('/cursos', {
-    params: {
-      with_planos_estudo: 1
-    }
-  })
-  .then((data) => {
-    courses.value = data.data.data
-  })
-  .catch((err) => {
-    console.error('Error fetching courses:', err)
-    error.value = err.response?.data?.message || err.message || 'An error occurred while fetching courses.'
-  })
-  .finally(() => {
-    loading.value = false
-  })
+if (authStore.hasPermission('cursos.view_any')) {
+  api
+    .get('/cursos', {
+      params: {
+        with_planos_estudo: 1
+      }
+    })
+    .then((data) => {
+      courses.value = data.data.data
+    })
+    .catch((err) => {
+      console.error('Error fetching courses:', err)
+      error.value = err.response?.data?.message || err.message || 'An error occurred while fetching courses.'
+    })
+    .finally(() => {
+      loading.value = false
+    })
+} else {
+  loading.value = false
+}
 
 function search() {
   if (searchTimeout) {

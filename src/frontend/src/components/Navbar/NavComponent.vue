@@ -154,12 +154,21 @@ onUnmounted(() => {
 const navLinks = computed(() => {
   const links = [
     { name: t('nav.home'), path: '/' },
-    { name: t('nav.compare'), path: '/compare' },
-    { name: t('nav.wizard'), path: '/wizard' },
+    { name: t('nav.compare'), path: '/compare' }
   ]
 
   if (authStore.isLoggedIn) {
-    links.push({ name: t('nav.admin'), path: '/admin' })
+    if (authStore.hasPermission('planos_estudo.create')) {
+      links.push({ name: t('nav.wizard'), path: '/wizard' })
+    }
+    const hasAdminAccess = authStore.hasPermission([
+      'roles.view_any',
+      'users.view_any',
+      'login_dominios.view_any'
+    ])
+    if (hasAdminAccess) {
+      links.push({ name: t('nav.admin'), path: '/admin' })
+    }
   }
 
   return links

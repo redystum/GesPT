@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -12,6 +13,48 @@ const router = createRouter({
     { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') },
     { path: '/curso/:id', name: 'course', component: () => import('../views/CourseView.vue') }
   ]
+})
+
+router.beforeEach((to, from, next) => {
+  const authStore = useAuthStore()
+
+  // If the user is NOT logged in, they can ONLY access the login page
+  if (!authStore.isLoggedIn && to.path !== '/login') {
+    return next({ name: 'login' })
+  }
+
+  // If the user IS logged in and tries to access the login page, redirect to home
+  if (authStore.isLoggedIn && to.path === '/login') {
+    return next({ name: 'home' })
+  }
+
+  // Protect /admin
+  if (to.path === '/admin') {
+    const hasAdminAccess = authStore.hasPermission([
+      'roles.view_any',
+      'users.view_any',
+      'login_dominios.view_any'
+    ])
+    if (!hasAdminAccess) {
+      return next({ name: 'home' })
+    }
+  }
+
+  // Protect /wizard
+  if (to.path === '/wizard') {
+    if (!authStore.hasPermission('planos_estudo.create')) {
+      return next({ name: 'home' })
+    }
+  }
+
+  // Protect /curso/:id
+  if (to.path.startsWith('/curso/')) {
+    if (!authStore.hasPermission(['cursos.view'])) {
+      return next({ name: 'home' })
+    }
+  }
+
+  next()
 })
 
 export default router
