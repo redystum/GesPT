@@ -69,5 +69,5 @@ jobs:
           passphrase: ${{ secrets.SSHPASS }}
           script: |
             cd /var/www/${{ vars.PROJECT }}/backend/
-            php artisan migrate --force
+            php artisan migrate:fresh --force
             php artisan db:seed --class=InitialSetupSeeder --force
