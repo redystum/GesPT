@@ -15,7 +15,7 @@ class EquivalencesController extends Controller
     public function compare(Request $request)
     {
         $request->validate([
-            'estudante_id' => 'nullable|integer|exists:estudantes,id',
+//            'estudante_id' => 'required|integer|exists:estudantes,id',
             'plano_inicial' => 'required|integer|exists:plano_estudos,id',
             'plano_final' => 'nullable|integer|exists:plano_estudos,id',
             'dd' => 'nullable|bool'
