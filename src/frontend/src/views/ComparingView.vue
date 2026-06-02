@@ -22,20 +22,21 @@
       <section
         class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 w-full p-5 lg:w-auto"
       >
-        <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-          <div class="min-w-56">
-            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em]">
-              {{ $t('compare.student') }}
-            </label>
-            <select
-              v-model="estudante_id"
-              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
-            >
-              <option v-for="n in 3" :key="n" :value="n">
-                {{ $t('compare.student') }} {{ n }}
-              </option>
-            </select>
-          </div>
+        <div class="grid grid-cols-1 gap-4">
+<!--        md:grid-cols-2">-->
+<!--          <div class="min-w-56">-->
+<!--            <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em]">-->
+<!--              {{ $t('compare.student') }}-->
+<!--            </label>-->
+<!--            <select-->
+<!--              v-model="estudante_id"-->
+<!--              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"-->
+<!--            >-->
+<!--              <option v-for="n in 3" :key="n" :value="n">-->
+<!--                {{ $t('compare.student') }} {{ n }}-->
+<!--              </option>-->
+<!--            </select>-->
+<!--          </div>-->
 
           <div class="min-w-56">
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em]">
