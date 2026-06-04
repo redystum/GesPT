@@ -8,9 +8,25 @@ use App\Http\Resources\UcResource;
 use App\Models\PlanoUc;
 use Illuminate\Http\Request;
 use App\Models\Uc;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UnidadeCurricularController extends Controller
+class UnidadeCurricularController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:viewAny,' . Uc::class, only: ['index']),
+            new Middleware('can:view,uc', only: ['show']),
+            new Middleware('can:create,' . Uc::class, only: ['store']),
+            new Middleware('can:update,uc', only: ['update']),
+            new Middleware('can:delete,uc', only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = Uc::query()->with('curso:id,nome,sigla,codigo');

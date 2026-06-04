@@ -73,8 +73,8 @@ class User extends Authenticatable
     public function hasPermission($permission)
     {
         if (is_array($permission)) {
-            return $this->allPermissoes()->whereIn('nome', $permission)->isNotEmpty();
+            return $this->allPermissoes()->whereIn('permissao', $permission)->isNotEmpty();
         }
-        return $this->allPermissoes()->contains('nome', $permission);
+        return $this->allPermissoes()->contains('permissao', $permission);
     }
 }

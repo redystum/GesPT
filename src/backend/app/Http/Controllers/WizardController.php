@@ -12,9 +12,21 @@ use App\Models\Uc;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class WizardController extends Controller
+class WizardController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:create,' . PlanoEstudo::class, only: ['store']),
+        ];
+    }
+
     public function store(StoreWizardRequest $request)
     {
         return DB::transaction(function () use ($request) {

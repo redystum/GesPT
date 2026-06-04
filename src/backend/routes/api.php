@@ -13,6 +13,8 @@ use App\Http\Controllers\OpcoesController;
 use App\Http\Controllers\PlanoEstudoController;
 use App\Http\Controllers\UnidadeCurricularController;
 use App\Http\Controllers\WizardController;
+use App\Models\Curso;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
