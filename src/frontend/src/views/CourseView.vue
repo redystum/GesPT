@@ -300,367 +300,375 @@
     <!-- Modals System -->
     
     <!-- 1. COURSE EDIT MODAL -->
-    <Transition name="fade">
-      <div v-if="modals.course" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-        <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-lg w-full overflow-hidden animate-zoom-in">
-          <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-              {{ $t('course_detail.edit_course') }}
-            </h3>
-            <button @click="modals.course = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
-              <font-awesome-icon :icon="['fas', 'times']" />
-            </button>
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="modals.course" @click.self="modals.course = false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-lg w-full overflow-hidden animate-zoom-in">
+            <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+              <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                {{ $t('course_detail.edit_course') }}
+              </h3>
+              <button @click="modals.course = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
+                <font-awesome-icon :icon="['fas', 'times']" />
+              </button>
+            </div>
+
+            <form @submit.prevent="saveCourse" class="p-6 space-y-4">
+              <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
+                {{ modalError }}
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('course_detail.pt_name') }} *
+                </label>
+                <input
+                  v-model="modalData.course.nome"
+                  type="text"
+                  required
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('course_detail.en_name') }}
+                </label>
+                <input
+                  v-model="modalData.course.name"
+                  type="text"
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.acronym') }} *
+                  </label>
+                  <input
+                    v-model="modalData.course.sigla"
+                    type="text"
+                    required
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.code') }} *
+                  </label>
+                  <input
+                    v-model="modalData.course.codigo"
+                    type="text"
+                    required
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
+                <button
+                  type="button"
+                  @click="modals.course = false"
+                  class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  {{ $t('common.cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  :disabled="saving"
+                  class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
+                >
+                  <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
+                  {{ $t('common.save') }}
+                </button>
+              </div>
+            </form>
           </div>
-          
-          <form @submit.prevent="saveCourse" class="p-6 space-y-4">
-            <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
-              {{ modalError }}
-            </div>
-
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('course_detail.pt_name') }} *
-              </label>
-              <input
-                v-model="modalData.course.nome"
-                type="text"
-                required
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('course_detail.en_name') }}
-              </label>
-              <input
-                v-model="modalData.course.name"
-                type="text"
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.acronym') }} *
-                </label>
-                <input
-                  v-model="modalData.course.sigla"
-                  type="text"
-                  required
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.code') }} *
-                </label>
-                <input
-                  v-model="modalData.course.codigo"
-                  type="text"
-                  required
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                />
-              </div>
-            </div>
-
-            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
-              <button
-                type="button"
-                @click="modals.course = false"
-                class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-              >
-                {{ $t('common.cancel') }}
-              </button>
-              <button
-                type="submit"
-                :disabled="saving"
-                class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
-              >
-                <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
-                {{ $t('common.save') }}
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
 
     <!-- 2. UC ADD/EDIT MODAL -->
-    <Transition name="fade">
-      <div v-if="modals.uc" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
-        <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-xl w-full my-8 max-h-[90vh] flex flex-col animate-zoom-in">
-          <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between shrink-0">
-            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-              {{ isEditing ? $t('course_detail.edit_uc') : $t('course_detail.add_uc') }}
-            </h3>
-            <button @click="modals.uc = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
-              <font-awesome-icon :icon="['fas', 'times']" />
-            </button>
-          </div>
-          
-          <form @submit.prevent="saveUc" class="p-6 space-y-4 overflow-y-auto flex-1">
-            <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
-              {{ modalError }}
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="modals.uc" @click.self="modals.uc = false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs overflow-y-auto">
+          <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-xl w-full my-8 max-h-[90vh] flex flex-col animate-zoom-in">
+            <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between shrink-0">
+              <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                {{ isEditing ? $t('course_detail.edit_uc') : $t('course_detail.add_uc') }}
+              </h3>
+              <button @click="modals.uc = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
+                <font-awesome-icon :icon="['fas', 'times']" />
+              </button>
             </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('course_detail.pt_name') }} *
-              </label>
-              <input
-                v-model="modalData.uc.nome"
-                type="text"
-                required
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-            </div>
+            <form @submit.prevent="saveUc" class="p-6 space-y-4 overflow-y-auto flex-1">
+              <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
+                {{ modalError }}
+              </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('course_detail.en_name') }}
-              </label>
-              <input
-                v-model="modalData.uc.name"
-                type="text"
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
               <div>
                 <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.acronym') }} *
+                  {{ $t('course_detail.pt_name') }} *
                 </label>
                 <input
-                  v-model="modalData.uc.sigla"
+                  v-model="modalData.uc.nome"
                   type="text"
                   required
                   class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                 />
               </div>
+
               <div>
                 <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.ects') }} *
+                  {{ $t('course_detail.en_name') }}
                 </label>
                 <input
-                  v-model.number="modalData.uc.ects"
-                  type="number"
-                  required
-                  min="1"
+                  v-model="modalData.uc.name"
+                  type="text"
                   class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                 />
               </div>
-            </div>
 
-            <div class="grid grid-cols-3 gap-4">
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.semester') }}
-                </label>
-                <select
-                  v-model.number="modalData.uc.semestre"
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.acronym') }} *
+                  </label>
+                  <input
+                    v-model="modalData.uc.sigla"
+                    type="text"
+                    required
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.ects') }} *
+                  </label>
+                  <input
+                    v-model.number="modalData.uc.ects"
+                    type="number"
+                    required
+                    min="1"
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.semester') }}
+                  </label>
+                  <select
+                    v-model.number="modalData.uc.semestre"
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  >
+                    <option :value="null">N/A</option>
+                    <option :value="1">1º Semestre</option>
+                    <option :value="2">2º Semestre</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.year') }}
+                  </label>
+                  <input
+                    v-model.number="modalData.uc.ano"
+                    type="number"
+                    min="1"
+                    max="6"
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                    placeholder="e.g. 1"
+                  />
+                </div>
+
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.hours') }} *
+                  </label>
+                  <input
+                    v-model.number="modalData.uc.horas"
+                    type="number"
+                    required
+                    min="1"
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+              </div>
+
+              <!-- Accordion for Detailed Workload Hours -->
+              <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden mt-4">
+                <button
+                  type="button"
+                  @click="showWorkloadDetails = !showWorkloadDetails"
+                  class="w-full bg-neutral-50 dark:bg-neutral-800/20 px-4 py-3 flex items-center justify-between text-sm font-bold text-neutral-700 dark:text-neutral-300 cursor-pointer"
                 >
-                  <option :value="null">N/A</option>
-                  <option :value="1">1º Semestre</option>
-                  <option :value="2">2º Semestre</option>
-                </select>
+                  <span>{{ $t('wizard.uc_step.workload_title') }} (Optional)</span>
+                  <font-awesome-icon :icon="showWorkloadDetails ? ['fas', 'chevron-up'] : ['fas', 'chevron-down']" class="text-xs" />
+                </button>
+
+                <div v-show="showWorkloadDetails" class="p-4 bg-white dark:bg-neutral-900 border-t border-neutral-100 dark:border-neutral-800 grid grid-cols-4 gap-3">
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">T</label>
+                    <input v-model.number="modalData.uc.horas_t" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">TP</label>
+                    <input v-model.number="modalData.uc.horas_tp" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">PL</label>
+                    <input v-model.number="modalData.uc.horas_pl" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">TC</label>
+                    <input v-model.number="modalData.uc.horas_tc" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">S</label>
+                    <input v-model.number="modalData.uc.horas_s" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">E</label>
+                    <input v-model.number="modalData.uc.horas_e" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">OT</label>
+                    <input v-model.number="modalData.uc.horas_ot" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                  <div>
+                    <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">O</label>
+                    <input v-model.number="modalData.uc.horas_o" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                  </div>
+                </div>
               </div>
 
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.year') }}
-                </label>
-                <input
-                  v-model.number="modalData.uc.ano"
-                  type="number"
-                  min="1"
-                  max="6"
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                  placeholder="e.g. 1"
-                />
+              <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3 shrink-0">
+                <button
+                  type="button"
+                  @click="modals.uc = false"
+                  class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  {{ $t('common.cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  :disabled="saving"
+                  class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
+                >
+                  <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
+                  {{ $t('common.save') }}
+                </button>
               </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.hours') }} *
-                </label>
-                <input
-                  v-model.number="modalData.uc.horas"
-                  type="number"
-                  required
-                  min="1"
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                />
-              </div>
-            </div>
-
-            <!-- Accordion for Detailed Workload Hours -->
-            <div class="border border-neutral-200 dark:border-neutral-800 rounded-lg overflow-hidden mt-4">
-              <button
-                type="button"
-                @click="showWorkloadDetails = !showWorkloadDetails"
-                class="w-full bg-neutral-50 dark:bg-neutral-800/20 px-4 py-3 flex items-center justify-between text-sm font-bold text-neutral-700 dark:text-neutral-300 cursor-pointer"
-              >
-                <span>{{ $t('wizard.uc_step.workload_title') }} (Optional)</span>
-                <font-awesome-icon :icon="showWorkloadDetails ? ['fas', 'chevron-up'] : ['fas', 'chevron-down']" class="text-xs" />
-              </button>
-
-              <div v-show="showWorkloadDetails" class="p-4 bg-white dark:bg-neutral-900 border-t border-neutral-100 dark:border-neutral-800 grid grid-cols-4 gap-3">
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">T</label>
-                  <input v-model.number="modalData.uc.horas_t" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">TP</label>
-                  <input v-model.number="modalData.uc.horas_tp" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">PL</label>
-                  <input v-model.number="modalData.uc.horas_pl" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">TC</label>
-                  <input v-model.number="modalData.uc.horas_tc" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">S</label>
-                  <input v-model.number="modalData.uc.horas_s" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">E</label>
-                  <input v-model.number="modalData.uc.horas_e" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">OT</label>
-                  <input v-model.number="modalData.uc.horas_ot" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-                <div>
-                  <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">O</label>
-                  <input v-model.number="modalData.uc.horas_o" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
-                </div>
-              </div>
-            </div>
-
-            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3 shrink-0">
-              <button
-                type="button"
-                @click="modals.uc = false"
-                class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-              >
-                {{ $t('common.cancel') }}
-              </button>
-              <button
-                type="submit"
-                :disabled="saving"
-                class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
-              >
-                <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
-                {{ $t('common.save') }}
-              </button>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
 
     <!-- 3. PLAN ADD/EDIT MODAL -->
-    <Transition name="fade">
-      <div v-if="modals.plan" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-        <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-sm w-full overflow-hidden animate-zoom-in">
-          <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-              {{ isEditing ? $t('course_detail.edit_plan') : $t('course_detail.add_plan') }}
-            </h3>
-            <button @click="modals.plan = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
-              <font-awesome-icon :icon="['fas', 'times']" />
-            </button>
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="modals.plan" @click.self="modals.plan = false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-sm w-full overflow-hidden animate-zoom-in">
+            <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+              <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                {{ isEditing ? $t('course_detail.edit_plan') : $t('course_detail.add_plan') }}
+              </h3>
+              <button @click="modals.plan = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
+                <font-awesome-icon :icon="['fas', 'times']" />
+              </button>
+            </div>
+
+            <form @submit.prevent="savePlan" class="p-6 space-y-4">
+              <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
+                {{ modalError }}
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('wizard.plan_step.academic_year') }} *
+                </label>
+                <input
+                  v-model="modalData.plan.ano"
+                  type="text"
+                  required
+                  :placeholder="$t('wizard.plan_step.academic_year_placeholder')"
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+                <p class="text-[11px] text-neutral-400 mt-1">
+                  Format: 2026/27 or 2026/2027
+                </p>
+              </div>
+
+              <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
+                <button
+                  type="button"
+                  @click="modals.plan = false"
+                  class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  {{ $t('common.cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  :disabled="saving"
+                  class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
+                >
+                  <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
+                  {{ $t('common.save') }}
+                </button>
+              </div>
+            </form>
           </div>
-          
-          <form @submit.prevent="savePlan" class="p-6 space-y-4">
-            <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
-              {{ modalError }}
+        </div>
+      </Transition>
+    </Teleport>
+
+    <!-- 4. DELETE CONFIRMATION MODAL -->
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="modals.delete" @click.self="modals.delete = false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-md w-full overflow-hidden animate-zoom-in">
+            <div class="p-6 flex gap-4">
+              <div class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
+                <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
+              </div>
+              <div>
+                <h3 class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+                  Confirm Deletion
+                </h3>
+                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 leading-relaxed">
+                  {{ deleteConfig.message }}
+                </p>
+              </div>
             </div>
 
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('wizard.plan_step.academic_year') }} *
-              </label>
-              <input
-                v-model="modalData.plan.ano"
-                type="text"
-                required
-                :placeholder="$t('wizard.plan_step.academic_year_placeholder')"
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-              <p class="text-[11px] text-neutral-400 mt-1">
-                Format: 2026/27 or 2026/2027
-              </p>
-            </div>
-
-            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
+            <div class="bg-neutral-50 dark:bg-neutral-800/40 px-6 py-4 flex justify-end gap-3">
               <button
                 type="button"
-                @click="modals.plan = false"
+                @click="modals.delete = false"
                 class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
               >
                 {{ $t('common.cancel') }}
               </button>
               <button
-                type="submit"
+                type="button"
+                @click="confirmDeletion"
                 :disabled="saving"
-                class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
+                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-semibold disabled:opacity-50 transition-colors cursor-pointer"
               >
                 <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
-                {{ $t('common.save') }}
+                {{ $t('common.delete') }}
               </button>
             </div>
-          </form>
-        </div>
-      </div>
-    </Transition>
-
-    <!-- 4. DELETE CONFIRMATION MODAL -->
-    <Transition name="fade">
-      <div v-if="modals.delete" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-        <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-md w-full overflow-hidden animate-zoom-in">
-          <div class="p-6 flex gap-4">
-            <div class="w-10 h-10 rounded-full bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 flex items-center justify-center text-red-600 dark:text-red-400 shrink-0">
-              <font-awesome-icon :icon="['fas', 'exclamation-triangle']" />
-            </div>
-            <div>
-              <h3 class="text-base font-bold text-neutral-900 dark:text-neutral-100">
-                Confirm Deletion
-              </h3>
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-2 leading-relaxed">
-                {{ deleteConfig.message }}
-              </p>
-            </div>
-          </div>
-          
-          <div class="bg-neutral-50 dark:bg-neutral-800/40 px-6 py-4 flex justify-end gap-3">
-            <button
-              type="button"
-              @click="modals.delete = false"
-              class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-            >
-              {{ $t('common.cancel') }}
-            </button>
-            <button
-              type="button"
-              @click="confirmDeletion"
-              :disabled="saving"
-              class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md text-sm font-semibold disabled:opacity-50 transition-colors cursor-pointer"
-            >
-              <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
-              {{ $t('common.delete') }}
-            </button>
           </div>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 
