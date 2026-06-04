@@ -97,92 +97,94 @@
     </div>
     
     <!-- CREATE COURSE MODAL -->
-    <Transition name="fade">
-      <div v-if="showCreateModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-        <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-lg w-full overflow-hidden animate-zoom-in">
-          <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-            <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-              {{ $t('home.new_course') }}
-            </h3>
-            <button @click="showCreateModal = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
-              <font-awesome-icon :icon="['fas', 'times']" />
-            </button>
+    <Teleport to="body">
+      <Transition name="fade">
+        <div v-if="showCreateModal" @click.self="showCreateModal = false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
+          <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-lg w-full overflow-hidden animate-zoom-in">
+            <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
+              <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+                {{ $t('home.new_course') }}
+              </h3>
+              <button @click="showCreateModal = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
+                <font-awesome-icon :icon="['fas', 'times']" />
+              </button>
+            </div>
+
+            <form @submit.prevent="createCourse" class="p-6 space-y-4">
+              <div v-if="createError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
+                {{ createError }}
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('course_detail.pt_name') }} *
+                </label>
+                <input
+                  v-model="newCourseData.nome"
+                  type="text"
+                  required
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+              </div>
+
+              <div>
+                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                  {{ $t('course_detail.en_name') }} *
+                </label>
+                <input
+                  v-model="newCourseData.name"
+                  type="text"
+                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                />
+              </div>
+
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.acronym') }} *
+                  </label>
+                  <input
+                    v-model="newCourseData.sigla"
+                    type="text"
+                    required
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
+                    {{ $t('course_detail.code') }} *
+                  </label>
+                  <input
+                    v-model="newCourseData.codigo"
+                    type="text"
+                    required
+                    class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+                  />
+                </div>
+              </div>
+
+              <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
+                <button
+                  type="button"
+                  @click="showCreateModal = false"
+                  class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                >
+                  {{ $t('common.cancel') }}
+                </button>
+                <button
+                  type="submit"
+                  :disabled="creating"
+                  class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
+                >
+                  <font-awesome-icon v-if="creating" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
+                  {{ $t('common.save') }}
+                </button>
+              </div>
+            </form>
           </div>
-          
-          <form @submit.prevent="createCourse" class="p-6 space-y-4">
-            <div v-if="createError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
-              {{ createError }}
-            </div>
-
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('course_detail.pt_name') }} *
-              </label>
-              <input
-                v-model="newCourseData.nome"
-                type="text"
-                required
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-            </div>
-
-            <div>
-              <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                {{ $t('course_detail.en_name') }}
-              </label>
-              <input
-                v-model="newCourseData.name"
-                type="text"
-                class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-              />
-            </div>
-
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.acronym') }} *
-                </label>
-                <input
-                  v-model="newCourseData.sigla"
-                  type="text"
-                  required
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                />
-              </div>
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.code') }} *
-                </label>
-                <input
-                  v-model="newCourseData.codigo"
-                  type="text"
-                  required
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                />
-              </div>
-            </div>
-
-            <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
-              <button
-                type="button"
-                @click="showCreateModal = false"
-                class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-              >
-                {{ $t('common.cancel') }}
-              </button>
-              <button
-                type="submit"
-                :disabled="creating"
-                class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
-              >
-                <font-awesome-icon v-if="creating" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
-                {{ $t('common.save') }}
-              </button>
-            </div>
-          </form>
         </div>
-      </div>
-    </Transition>
+      </Transition>
+    </Teleport>
   </div>
 </template>
 

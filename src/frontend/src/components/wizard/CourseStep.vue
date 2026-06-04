@@ -7,7 +7,7 @@
     <div class="space-y-4">
       <div v-if="!isCreatingNew">
         <label class="block text-sm font-medium mb-1">
-          {{ $t('wizard.course_step.select_course') }}
+          {{ $t('wizard.course_step.select_course') }} *
           <span v-if="loadingCourses" class="text-sm text-neutral-500 font-normal ml-2">{{
             $t('common.loading')
           }}</span>
@@ -86,7 +86,7 @@
         <div>
           <label class="block text-sm font-medium mb-1">{{
             $t('wizard.course_step.name_pt')
-          }}</label>
+          }} *</label>
           <input
             type="text"
             v-model="newCourse.nome"
@@ -96,7 +96,7 @@
         <div>
           <label class="block text-sm font-medium mb-1">{{
             $t('wizard.course_step.name_en')
-          }}</label>
+          }} *</label>
           <input
             type="text"
             v-model="newCourse.name"
@@ -106,7 +106,7 @@
         <div>
           <label class="block text-sm font-medium mb-1">{{
             $t('wizard.course_step.acronym')
-          }}</label>
+          }} *</label>
           <input
             type="text"
             v-model="newCourse.sigla"
@@ -114,7 +114,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.code') }}</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.code') }} *</label>
           <input
             type="text"
             v-model="newCourse.codigo"

@@ -332,11 +332,12 @@
 
               <div>
                 <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.en_name') }}
+                  {{ $t('course_detail.en_name') }} *
                 </label>
                 <input
                   v-model="modalData.course.name"
                   type="text"
+                  required
                   class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                 />
               </div>
@@ -422,11 +423,12 @@
 
               <div>
                 <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('course_detail.en_name') }}
+                  {{ $t('course_detail.en_name') }} *
                 </label>
                 <input
                   v-model="modalData.uc.name"
                   type="text"
+                  required
                   class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                 />
               </div>
@@ -460,10 +462,11 @@
               <div class="grid grid-cols-3 gap-4">
                 <div>
                   <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                    {{ $t('course_detail.semester') }}
+                    {{ $t('course_detail.semester') }} *
                   </label>
                   <select
                     v-model.number="modalData.uc.semestre"
+                    required
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                   >
                     <option :value="null">N/A</option>
@@ -474,13 +477,14 @@
 
                 <div>
                   <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                    {{ $t('course_detail.year') }}
+                    {{ $t('course_detail.year') }} *
                   </label>
                   <input
                     v-model.number="modalData.uc.ano"
                     type="number"
                     min="1"
                     max="6"
+                    required
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                     placeholder="e.g. 1"
                   />

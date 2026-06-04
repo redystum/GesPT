@@ -3,7 +3,7 @@
     <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">{{ $t('wizard.equivalence_step.title') }}</h2>
 
     <div class="mb-4">
-      <label class="block text-sm font-medium mb-1">{{ $t('wizard.equivalence_step.previous_plan') }}</label>
+      <label class="block text-sm font-medium mb-1">{{ $t('wizard.equivalence_step.previous_plan') }} *</label>
       <select
         v-if="!loadingPlan"
         v-model="selectedPrevPlanId"
@@ -75,7 +75,7 @@
           class="bg-neutral-50 dark:bg-neutral-900/30 rounded-md border dark:border-neutral-700 p-3"
         >
           <div class="text-xs font-semibold mb-2 text-neutral-700 dark:text-neutral-300">
-            {{ $t('wizard.equivalence_step.old_uc_same_semester') }} ({{ getEquivSemester(equiv) || '-' }})
+            {{ $t('wizard.equivalence_step.old_uc_same_semester') }} ({{ getEquivSemester(equiv) || '-' }}) *
           </div>
 
           <div v-if="equiv.loading" class="text-sm text-neutral-500 dark:text-neutral-400">
