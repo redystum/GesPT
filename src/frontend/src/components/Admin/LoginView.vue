@@ -658,7 +658,7 @@
                             editUserForm.custom_permissions.includes(perm.id)
                           "
                           :disabled="lockedPermissions.includes(perm.id)"
-                          @change="toggleCustomPermission(perm.id)"
+                          @change="toggleCustomPermission(perm)"
                           class="peer sr-only"
                         />
                         <div
@@ -1026,14 +1026,64 @@ const toggleRole = async (roleId) => {
   }
 }
 
-const toggleCustomPermission = (permId) => {
-  if (lockedPermissions.value.includes(permId)) return
-  const index = editUserForm.value.custom_permissions.indexOf(permId)
-  if (index === -1) {
-    editUserForm.value.custom_permissions.push(permId)
-  } else {
-    editUserForm.value.custom_permissions.splice(index, 1)
+const findPermissionByCode = (code) => {
+  for (const category of availablePermissions.value) {
+    if (category.permissoes) {
+      const found = category.permissoes.find(p => p.permissao === code)
+      if (found) return found
+    }
   }
+  return null
+}
+
+const activatePermissionRecursive = (perm, activeSet) => {
+  if (activeSet.has(perm.id)) return
+  activeSet.add(perm.id)
+
+  if (perm.required_permissoes && perm.required_permissoes.length > 0) {
+    perm.required_permissoes.forEach(reqPermCode => {
+      const reqPerm = findPermissionByCode(reqPermCode)
+      if (reqPerm) {
+        activatePermissionRecursive(reqPerm, activeSet)
+      }
+    })
+  }
+}
+
+const deactivatePermissionRecursive = (permCode, activeSet) => {
+  const perm = findPermissionByCode(permCode)
+  if (!perm) return
+
+  if (!activeSet.has(perm.id)) return
+  activeSet.delete(perm.id)
+
+  availablePermissions.value.forEach(category => {
+    if (category.permissoes) {
+      category.permissoes.forEach(p => {
+        if (p.required_permissoes && p.required_permissoes.includes(permCode)) {
+          deactivatePermissionRecursive(p.permissao, activeSet)
+        }
+      })
+    }
+  })
+}
+
+const toggleCustomPermission = (perm) => {
+  if (lockedPermissions.value.includes(perm.id)) return
+
+  const activeSet = new Set(editUserForm.value.custom_permissions)
+
+  if (activeSet.has(perm.id)) {
+    if (perm.permissao) {
+      deactivatePermissionRecursive(perm.permissao, activeSet)
+    } else {
+      activeSet.delete(perm.id)
+    }
+  } else {
+    activatePermissionRecursive(perm, activeSet)
+  }
+
+  editUserForm.value.custom_permissions = Array.from(activeSet)
 }
 
 const pagination = ref({
