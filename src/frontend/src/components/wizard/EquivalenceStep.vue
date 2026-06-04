@@ -110,7 +110,7 @@
           <div class="mt-4">
             <label class="block text-xs font-semibold mb-1">{{ $t('wizard.equivalence_step.observations') }}</label>
             <textarea
-              v-model="equiv.observacoes"
+              v-model.lazy="equiv.observacoes"
               class="w-full rounded-md border p-2 text-sm bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
               rows="2"
               :placeholder="$t('wizard.equivalence_step.observations_placeholder')"
