@@ -23,7 +23,9 @@ class WizardController extends Controller implements HasMiddleware
     public static function middleware(): array
     {
         return [
+            new Middleware('can:create,' . Curso::class, only: ['store']),
             new Middleware('can:create,' . PlanoEstudo::class, only: ['store']),
+            new Middleware('can:create,' . Uc::class, only: ['store']),
         ];
     }
 

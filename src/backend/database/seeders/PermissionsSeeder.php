@@ -42,7 +42,11 @@ class PermissionsSeeder extends Seeder
 
             'PlanoEstudo' => [
                 'slug' => 'planos_estudo', 'id_categoria' => 3, 'singular' => 'Plano de Estudo', 'plural' => 'Planos de Estudo',
-                'abilities' => ['viewAny', 'view', 'create', 'update', 'delete']
+                'abilities' => ['viewAny', 'view', 'create', 'update', 'delete'],
+                'required' => [
+                    'create' => ['cursos.view', 'cursos.create', 'ucs.view', 'ucs.create'],
+                    'update' => ['cursos.view', 'cursos.create', 'ucs.view', 'ucs.create']
+                ]
             ],
 
             'User' => [
@@ -115,6 +119,12 @@ class PermissionsSeeder extends Seeder
                         $required[] = $resource['slug'] . '.' . $req;
                     }
 
+                    $action_key = is_string($abilityDefinition) ? $abilityDefinition : ($ability['action'] ?? null);
+
+                    if ($action_key && isset($resource['required'][$action_key]) && is_array($resource['required'][$action_key])) {
+                        $required = array_merge($required, $resource['required'][$action_key]);
+                    }
+
                     $permissoes[] = [
                         'id_categoria' => $resource['id_categoria'],
                         'nome' => str_replace(
@@ -128,7 +138,7 @@ class PermissionsSeeder extends Seeder
                             [$resource['singular'], $resource['plural']],
                             $ability['descricao']
                         ),
-                        'required' => $required
+                        'required' => empty($required) ? null : array_values(array_unique($required))
                     ];
                 }
             }
