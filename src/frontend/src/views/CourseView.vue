@@ -271,14 +271,14 @@
                       >
                         <font-awesome-icon :icon="['fas', 'eye']" class="w-3.5 h-3.5" />
                       </router-link>
-                      <button
+                      <router-link
                         v-if="authStore.hasPermission('planos_estudo.update')"
-                        @click="openEditPlanModal(plan)"
-                        class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
+                        :to="{ name: 'plan-edit-wizard', params: { id: plan.id } }"
+                        class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800"
                         :title="$t('course_detail.edit_plan')"
                       >
                         <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
-                      </button>
+                      </router-link>
                       <button
                         v-if="authStore.hasPermission('planos_estudo.delete')"
                         @click="openDeletePlanModal(plan)"
@@ -574,63 +574,7 @@
       </Transition>
     </Teleport>
 
-    <!-- 3. PLAN ADD/EDIT MODAL -->
-    <Teleport to="body">
-      <Transition name="fade">
-        <div v-if="modals.plan" @click.self="modals.plan = false" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
-          <div class="bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-2xl max-w-sm w-full overflow-hidden animate-zoom-in">
-            <div class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between">
-              <h3 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-                {{ isEditing ? $t('course_detail.edit_plan') : $t('course_detail.add_plan') }}
-              </h3>
-              <button @click="modals.plan = false" class="text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-200 cursor-pointer">
-                <font-awesome-icon :icon="['fas', 'times']" />
-              </button>
-            </div>
 
-            <form @submit.prevent="savePlan" class="p-6 space-y-4">
-              <div v-if="modalError" class="p-3 bg-red-50 dark:bg-red-950/20 border border-red-100 dark:border-red-900/50 rounded-lg text-xs text-red-600 dark:text-red-400">
-                {{ modalError }}
-              </div>
-
-              <div>
-                <label class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-1">
-                  {{ $t('wizard.plan_step.academic_year') }} *
-                </label>
-                <input
-                  v-model="modalData.plan.ano"
-                  type="text"
-                  required
-                  :placeholder="$t('wizard.plan_step.academic_year_placeholder')"
-                  class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
-                />
-                <p class="text-[11px] text-neutral-400 mt-1">
-                  Format: 2026/27 or 2026/2027
-                </p>
-              </div>
-
-              <div class="pt-4 border-t border-neutral-100 dark:border-neutral-800 flex justify-end gap-3">
-                <button
-                  type="button"
-                  @click="modals.plan = false"
-                  class="px-4 py-2 border border-neutral-300 dark:border-neutral-700 text-neutral-700 dark:text-neutral-200 rounded-md text-sm font-semibold hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
-                >
-                  {{ $t('common.cancel') }}
-                </button>
-                <button
-                  type="submit"
-                  :disabled="saving"
-                  class="px-4 py-2 bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 rounded-md text-sm font-semibold hover:bg-neutral-800 dark:hover:bg-neutral-200 disabled:opacity-50 transition-colors cursor-pointer"
-                >
-                  <font-awesome-icon v-if="saving" :icon="['fas', 'circle-notch']" spin class="mr-1.5 text-xs" />
-                  {{ $t('common.save') }}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </Transition>
-    </Teleport>
 
     <!-- 4. DELETE CONFIRMATION MODAL -->
     <Teleport to="body">
@@ -706,11 +650,9 @@ const error = reactive({
   course: null
 })
 
-// Modals State
 const modals = reactive({
   course: false,
   uc: false,
-  plan: false,
   delete: false
 })
 
@@ -742,10 +684,6 @@ const modalData = reactive({
     horas_e: null,
     horas_ot: null,
     horas_o: null
-  },
-  plan: {
-    id: null,
-    ano: ''
   }
 })
 
@@ -955,57 +893,7 @@ const openDeleteUcModal = (uc) => {
 // Study Plan Actions
 // -------------------------------------------------------------
 
-const openEditPlanModal = (plan) => {
-  isEditing.value = true
-  modalError.value = null
-  modalData.plan = {
-    id: plan.id,
-    ano: plan.ano
-  }
-  modals.plan = true
-}
 
-const savePlan = async () => {
-  // Validate plan academic year sequence
-  const yearPattern = /^20\d{2}\/(20)?\d{2}$/
-  if (!yearPattern.test(modalData.plan.ano)) {
-    modalError.value = 'Year must be in format 20xx/xx or 20xx/20xx'
-    return
-  }
-
-  const parts = modalData.plan.ano.split('/')
-  const year1 = parseInt(parts[0])
-  let year2 = parseInt(parts[1])
-  if (parts[1].length === 2) {
-    year2 = 2000 + year2
-  }
-  if (year2 !== year1 + 1) {
-    modalError.value = 'The second year must be exactly one year after the first (e.g. 2026/27).'
-    return
-  }
-
-  saving.value = true
-  modalError.value = null
-  const payload = {
-    ano: modalData.plan.ano,
-    id_curso: parseInt(courseId.value)
-  }
-
-  try {
-    if (isEditing.value) {
-      await api.put(`/planos-estudo/${modalData.plan.id}`, payload)
-    } else {
-      await api.post(`/planos-estudo`, payload)
-    }
-    await fetchPlanos()
-    modals.plan = false
-  } catch (err) {
-    console.error('Failed to save Plan:', err)
-    modalError.value = err.response?.data?.message || 'Failed to save Study Plan.'
-  } finally {
-    saving.value = false
-  }
-}
 
 const openDeletePlanModal = (plan) => {
   deleteConfig.type = 'plan'

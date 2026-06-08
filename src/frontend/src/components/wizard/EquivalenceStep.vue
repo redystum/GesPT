@@ -138,7 +138,8 @@ import SearchableDropdown from '../SearchableDropdown.vue'
 const props = defineProps({
   modelValue: { type: Object, default: () => ({ prevPlanId: '', equivalences: [] }) },
   newPlanUcs: { type: Array, default: () => [] },
-  courseData: { type: Object, default: () => ({}) }
+  courseData: { type: Object, default: () => ({}) },
+  isEditing: { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -166,7 +167,9 @@ const getEquivSemester = (equiv) => {
 onMounted(() => {
   const courseId = props.courseData?.data?.id
   store.fetchPrevPlans(courseId)
-  store.fetchLatestPlan(courseId)
+  if (!props.isEditing) {
+    store.fetchLatestPlan(courseId)
+  }
 
   if (props.modelValue) {
     store.wizardData.equivalences.prevPlanId = props.modelValue.prevPlanId || ''

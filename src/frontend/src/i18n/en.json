@@ -193,6 +193,7 @@
   "wizard": {
     "kicker": "Guided Setup",
     "title": "Plan creation wizard",
+    "title_edit": "Plan edit wizard",
     "subtitle": "Define institutional metadata for a new curriculum plan through controlled steps.",
     "step_course": "Course",
     "step_plan_info": "Plan Info",
@@ -224,6 +225,7 @@
       "next_disabled_invalid_year": "Fill a valid academic year to continue.",
       "next_disabled_locked": "Complete the required data to unlock the next step.",
       "save_success": "Plan saved successfully.",
+      "save_success_edit": "Plan updated successfully.",
       "save_error": "An error occurred while saving the plan."
     },
     "course_step": {

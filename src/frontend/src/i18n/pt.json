@@ -193,6 +193,7 @@
   "wizard": {
     "kicker": "Configuração Guiada",
     "title": "Assistente de criação de plano",
+    "title_edit": "Assistente de edição de plano",
     "subtitle": "Defina os dados institucionais de um novo plano curricular em etapas controladas.",
     "step_course": "Curso",
     "step_plan_info": "Dados do Plano",
@@ -224,6 +225,7 @@
       "next_disabled_invalid_year": "Preencha um ano letivo válido para continuar.",
       "next_disabled_locked": "Complete os dados obrigatórios para desbloquear a próxima etapa.",
       "save_success": "Plano guardado com sucesso.",
+      "save_success_edit": "Plano atualizado com sucesso.",
       "save_error": "Ocorreu um erro ao guardar o plano."
     },
     "course_step": {

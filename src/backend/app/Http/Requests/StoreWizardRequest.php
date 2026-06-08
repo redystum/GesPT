@@ -46,7 +46,7 @@ class StoreWizardRequest extends FormRequest
                         $fail('The second year must be exactly one year after the first (e.g. 2025/2026).');
                     }
                 },
-                'unique:plano_estudos,ano,NULL,id,id_curso,' . ($this->course['isNew'] ? 'NULL' : $this->course['data']['id'])
+                'unique:plano_estudos,ano,' . (($plano = $this->route('planoEstudo')) ? (is_object($plano) ? $plano->id : $plano) : 'NULL') . ',id,id_curso,' . ($this->course['isNew'] ? 'NULL' : $this->course['data']['id'])
             ],
 
             'ucs' => 'required|array|min:1',

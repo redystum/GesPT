@@ -11,6 +11,7 @@ const router = createRouter({
     { path: '/plano/:id', name: 'compare', component: () => import('../views/PlanoView.vue') },
     { path: '/compare', name: 'compare', component: () => import('../views/ComparingView.vue') },
     { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') },
+    { path: '/wizard/edit/:id', name: 'plan-edit-wizard', component: () => import('../views/PlanEditWizardView.vue') },
     { path: '/curso/:id', name: 'course', component: () => import('../views/CourseView.vue') }
   ]
 })
@@ -40,9 +41,12 @@ router.beforeEach((to, from, next) => {
     }
   }
 
-  // Protect /wizard
-  if (to.path === '/wizard') {
-    if (!authStore.hasPermission('planos_estudo.create')) {
+  // Protect /wizard and /wizard/edit/:id
+  if (to.path === '/wizard' || to.path.startsWith('/wizard/edit/')) {
+    if (to.path === '/wizard' && !authStore.hasPermission('planos_estudo.create')) {
+      return next({ name: 'home' })
+    }
+    if (to.path.startsWith('/wizard/edit/') && !authStore.hasPermission('planos_estudo.update')) {
       return next({ name: 'home' })
     }
   }

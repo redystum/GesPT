@@ -45,6 +45,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Route for wizard
     Route::post('wizard', [WizardController::class, 'store']);
+    Route::get('wizard/{planoEstudo}', [WizardController::class, 'show']);
+    Route::put('wizard/{planoEstudo}', [WizardController::class, 'update']);
 
 // route for testing admin regex builder
     Route::prefix('admin')->group(function () {
