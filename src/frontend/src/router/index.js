@@ -12,7 +12,8 @@ const router = createRouter({
     { path: '/compare', name: 'compare', component: () => import('../views/ComparingView.vue') },
     { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') },
     { path: '/wizard/edit/:id', name: 'plan-edit-wizard', component: () => import('../views/PlanEditWizardView.vue') },
-    { path: '/curso/:id', name: 'course', component: () => import('../views/CourseView.vue') }
+    { path: '/curso/:id', name: 'course', component: () => import('../views/CourseView.vue') },
+    { path: '/uc/:id', name: 'uc-detail', component: () => import('../views/UcDetailView.vue') }
   ]
 })
 
@@ -54,6 +55,13 @@ router.beforeEach((to, from, next) => {
   // Protect /curso/:id
   if (to.path.startsWith('/curso/')) {
     if (!authStore.hasPermission(['cursos.view'])) {
+      return next({ name: 'home' })
+    }
+  }
+
+  // Protect /uc/:id
+  if (to.path.startsWith('/uc/')) {
+    if (!authStore.hasPermission(['ucs.view'])) {
       return next({ name: 'home' })
     }
   }

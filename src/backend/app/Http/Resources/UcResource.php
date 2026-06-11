@@ -15,7 +15,7 @@ class UcResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        return [
+        $data = [
             'id' => $this->id,
             'nome' => $this->nome,
             'name' => $this->name,
@@ -35,5 +35,16 @@ class UcResource extends JsonResource
             'id_curso' => $this->id_curso,
             'curso' => CursoResource::make($this->whenLoaded('curso')),
         ];
+
+        if ($this->relationLoaded('planoUcs')) {
+            $opcoesUcs = $this->planoUcs->flatMap(function ($planoUc) {
+                return $planoUc->opcoes->map(fn($o) => $o->ucEscolhida);
+            })->unique('id')->filter()->values();
+
+            $data['opcoes'] = UcResource::collection($opcoesUcs);
+            $data['plano_ucs_count'] = $this->planoUcs->count();
+        }
+
+        return $data;
     }
 }

@@ -332,5 +332,33 @@
     "confirm_delete_plan": "Are you sure you want to delete this Study Plan? This action cannot be undone.",
     "save_success": "Changes saved successfully.",
     "delete_success": "Deleted successfully."
+  },
+  "uc_detail": {
+    "title": "Curricular Unit Details",
+    "course": "Course",
+    "edit_uc": "Edit Curricular Unit",
+    "options_section_title": "Curricular Unit Options",
+    "options_section_desc": "Define which curricular units can be selected as options for this UC when it is used as an optional slot in study plans.",
+    "is_optional_slot": "This UC has options (Optional Slot)",
+    "is_optional_slot_hint": "Check this to enable selecting option UCs.",
+    "select_options_placeholder": "Search and select UCs to add as options...",
+    "no_options_defined": "No options defined yet.",
+    "no_options_available": "This Curricular Unit does not have options.",
+    "options_save_success": "Options updated successfully.",
+    "not_in_any_plan_warning": "This Curricular Unit is not currently part of any Study Plan. You must add it to a Study Plan first using the Wizard before you can define options.",
+    "workload_breakdown": "Workload Breakdown",
+    "general_info": "General Information",
+    "academic_details": "Academic Details",
+    "hours_breakdown": "Workload Hours (Breakdown)",
+    "total_hours": "Total Hours",
+    "hours_t": "Lectures (T)",
+    "hours_tp": "Lecture-Practical (TP)",
+    "hours_pl": "Lab Practical (PL)",
+    "hours_tc": "Field Work (TC)",
+    "hours_s": "Seminar (S)",
+    "hours_e": "Internship (E)",
+    "hours_ot": "Tutorial Orientation (OT)",
+    "hours_o": "Other (O)",
+    "not_configured": "Not configured"
   }
 }

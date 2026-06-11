@@ -147,7 +147,14 @@
                   </td>
                   <td class="px-6 py-3.5 font-semibold text-neutral-900 dark:text-neutral-100">
                     <div>
-                      <p>{{ locale === 'pt' ? uc.nome : (uc.name || uc.nome) }}</p>
+                      <router-link
+                        v-if="authStore.hasPermission('ucs.view')"
+                        :to="{ name: 'uc-detail', params: { id: uc.id } }"
+                        class="hover:underline hover:text-neutral-600 dark:hover:text-neutral-300"
+                      >
+                        {{ locale === 'pt' ? uc.nome : (uc.name || uc.nome) }}
+                      </router-link>
+                      <span v-else>{{ locale === 'pt' ? uc.nome : (uc.name || uc.nome) }}</span>
                       <p v-if="locale === 'pt' && uc.name" class="text-[11px] font-normal text-neutral-400 dark:text-neutral-500">
                         {{ uc.name }}
                       </p>
@@ -172,14 +179,14 @@
                   </td>
                   <td v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-3.5 text-right whitespace-nowrap">
                     <div class="inline-flex gap-2">
-                      <button
+                      <router-link
                         v-if="authStore.hasPermission('ucs.update')"
-                        @click="openEditUcModal(uc)"
+                        :to="{ name: 'uc-detail', params: { id: uc.id } }"
                         class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
                         :title="$t('course_detail.edit_uc')"
                       >
                         <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
-                      </button>
+                      </router-link>
                       <button
                         v-if="authStore.hasPermission('ucs.delete')"
                         @click="openDeleteUcModal(uc)"

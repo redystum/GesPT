@@ -66,7 +66,6 @@ const tabs = computed(() => {
 
   if (hasAdmin) {
     list.push({ id: 'dashboard', translationKey: 'admin.menu_dashboard' })
-    list.push({ id: 'curriculum', translationKey: 'admin.menu_curriculum' })
   }
 
   if (authStore.hasPermission(['login_dominios.view_any', 'users.view_any'])) {

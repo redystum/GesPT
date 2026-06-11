@@ -332,5 +332,33 @@
     "confirm_delete_plan": "Tem a certeza que pretende eliminar este Plano de Estudo? Esta ação não pode ser desfeita.",
     "save_success": "Alterações guardadas com sucesso.",
     "delete_success": "Eliminado com sucesso."
+  },
+  "uc_detail": {
+    "title": "Detalhes da Unidade Curricular",
+    "course": "Curso",
+    "edit_uc": "Editar Unidade Curricular",
+    "options_section_title": "Opções da Unidade Curricular",
+    "options_section_desc": "Defina quais unidades curriculares podem ser selecionadas como opções para esta UC quando ela for usada como uma vaga opcional nos planos de estudo.",
+    "is_optional_slot": "Esta UC tem opções (Vaga Opcional)",
+    "is_optional_slot_hint": "Marque esta opção para permitir a seleção de UCs opcionais.",
+    "select_options_placeholder": "Pesquisar e selecionar UCs para adicionar como opções...",
+    "no_options_defined": "Nenhuma opção definida ainda.",
+    "no_options_available": "Esta Unidade Curricular não tem opções.",
+    "options_save_success": "Opções atualizadas com sucesso.",
+    "not_in_any_plan_warning": "Esta Unidade Curricular não faz parte de nenhum Plano de Estudos de momento. Deve adicioná-la a um Plano de Estudos primeiro usando o Assistente para poder definir opções.",
+    "workload_breakdown": "Distribuição de Carga Horária",
+    "general_info": "Informações Gerais",
+    "academic_details": "Detalhes Académicos",
+    "hours_breakdown": "Carga Horária (Breakdown)",
+    "total_hours": "Total de Horas",
+    "hours_t": "Teóricas (T)",
+    "hours_tp": "Teórico-Práticas (TP)",
+    "hours_pl": "Práticas Laboratoriais (PL)",
+    "hours_tc": "Trabalho de Campo (TC)",
+    "hours_s": "Seminário (S)",
+    "hours_e": "Estágio (E)",
+    "hours_ot": "Orientação Tutoria (OT)",
+    "hours_o": "Outras (O)",
+    "not_configured": "Não configurado"
   }
 }

@@ -44,7 +44,7 @@ class UnidadeCurricularController extends Controller implements HasMiddleware
 
     public function show(Uc $uc)
     {
-        $uc->load('curso:id,nome,sigla,codigo');
+        $uc->load(['curso:id,nome,sigla,codigo', 'planoUcs.opcoes.ucEscolhida']);
 
         return response()->json([
             'data' => UcResource::make($uc),
@@ -81,6 +81,28 @@ class UnidadeCurricularController extends Controller implements HasMiddleware
     public function update(UpdateUcRequest $request, Uc $uc)
     {
         $uc->update($request->validated());
+
+        if ($request->has('opcoes')) {
+            $opcaoIds = $request->input('opcoes') ?? [];
+            $planoUcIds = \App\Models\PlanoUc::where('id_uc', $uc->id)->pluck('id');
+
+            \Illuminate\Support\Facades\DB::transaction(function () use ($planoUcIds, $opcaoIds) {
+                // Delete old options for these plano_ucs
+                \App\Models\Opcoes::whereIn('id_uc_opcional', $planoUcIds)->delete();
+
+                // Create new options
+                foreach ($planoUcIds as $planoUcId) {
+                    foreach ($opcaoIds as $opcaoId) {
+                        \App\Models\Opcoes::create([
+                            'id_uc_opcional' => $planoUcId,
+                            'id_uc' => $opcaoId
+                        ]);
+                    }
+                }
+            });
+        }
+
+        $uc->load(['curso:id,nome,sigla,codigo', 'planoUcs.opcoes.ucEscolhida']);
 
         return response()->json([
             'message' => 'Unidade curricular atualizada com sucesso!',

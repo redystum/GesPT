@@ -61,7 +61,7 @@
           <div class="hidden items-center gap-2 lg:flex">
             <button
               @click="toggleLanguage"
-              class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800"
+              class="cursor-pointer inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800"
               :aria-label="$t('nav.language_toggle')"
             >
               <span class="text-xs">
@@ -72,7 +72,7 @@
 
             <button
               @click="toggleTheme"
-              class="inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
+              class="cursor-pointer inline-flex h-9 items-center justify-center gap-2 rounded-md border border-neutral-200 dark:border-neutral-700 px-3 text-sm font-medium transition-colors duration-150 bg-white dark:bg-neutral-900 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-50 dark:hover:bg-neutral-800 w-9 px-0"
               :aria-label="isDark ? $t('nav.theme_light') : $t('nav.theme_dark')"
             >
               <font-awesome-icon
@@ -96,7 +96,7 @@
               >
                 <button
                   @click="logout"
-                  class="w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md"
+                  class="cursor-pointer w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md"
                 >
                   Logout
                 </button>
@@ -106,7 +106,7 @@
             <router-link
               v-else
               to="/login"
-              class="ml-1 inline-flex h-9 items-center justify-center rounded-md bg-neutral-900 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
+              class="cursor-pointer ml-1 inline-flex h-9 items-center justify-center rounded-md bg-neutral-900 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
             >
               {{ $t('nav.login') }}
             </router-link>
