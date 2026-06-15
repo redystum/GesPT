@@ -1,4 +1,6 @@
 <script setup>
+import SearchableDropdown from '@/components/SearchableDropdown.vue'
+
 defineProps({
   equivalences: {},
   plano_final: {}
@@ -41,9 +43,21 @@ function dividerClass(item, side, idx, listLength) {
         <template v-if="part.data">
           <div class="flex justify-between">
             <div class="mr-2 sm:mr-12 wrap-break-word sm:text-nowrap text-sm sm:text-base">
-              <p class="font-semibold">
-                {{ part.data.uc.nome }}
-                <span v-if="part.data.opcao_escolhida" class="font-medium">
+              <p class="font-semibold flex flex-wrap items-center gap-1.5">
+                <span>{{ part.data.uc.nome }}</span>
+                <span v-if="part.data.opcoes && part.data.opcoes.length > 0" class="inline-flex items-center gap-1.5 font-medium min-w-[200px] text-xs">
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="text-neutral-500" />
+                  <SearchableDropdown
+                    v-model="part.data.opcao_escolhida"
+                    :options="part.data.opcoes.map(o => o.uc_escolhida).filter(Boolean)"
+                    :displayFn="opt => opt.nome"
+                    :returnObject="true"
+                    valueKey="id"
+                    placeholder="Select option..."
+                    inputClass="!py-1 !px-2 text-xs min-h-[30px]"
+                  />
+                </span>
+                <span v-else-if="part.data.opcao_escolhida" class="font-medium">
                   <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
                   {{ part.data.opcao_escolhida.nome }}
                 </span>
@@ -82,9 +96,21 @@ function dividerClass(item, side, idx, listLength) {
         <template v-if="part?.data">
           <div class="flex justify-between">
             <div class="mr-2 sm:mr-12 wrap-break-word sm:text-nowrap text-sm sm:text-base">
-              <p class="font-semibold">
-                {{ part.data.uc.nome }}
-                <span v-if="part.data.opcao_escolhida" class="font-medium">
+              <p class="font-semibold flex flex-wrap items-center gap-1.5">
+                <span>{{ part.data.uc.nome }}</span>
+                <span v-if="part.data.opcoes && part.data.opcoes.length > 0" class="inline-flex items-center gap-1.5 font-medium min-w-[200px] text-xs">
+                  <font-awesome-icon :icon="['fas', 'arrow-right']" class="text-neutral-500" />
+                  <SearchableDropdown
+                    v-model="part.data.opcao_escolhida"
+                    :options="part.data.opcoes.map(o => o.uc_escolhida).filter(Boolean)"
+                    :displayFn="opt => opt.nome"
+                    :returnObject="true"
+                    valueKey="id"
+                    placeholder="Select option..."
+                    inputClass="!py-1 !px-2 text-xs min-h-[30px]"
+                  />
+                </span>
+                <span v-else-if="part.data.opcao_escolhida" class="font-medium">
                   <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
                   {{ part.data.opcao_escolhida.nome }}
                 </span>

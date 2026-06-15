@@ -22,10 +22,10 @@ class EquivalencesController extends Controller
         ]);
 
         $planoInicial = PlanoEstudo::where('id', $request->plano_inicial)
-            ->with(['planoUcs', 'planoUcs.uc'])
+            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida'])
             ->first();
         $planoFinal = PlanoEstudo::where('id', $request->plano_final)
-            ->with(['planoUcs', 'planoUcs.uc'])
+            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida'])
             ->first();
 
         if (!$request->estudante_id){
@@ -84,7 +84,7 @@ class EquivalencesController extends Controller
             ->get();
 
         $rules_in_plano = EquivalenciaRule::where('id_plano', $planoFinal->id)
-            ->with('equivalencias.plano_uc.uc')
+            ->with(['equivalencias.plano_uc.uc', 'equivalencias.plano_uc.opcoes.ucEscolhida'])
             ->get();
 
         $equivalences = [];
