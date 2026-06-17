@@ -16,7 +16,7 @@
           <p class="mt-2 text-sm">{{ $t('login.message') }}</p>
         </div>
 
-        <div v-if="hasError" class="mb-6 rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800/50 transition-all">
+        <div v-if="errorMessage" class="mb-6 rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800/50 transition-all">
           <div class="flex">
             <div class="flex-shrink-0">
               <svg class="h-5 w-5 text-red-400 dark:text-red-500" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -25,7 +25,7 @@
             </div>
             <div class="ml-3">
               <p class="text-sm font-medium text-red-800 dark:text-red-200">
-                {{ $t('login.error') }}
+                {{ errorMessage }}
               </p>
             </div>
           </div>
@@ -92,17 +92,21 @@
 <script setup>
 import { ref, inject } from 'vue'
 import { useRouter } from 'vue-router'
+import { useI18n } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const api = inject('api')
+const { t } = useI18n()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
 const rememberMe = ref(false)
-const hasError = ref(false)
+const errorMessage = ref('')
 
 const handleLogin = async () => {
-  hasError.value = false
+  errorMessage.value = ''
   try {
     const response = await api.post('/login', {
       email: email.value,
@@ -110,12 +114,28 @@ const handleLogin = async () => {
       remember: rememberMe.value
     })
     console.log('Login successful:', response.data)
+
+    // Save the credentials and token to store
+    authStore.login(response.data)
+
+    // Fetch and store permissions
+    try {
+      const meResponse = await api.get('/me')
+      authStore.setPermissions(meResponse.data)
+    } catch (e) {
+      console.error('Failed to load permissions during login:', e)
+    }
+
     // Redirect to home or dashboard on successful login
     router.push('/')
   } catch (error) {
     console.error('Login failed:', error.response ? error.response.data : error.message)
     // Display the error message in the UI
-    hasError.value = true
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage.value = error.response.data.message
+    } else {
+      errorMessage.value = t('login.error')
+    }
   }
 }
 </script>

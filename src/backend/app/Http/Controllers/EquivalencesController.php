@@ -15,18 +15,22 @@ class EquivalencesController extends Controller
     public function compare(Request $request)
     {
         $request->validate([
-            'estudante_id' => 'required|integer|exists:estudantes,id',
+//            'estudante_id' => 'required|integer|exists:estudantes,id',
             'plano_inicial' => 'required|integer|exists:plano_estudos,id',
             'plano_final' => 'nullable|integer|exists:plano_estudos,id',
             'dd' => 'nullable|bool'
         ]);
 
         $planoInicial = PlanoEstudo::where('id', $request->plano_inicial)
-            ->with(['planoUcs', 'planoUcs.uc'])
+            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida'])
             ->first();
         $planoFinal = PlanoEstudo::where('id', $request->plano_final)
-            ->with(['planoUcs', 'planoUcs.uc'])
+            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida'])
             ->first();
+
+        if (!$request->estudante_id){
+            $request->estudante_id = 1;
+        }
 
         $opInicial = OpcoesEstudante::where('id_estudante', $request->estudante_id)
             ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
@@ -80,7 +84,7 @@ class EquivalencesController extends Controller
             ->get();
 
         $rules_in_plano = EquivalenciaRule::where('id_plano', $planoFinal->id)
-            ->with('equivalencias.plano_uc.uc')
+            ->with(['equivalencias.plano_uc.uc', 'equivalencias.plano_uc.opcoes.ucEscolhida'])
             ->get();
 
         $equivalences = [];

@@ -22,6 +22,15 @@ class Uc extends Model
         'id_curso',
         'semestre',
         'name',
+        'ano',
+        'horas_t',
+        'horas_tp',
+        'horas_pl',
+        'horas_tc',
+        'horas_s',
+        'horas_e',
+        'horas_ot',
+        'horas_o',
     ];
 
     public function curso(): BelongsTo

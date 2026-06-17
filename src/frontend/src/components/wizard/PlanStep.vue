@@ -8,8 +8,9 @@
       <div>
         <label class="block text-sm font-medium mb-1">{{
           $t('wizard.plan_step.academic_year')
-        }}</label>
+        }} *</label>
         <input
+          ref="yearInput"
           type="text"
           v-model="plan.ano"
           @input="validateYear"
@@ -33,13 +34,33 @@ const { t } = useI18n()
 
 const plan = ref({ ano: '' })
 const errorMsg = ref('')
+const yearInput = ref(null)
+let previousLength = 0
 
 const validateYear = () => {
-  const regex = /^20\d{2}\/(20)?\d{2}$/
+  const currentLength = plan.value.ano?.length || 0
+  const isTyping = currentLength > previousLength
+  previousLength = currentLength
+
   if (!plan.value.ano) {
     errorMsg.value = ''
     return
   }
+
+  // Auto-complete if typing and matches exactly 4 digits like 2026
+  if (isTyping && /^20\d{2}$/.test(plan.value.ano)) {
+    const year1 = parseInt(plan.value.ano, 10)
+    const year2 = (year1 + 1).toString().slice(-2)
+    plan.value.ano = `${year1}/${year2}`
+    previousLength = plan.value.ano.length
+
+    // Remove focus from the input
+    if (yearInput.value) {
+      yearInput.value.blur()
+    }
+  }
+
+  const regex = /^20\d{2}\/(20)?\d{2}$/
 
   if (!regex.test(plan.value.ano)) {
     errorMsg.value = t('wizard.plan_step.error_invalid_format')
@@ -65,6 +86,7 @@ const validateYear = () => {
 onMounted(() => {
   if (props.modelValue) {
     plan.value.ano = props.modelValue.ano || ''
+    previousLength = plan.value.ano.length
     validateYear()
   }
 })

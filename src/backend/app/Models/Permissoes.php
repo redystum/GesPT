@@ -18,8 +18,16 @@ class Permissoes extends Model
         'permissao',
         'nome',
         'descricao',
-        'id_categoria'
+        'id_categoria',
+        'required_permissoes'
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'required_permissoes' => 'array',
+        ];
+    }
 
     public function roles(): HasManyThrough
     {

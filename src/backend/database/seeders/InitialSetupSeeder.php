@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Models\Configuration;
+use App\Models\LoginDominios;
 use App\Models\Role;
 use App\Models\User;
 use App\Models\UserRole;
@@ -26,9 +28,19 @@ class InitialSetupSeeder extends Seeder
             ]
         );
 
+        Configuration::set('login_regex', [
+            "regex"=>"^[a-zA-Z0-9._%+-]+@ipleiria.pt$",
+            "test_subjects" => ["2231034@my.ipleiria.pt", "2231034@ipleiria.pt", "ruben.alves@ipleiria.pt"]
+        ]);
+
         $this->call([
             PermissionsSeeder::class,
         ]);
+
+        LoginDominios::firstOrCreate(
+            ['dominio' => 'gespt.local', 'id_role' => 1],
+            ['dominio' => 'gespt.local', 'id_role' => 1]
+        );
 
         UserRole::firstOrCreate(
             ['id_user' => $user->id, 'id_role' => 1],

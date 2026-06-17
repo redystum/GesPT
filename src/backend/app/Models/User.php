@@ -8,10 +8,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable;
 
     const USER_TYPE_LOCAL = "local";
     const USER_TYPE_REMOTE = "remote";
@@ -26,6 +27,9 @@ class User extends Authenticatable
         'email',
         'password',
         'type',
+        'blocked',
+        'blocked_reason',
+        'blocked_at',
     ];
 
     /**
@@ -59,5 +63,18 @@ class User extends Authenticatable
     public function roles(): HasManyThrough
     {
         return $this->hasManyThrough(Role::class, UserRole::class, 'id_user', 'id', 'id', 'id_role');
+    }
+
+    public function allPermissoes()
+    {
+        return $this->permissoes()->get()->merge($this->roles()->with('permissoes')->get()->pluck('permissoes')->flatten())->unique('id');
+    }
+
+    public function hasPermission($permission)
+    {
+        if (is_array($permission)) {
+            return $this->allPermissoes()->whereIn('permissao', $permission)->isNotEmpty();
+        }
+        return $this->allPermissoes()->contains('permissao', $permission);
     }
 }

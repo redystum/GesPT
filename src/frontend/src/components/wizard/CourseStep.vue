@@ -5,9 +5,18 @@
     </h2>
 
     <div class="space-y-4">
-      <div v-if="!isCreatingNew">
-        <label class="block text-sm font-medium mb-1">
+      <div v-if="isEditing" class="p-4 rounded-md border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-900/40">
+        <label class="block text-sm font-semibold mb-1 text-neutral-500 dark:text-neutral-400">
           {{ $t('wizard.course_step.select_course') }}
+        </label>
+        <span class="text-base font-bold text-neutral-900 dark:text-neutral-100">
+          {{ modelValue?.data?.nome }} ({{ modelValue?.data?.sigla }})
+        </span>
+      </div>
+
+      <div v-else-if="!isCreatingNew">
+        <label class="block text-sm font-medium mb-1">
+          {{ $t('wizard.course_step.select_course') }} *
           <span v-if="loadingCourses" class="text-sm text-neutral-500 font-normal ml-2">{{
             $t('common.loading')
           }}</span>
@@ -86,7 +95,7 @@
         <div>
           <label class="block text-sm font-medium mb-1">{{
             $t('wizard.course_step.name_pt')
-          }}</label>
+          }} *</label>
           <input
             type="text"
             v-model="newCourse.nome"
@@ -96,7 +105,7 @@
         <div>
           <label class="block text-sm font-medium mb-1">{{
             $t('wizard.course_step.name_en')
-          }}</label>
+          }} *</label>
           <input
             type="text"
             v-model="newCourse.name"
@@ -106,7 +115,7 @@
         <div>
           <label class="block text-sm font-medium mb-1">{{
             $t('wizard.course_step.acronym')
-          }}</label>
+          }} *</label>
           <input
             type="text"
             v-model="newCourse.sigla"
@@ -114,7 +123,7 @@
           />
         </div>
         <div>
-          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.code') }}</label>
+          <label class="block text-sm font-medium mb-1">{{ $t('wizard.course_step.code') }} *</label>
           <input
             type="text"
             v-model="newCourse.codigo"
@@ -138,7 +147,10 @@ import { inject, ref, watch, onMounted } from 'vue'
 import { useI18n } from '@/i18n'
 import SearchableDropdown from '../SearchableDropdown.vue'
 
-const props = defineProps(['modelValue'])
+const props = defineProps({
+  modelValue: { type: Object, default: () => ({ isNew: false, data: {} }) },
+  isEditing: { type: Boolean, default: false }
+})
 const emit = defineEmits(['update:modelValue', 'template-imported'])
 
 const isCreatingNew = ref(false)
@@ -248,7 +260,9 @@ const importTemplate = async (event) => {
 }
 
 onMounted(() => {
-  fetchCourses()
+  if (!props.isEditing) {
+    fetchCourses()
+  }
   if (props.modelValue) {
     if (props.modelValue.isNew) {
       isCreatingNew.value = true

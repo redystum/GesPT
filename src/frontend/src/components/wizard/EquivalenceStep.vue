@@ -3,7 +3,7 @@
     <h2 class="text-xl font-bold mb-6 text-neutral-900 dark:text-neutral-100">{{ $t('wizard.equivalence_step.title') }}</h2>
 
     <div class="mb-4">
-      <label class="block text-sm font-medium mb-1">{{ $t('wizard.equivalence_step.previous_plan') }}</label>
+      <label class="block text-sm font-medium mb-1">{{ $t('wizard.equivalence_step.previous_plan') }} *</label>
       <select
         v-if="!loadingPlan"
         v-model="selectedPrevPlanId"
@@ -75,7 +75,7 @@
           class="bg-neutral-50 dark:bg-neutral-900/30 rounded-md border dark:border-neutral-700 p-3"
         >
           <div class="text-xs font-semibold mb-2 text-neutral-700 dark:text-neutral-300">
-            {{ $t('wizard.equivalence_step.old_uc_same_semester') }} ({{ getEquivSemester(equiv) || '-' }})
+            {{ $t('wizard.equivalence_step.old_uc_same_semester') }} ({{ getEquivSemester(equiv) || '-' }}) *
           </div>
 
           <div v-if="equiv.loading" class="text-sm text-neutral-500 dark:text-neutral-400">
@@ -110,7 +110,7 @@
           <div class="mt-4">
             <label class="block text-xs font-semibold mb-1">{{ $t('wizard.equivalence_step.observations') }}</label>
             <textarea
-              v-model="equiv.observacoes"
+              v-model.lazy="equiv.observacoes"
               class="w-full rounded-md border p-2 text-sm bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
               rows="2"
               :placeholder="$t('wizard.equivalence_step.observations_placeholder')"
@@ -138,7 +138,8 @@ import SearchableDropdown from '../SearchableDropdown.vue'
 const props = defineProps({
   modelValue: { type: Object, default: () => ({ prevPlanId: '', equivalences: [] }) },
   newPlanUcs: { type: Array, default: () => [] },
-  courseData: { type: Object, default: () => ({}) }
+  courseData: { type: Object, default: () => ({}) },
+  isEditing: { type: Boolean, default: false }
 })
 const emit = defineEmits(['update:modelValue'])
 
@@ -166,7 +167,9 @@ const getEquivSemester = (equiv) => {
 onMounted(() => {
   const courseId = props.courseData?.data?.id
   store.fetchPrevPlans(courseId)
-  store.fetchLatestPlan(courseId)
+  if (!props.isEditing) {
+    store.fetchLatestPlan(courseId)
+  }
 
   if (props.modelValue) {
     store.wizardData.equivalences.prevPlanId = props.modelValue.prevPlanId || ''

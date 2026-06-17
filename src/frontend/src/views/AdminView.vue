@@ -46,21 +46,53 @@
     </div>
   </div>
 </template>
-
 <script setup>
-import { ref } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 import LoginView from '@/components/Admin/LoginView.vue'
 import RolesView from '@/components/Admin/RolesView.vue'
 
-const activeTab = ref('auth')
+const authStore = useAuthStore()
 
-const tabs = [
-  { id: 'dashboard', translationKey: 'admin.menu_dashboard' },
-  { id: 'curriculum', translationKey: 'admin.menu_curriculum' },
-  { id: 'auth', translationKey: 'admin.menu_auth' },
-  { id: 'roles', translationKey: 'admin.menu_roles' },
-  { id: 'audit', translationKey: 'admin.menu_audit' },
-]
+const activeTab = ref('')
+
+const tabs = computed(() => {
+  const list = []
+  const hasAdmin = authStore.hasPermission([
+    'roles.view_any',
+    'users.view_any',
+    'login_dominios.view_any'
+  ])
+
+  if (hasAdmin) {
+    list.push({ id: 'dashboard', translationKey: 'admin.menu_dashboard' })
+  }
+
+  if (authStore.hasPermission(['login_dominios.view_any', 'users.view_any'])) {
+    list.push({ id: 'auth', translationKey: 'admin.menu_auth' })
+  }
+
+  if (authStore.hasPermission('roles.view_any')) {
+    list.push({ id: 'roles', translationKey: 'admin.menu_roles' })
+  }
+
+  if (hasAdmin) {
+    list.push({ id: 'audit', translationKey: 'admin.menu_audit' })
+  }
+
+  return list
+})
+
+onMounted(() => {
+  if (tabs.value.length > 0) {
+    const hasAuthTab = tabs.value.some((t) => t.id === 'auth')
+    if (hasAuthTab) {
+      activeTab.value = 'auth'
+    } else {
+      activeTab.value = tabs.value[0].id
+    }
+  }
+})
 </script>
 
 <style scoped>

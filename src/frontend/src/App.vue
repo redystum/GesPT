@@ -16,13 +16,12 @@
 </template>
 
 <script setup>
-import { computed, watchEffect } from 'vue'
+import { watchEffect } from 'vue'
 import { useI18n } from '@/i18n'
 import NavComponent from '@/components/Navbar/NavComponent.vue'
 import FooterView from '@/components/Footer/FooterView.vue'
 
 const { t } = useI18n()
-const currentYear = computed(() => new Date().getFullYear())
 
 watchEffect(() => {
   document.title = t('brand.app_title')

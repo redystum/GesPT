@@ -84,8 +84,29 @@ watch(() => props.modelValue, updateSearchQueryFromValue, { immediate: true, dee
 watch(() => props.options, updateSearchQueryFromValue, { deep: true })
 
 const filteredOptions = computed(() => {
-  if (!searchQuery.value || (showDropdown.value === false && isSelected.value)) return props.options
-  if (isSelected.value && !showDropdown.value) return props.options
+  if (!searchQuery.value || !showDropdown.value) return props.options
+
+  let selectedText = ''
+  if (isSelected.value) {
+    const option = props.options.find(opt => {
+      if (props.returnObject) {
+        if (props.valueKey && opt[props.valueKey] && typeof props.modelValue === 'object' && props.modelValue[props.valueKey]) {
+          return opt[props.valueKey] === props.modelValue[props.valueKey]
+        }
+        return opt === props.modelValue
+      }
+      const val = props.valueKey ? opt[props.valueKey] : opt
+      return val === props.modelValue
+    })
+    if (option) {
+      selectedText = props.displayFn(option)
+    }
+  }
+
+  // If the query exactly matches the selected option's text, show all options
+  if (isSelected.value && searchQuery.value === selectedText) {
+    return props.options
+  }
 
   const query = normalizeString(searchQuery.value.toLowerCase())
   if (props.searchFn) {
@@ -104,9 +125,13 @@ const onInput = () => {
   showDropdown.value = true
 }
 
-const onFocus = () => {
+const onFocus = (event) => {
   showDropdown.value = true
   updateSearchQueryFromValue()
+  // Select the text so the user can just start typing to search
+  if (event && event.target) {
+    event.target.select()
+  }
 }
 
 const onBlur = () => {

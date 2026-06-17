@@ -23,6 +23,7 @@ class StoreCourseRequest extends FormRequest
     {
         return [
             'nome' => ['required', 'string', 'max:255'],
+            'name' => ['nullable', 'string', 'max:255'],
             'sigla' => ['required', 'string', 'max:20', 'unique:cursos,sigla'],
             'codigo' => ['required', 'string', 'max:10', 'unique:cursos,codigo'],
         ];

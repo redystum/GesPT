@@ -25,10 +25,6 @@ class DatabaseSeeder extends Seeder
 
         // ----- Persistent data -----
 
-
-        // TODO: aqui é suposto ter todas as Permições possiveis para o admin as puder usar
-        //  ex: can_create_plano, can_create_estudante, can_update_equivalencias, etc...
-
         $this->call([
             InitialSetupSeeder::class
         ]);
@@ -37,9 +33,9 @@ class DatabaseSeeder extends Seeder
             return;
         }
 
-        User::factory(150)->create();
-
         // ----- Sample data -----
+
+        User::factory(150)->create();
 
         Curso::insert([
             ['nome' => 'Engenharia Informática', 'sigla' => 'EI', 'codigo' => '9119', 'name' => 'Computer Engineering'],
@@ -60,18 +56,18 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Uc::insert([
-            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming I', 'semestre' => 1],
-            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming II', 'semestre' => 1],
-            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Advanced Programming', 'semestre' => 1],
-            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Information Systems', 'semestre' => 1],
-            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics A', 'semestre' => 1],
-            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics B', 'semestre' => 1],
+            ['id' => 1, 'nome' => 'Programação I', 'sigla' => 'P1', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming I', 'semestre' => 1, 'ano' => 1],
+            ['id' => 2, 'nome' => 'Programação II', 'sigla' => 'P2', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Programming II', 'semestre' => 1, 'ano' => 1],
+            ['id' => 3, 'nome' => 'Programação Avançada', 'sigla' => 'PA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Advanced Programming', 'semestre' => 1, 'ano' => 1],
+            ['id' => 4, 'nome' => 'Sistemas de Informação', 'sigla' => 'SI', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Information Systems', 'semestre' => 1, 'ano' => 1],
+            ['id' => 5, 'nome' => 'Matemática A', 'sigla' => 'MATA', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics A', 'semestre' => 1, 'ano' => 1],
+            ['id' => 6, 'nome' => 'Matemática B', 'sigla' => 'MATB', 'ects' => 6, 'horas' => 60, 'id_curso' => 1, 'name' => 'Mathematics B', 'semestre' => 1, 'ano' => 1],
 
-            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Project Management', 'semestre' => 1],
-            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Marketing', 'semestre' => 1],
+            ['id' => 7, 'nome' => 'Gestão de Projetos', 'sigla' => 'GP', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Project Management', 'semestre' => 1, 'ano' => 1],
+            ['id' => 8, 'nome' => 'Marketing', 'sigla' => 'MK', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Marketing', 'semestre' => 1, 'ano' => 1],
 
-            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 1', 'semestre' => 2],
-            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 2', 'semestre' => 2],
+            ['id' => 9, 'nome' => 'Opcão 1', 'sigla' => 'OP1', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 1', 'semestre' => 2, 'ano' => 1],
+            ['id' => 10, 'nome' => 'Opcão 2', 'sigla' => 'OP2', 'ects' => 6, 'horas' => 60, 'id_curso' => 2, 'name' => 'Option 2', 'semestre' => 2, 'ano' => 1],
         ]);
 
         EquivalenciaRule::insert([

@@ -5,11 +5,12 @@
     "app_title": "GesPT | IPLeiria Academic Platform"
   },
   "nav": {
-    "catalog": "Catalog",
+    "home": "Home",
     "admin": "Administration",
     "compare": "Comparison",
     "wizard": "Create Plan",
     "login": "Sign In",
+    "logout": "Logout",
     "theme_light": "Switch to light mode",
     "theme_dark": "Switch to dark mode",
     "language_toggle": "Switch language"
@@ -26,6 +27,7 @@
     "discard": "Discard",
     "save": "Save",
     "add_entry": "Add",
+    "remove": "Remove",
     "back": "Back",
     "next": "Next step",
     "previous": "Previous",
@@ -48,7 +50,11 @@
     "submit": "Sign in",
     "forgot": "Forgot password?",
     "remember": "Remember me",
-    "error": "Invalid email or password. Please try again."
+    "error": "Invalid email or password. Please try again.",
+    "unauthorized_domain": "The provided email domain is not authorized to access this platform.",
+    "user_blocked": "Your account has been temporarily blocked. Please contact support.",
+    "invalid_credentials": "Invalid email or password. Please check your credentials and try again.",
+    "auth_failed": "Authentication failed due to a system error. Please try again later."
   },
   "home": {
     "kicker": "Academic Management",
@@ -64,6 +70,15 @@
     "title": "Authentication and access governance",
     "subtitle": "Configure security policies and authorization rules for platform usage.",
     "save_configuration": "Save configuration",
+    "accepted_domains_title": "Accepted Domains",
+    "accepted_domains_label": "Allowed domains",
+    "accepted_domains_placeholder": "e.g. ipleiria.pt",
+    "invalid_domain": "Please enter a valid domain.",
+    "default_role_label": "Default role on first login",
+    "default_role_short_label": "Default role:",
+    "default_role_placeholder": "Select a role...",
+    "default_role_help": "Assigned to new users on their first successful login.",
+    "legacy_regex_note_title": "Legacy regex (read-only)",
     "menu_dashboard": "Overview",
     "menu_curriculum": "Curriculum Administration",
     "menu_auth": "Authentication and Users",
@@ -108,6 +123,8 @@
     "add_user_type_local": "Local",
     "add_user_password": "Password",
     "add_user_password_confirm": "Confirm Password",
+    "add_user_recovery_email": "Recovery Email",
+    "add_user_email_changed": "The email domain was automatically changed to @gespt.local. Please review and save again.",
     "add_user_password_mismatch": "Passwords do not match",
     "add_user_error_general": "An unexpected error occurred. Please try again.",
     "rule_title": "Authentication Validation Rules",
@@ -142,7 +159,17 @@
     "delete_user_title": "Delete User",
     "delete_user_desc": "Are you sure you want to delete this user? This action cannot be undone.",
     "delete_user_confirm": "Delete User",
-    "role_permissions_warning": "Permissions inherited from roles cannot be removed manually. You can assign additional custom permissions below."
+    "role_permissions_warning": "Permissions inherited from roles cannot be removed manually. You can assign additional custom permissions below.",
+    "unblock": "Unblock",
+    "block": "Block",
+    "block_user_title": "Block User",
+    "unblock_user_title": "Unblock User",
+    "block_reason_label": "Reason (optional)",
+    "block_reason_placeholder": "Add a reason for blocking",
+    "block_reason_title": "Block reason",
+    "block_reason_empty": "No reason provided.",
+    "block_confirm": "Block",
+    "unblock_confirm": "Unblock"
   },
   "compare": {
     "kicker": "Curriculum Analysis",
@@ -160,11 +187,13 @@
     "ects": "ECTS",
     "empty_hint": "No equivalences were found for the selected combination.",
     "select_prompt_title": "Select a course and plans to compare",
-    "select_prompt_subtitle": "Choose the course and curriculum plans to open detailed analysis."
+    "select_prompt_subtitle": "Choose the course and curriculum plans to open detailed analysis.",
+    "semester": "Semester"
   },
   "wizard": {
     "kicker": "Guided Setup",
     "title": "Plan creation wizard",
+    "title_edit": "Plan edit wizard",
     "subtitle": "Define institutional metadata for a new curriculum plan through controlled steps.",
     "step_course": "Course",
     "step_plan_info": "Plan Info",
@@ -196,6 +225,7 @@
       "next_disabled_invalid_year": "Fill a valid academic year to continue.",
       "next_disabled_locked": "Complete the required data to unlock the next step.",
       "save_success": "Plan saved successfully.",
+      "save_success_edit": "Plan updated successfully.",
       "save_error": "An error occurred while saving the plan."
     },
     "course_step": {
@@ -238,6 +268,10 @@
       "ects": "ECTS",
       "hours": "Hours",
       "semester": "Semester",
+      "year": "Year",
+      "workload_title": "Workload",
+      "workload_total": "Total workload hours",
+      "contact_total": "Total contact hours",
       "create_add": "Create & Add UC"
     },
     "equivalence_step": {
@@ -262,5 +296,69 @@
       "add_button": "Add Equivalence",
       "add_button_full": "+ Add Equivalence"
     }
+  },
+  "error": {
+    "unexpected": "An unexpected error occurred. Please try again.",
+    "failedToSaveConfig": "Failed to save configuration.",
+    "failedToDeleteUser": "Failed to delete user.",
+    "failedToSaveUser": "Failed to save user."
+  },
+  "course_detail": {
+    "title": "Course Details",
+    "ucs_table_title": "Curricular Units (UCs)",
+    "plans_table_title": "Study Plans",
+    "no_ucs": "No Curricular Units configured.",
+    "no_plans": "No Study Plans configured.",
+    "add_uc": "Add UC",
+    "add_plan": "Add Plan",
+    "edit_course": "Edit Course",
+    "delete_course": "Delete Course",
+    "edit_uc": "Edit UC",
+    "delete_uc": "Delete UC",
+    "edit_plan": "Edit Plan",
+    "delete_plan": "Delete Plan",
+    "course_info": "Course Information",
+    "acronym": "Acronym",
+    "code": "Code",
+    "pt_name": "Portuguese Name",
+    "en_name": "English Name",
+    "semester": "Semester",
+    "ects": "ECTS",
+    "hours": "Hours",
+    "year": "Year",
+    "actions": "Actions",
+    "confirm_delete_course": "Are you sure you want to delete this course? This action cannot be undone and will delete all associated UCs and Study Plans.",
+    "confirm_delete_uc": "Are you sure you want to delete this Curricular Unit? This action cannot be undone.",
+    "confirm_delete_plan": "Are you sure you want to delete this Study Plan? This action cannot be undone.",
+    "save_success": "Changes saved successfully.",
+    "delete_success": "Deleted successfully."
+  },
+  "uc_detail": {
+    "title": "Curricular Unit Details",
+    "course": "Course",
+    "edit_uc": "Edit Curricular Unit",
+    "options_section_title": "Curricular Unit Options",
+    "options_section_desc": "Define which curricular units can be selected as options for this UC when it is used as an optional slot in study plans.",
+    "is_optional_slot": "This UC has options (Optional Slot)",
+    "is_optional_slot_hint": "Check this to enable selecting option UCs.",
+    "select_options_placeholder": "Search and select UCs to add as options...",
+    "no_options_defined": "No options defined yet.",
+    "no_options_available": "This Curricular Unit does not have options.",
+    "options_save_success": "Options updated successfully.",
+    "not_in_any_plan_warning": "This Curricular Unit is not currently part of any Study Plan. You must add it to a Study Plan first using the Wizard before you can define options.",
+    "workload_breakdown": "Workload Breakdown",
+    "general_info": "General Information",
+    "academic_details": "Academic Details",
+    "hours_breakdown": "Workload Hours (Breakdown)",
+    "total_hours": "Total Hours",
+    "hours_t": "Lectures (T)",
+    "hours_tp": "Lecture-Practical (TP)",
+    "hours_pl": "Lab Practical (PL)",
+    "hours_tc": "Field Work (TC)",
+    "hours_s": "Seminar (S)",
+    "hours_e": "Internship (E)",
+    "hours_ot": "Tutorial Orientation (OT)",
+    "hours_o": "Other (O)",
+    "not_configured": "Not configured"
   }
 }

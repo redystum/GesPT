@@ -46,7 +46,7 @@ class StoreWizardRequest extends FormRequest
                         $fail('The second year must be exactly one year after the first (e.g. 2025/2026).');
                     }
                 },
-                'unique:plano_estudos,ano,NULL,id,id_curso,' . ($this->course['isNew'] ? 'NULL' : $this->course['data']['id'])
+                'unique:plano_estudos,ano,' . (($plano = $this->route('planoEstudo')) ? (is_object($plano) ? $plano->id : $plano) : 'NULL') . ',id,id_curso,' . ($this->course['isNew'] ? 'NULL' : $this->course['data']['id'])
             ],
 
             'ucs' => 'required|array|min:1',
@@ -56,8 +56,17 @@ class StoreWizardRequest extends FormRequest
             'ucs.*.name' => 'required_if:ucs.*.isNew,true|string',
             'ucs.*.sigla' => 'required_if:ucs.*.isNew,true|string',
             'ucs.*.ects' => 'required_if:ucs.*.isNew,true|integer|min:1',
-            'ucs.*.horas' => 'required_if:ucs.*.isNew,true|integer|min:1',
+            'ucs.*.ano' => 'required_if:ucs.*.isNew,true|integer|min:1',
             'ucs.*.semestre' => 'required_if:ucs.*.isNew,true|integer',
+            'ucs.*.horas_trabalho_totais' => 'nullable|integer|min:0',
+            'ucs.*.t' => 'nullable|integer|min:0',
+            'ucs.*.tp' => 'nullable|integer|min:0',
+            'ucs.*.pl' => 'nullable|integer|min:0',
+            'ucs.*.tc' => 'nullable|integer|min:0',
+            'ucs.*.s' => 'nullable|integer|min:0',
+            'ucs.*.e' => 'nullable|integer|min:0',
+            'ucs.*.ot' => 'nullable|integer|min:0',
+            'ucs.*.o' => 'nullable|integer|min:0',
 
             'equivalences.prevPlanId' => 'nullable|integer|exists:plano_estudos,id',
             'equivalences.equivalences' => 'array',

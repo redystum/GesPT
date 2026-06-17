@@ -7,9 +7,23 @@ use App\Http\Requests\StoreOpcoesRequest;
 use App\Http\Requests\UpdateOpcoesRequest;
 use App\Http\Resources\OpcoesResource;
 use App\Models\Opcoes;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class OpcoesController extends Controller
+class OpcoesController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:create,' . Opcoes::class, only: ['store']),
+            new Middleware('can:update,opcoao', only: ['update']),
+            new Middleware('can:delete,opcoao', only: ['destroy']),
+        ];
+    }
+
     public function store(StoreOpcoesRequest $request){
         $opcoes = Opcoes::create($request->validated());
 

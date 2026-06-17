@@ -23,13 +23,13 @@
                 ? 'bg-red-600 dark:bg-red-500 text-white'
                 : currentStep === index + 1
                   ? 'bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900'
-                : hasStepErrors(index + 1)
-                  ? 'bg-red-600 dark:bg-red-500 text-white'
-                : isStepCompleted(index + 1)
-                  ? 'bg-green-600 dark:bg-green-500 text-white'
-                  : canNavigateToStep(index + 1)
-                    ? 'border border-neutral-300 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400'
-                    : 'border border-neutral-200 dark:border-neutral-800 text-neutral-400 dark:text-neutral-600'
+                  : hasStepErrors(index + 1)
+                    ? 'bg-red-600 dark:bg-red-500 text-white'
+                    : isStepCompleted(index + 1)
+                      ? 'bg-green-600 dark:bg-green-500 text-white'
+                      : canNavigateToStep(index + 1)
+                        ? 'border border-neutral-300 dark:border-neutral-700 text-neutral-500 dark:text-neutral-400'
+                        : 'border border-neutral-200 dark:border-neutral-800 text-neutral-400 dark:text-neutral-600'
             ]"
           >
             {{ isStepCompleted(index + 1) ? '✓' : index + 1 }}
@@ -40,11 +40,11 @@
                 ? 'text-red-700 dark:text-red-400'
                 : currentStep === index + 1
                   ? 'text-neutral-900 dark:text-neutral-100'
-                : hasStepErrors(index + 1)
-                  ? 'text-red-700 dark:text-red-400'
-                : canNavigateToStep(index + 1)
-                  ? 'text-neutral-500 dark:text-neutral-400'
-                  : 'text-neutral-400 dark:text-neutral-600'
+                  : hasStepErrors(index + 1)
+                    ? 'text-red-700 dark:text-red-400'
+                    : canNavigateToStep(index + 1)
+                      ? 'text-neutral-500 dark:text-neutral-400'
+                      : 'text-neutral-400 dark:text-neutral-600'
             ]"
           >
             {{ step.label }}
@@ -76,7 +76,9 @@
             v-if="submitErrorMessage"
             class="mb-5 rounded-md border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/20 p-4"
           >
-            <p class="text-sm font-semibold text-red-800 dark:text-red-300">{{ submitErrorMessage }}</p>
+            <p class="text-sm font-semibold text-red-800 dark:text-red-300">
+              {{ submitErrorMessage }}
+            </p>
             <ul
               v-if="currentStepErrors.length"
               class="mt-2 list-disc list-inside text-sm text-red-700 dark:text-red-300 space-y-1"
@@ -146,29 +148,40 @@
         <div
           class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
         >
-          <h3 class="font-bold text-sm mb-4 text-neutral-900 dark:text-neutral-100">{{ $t('wizard.summary_title') }}</h3>
+          <h3 class="font-bold text-sm mb-4 text-neutral-900 dark:text-neutral-100">
+            {{ $t('wizard.summary_title') }}
+          </h3>
           <div class="space-y-3 text-sm pb-4 border-b">
             <div class="flex flex-col gap-1 pb-2 text-neutral-600 dark:text-neutral-400">
-              <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{ $t('wizard.view.course_data') }}</span>
-              <span>{{ $t('wizard.view.new_label') }} {{ wizardData.course.isNew ? $t('common.yes') : $t('common.no') }}</span>
+              <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{
+                $t('wizard.view.course_data')
+              }}</span>
+              <span
+                >{{ $t('wizard.view.new_label') }}
+                {{ wizardData.course.isNew ? $t('common.yes') : $t('common.no') }}</span
+              >
               <span
                 >{{ $t('wizard.view.selection') }}
-                {{ wizardData.course.data?.nome || wizardData.course.data?.id || $t('common.na') }}</span
+                {{
+                  wizardData.course.data?.nome || wizardData.course.data?.id || $t('common.na')
+                }}</span
               >
             </div>
             <div
               class="flex justify-between items-center pb-2 text-neutral-600 dark:text-neutral-400"
             >
-              <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{ $t('wizard.summary_year') }}</span>
+              <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{
+                $t('wizard.summary_year')
+              }}</span>
               <span class="font-medium text-neutral-900 dark:text-neutral-100">{{
                 wizardData.plan.ano || '-'
               }}</span>
             </div>
             <div class="flex flex-col gap-2 text-neutral-600 dark:text-neutral-400">
               <div class="flex justify-between items-center">
-                <span class="font-semibold text-neutral-800 dark:text-neutral-200"
-                  >{{ $t('wizard.view.ucs_configured') }}</span
-                >
+                <span class="font-semibold text-neutral-800 dark:text-neutral-200">{{
+                  $t('wizard.view.ucs_configured')
+                }}</span>
                 <span class="font-medium text-neutral-900 dark:text-neutral-100">{{
                   wizardData.ucs.length
                 }}</span>
@@ -209,11 +222,13 @@ import PlanStep from '../components/wizard/PlanStep.vue'
 import UcStep from '../components/wizard/UcStep.vue'
 import EquivalenceStep from '../components/wizard/EquivalenceStep.vue'
 import CompareTable from '@/components/CompareTable.vue'
+import { useRouter } from 'vue-router'
 
 const store = usePlanWizardStore()
 const api = inject('api')
 const { t } = useI18n()
 const { wizardData, planPreview } = storeToRefs(store)
+const router = useRouter()
 
 const currentStep = ref(1)
 const submitErrorMessage = ref('')
@@ -377,6 +392,10 @@ const finishWizard = async () => {
   try {
     await api.post('/wizard', wizardData.value)
     submitSuccessMessage.value = t('wizard.view.save_success')
+    router.push({
+      name: 'course',
+      params: { id: wizardData.value.course.data.id }
+    })
   } catch (error) {
     const responseData = error?.response?.data
     const backendErrors = responseData?.errors

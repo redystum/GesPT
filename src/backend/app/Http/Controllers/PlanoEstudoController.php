@@ -7,12 +7,28 @@ use App\Http\Requests\UpdatePlanoEstudoRequest;
 use App\Models\PlanoEstudo;
 use Illuminate\Http\Request;
 use App\Http\Resources\PlanoEstudoResource;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 use App\Exports\PlanoEstudoTemplateExport;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Models\Curso;
 
-class PlanoEstudoController extends Controller
+class PlanoEstudoController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:viewAny,' . PlanoEstudo::class, only: ['index']),
+            new Middleware('can:view,planoEstudo', only: ['show']),
+            new Middleware('can:create,' . PlanoEstudo::class, only: ['store']),
+            new Middleware('can:update,planoEstudo', only: ['update']),
+            new Middleware('can:delete,planoEstudo', only: ['destroy']),
+        ];
+    }
+
     public function index(Request $request)
     {
         $query = PlanoEstudo::query()

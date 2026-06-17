@@ -4,6 +4,7 @@ import './assets/main.css'
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import { createI18n } from '@/i18n'
+import { useAuthStore } from '@/stores/auth'
 
 import App from './App.vue'
 import router from './router'
@@ -41,6 +42,8 @@ const i18n = createI18n({
 initializeTheme()
 
 const app = createApp(App)
+const pinia = createPinia()
+app.use(pinia)
 
 const API_BASE_URL = import.meta.env.VITE_API_SERVER_URL
 const API_URL = import.meta.env.VITE_API_PATH_URL
@@ -53,8 +56,14 @@ const api = axios.create({
 })
 
 api.interceptors.request.use((config) => {
+  const authStore = useAuthStore()
   config.headers = config.headers ?? {}
   config.headers['Accept-Language'] = i18n.locale.value
+  
+  if (authStore.token) {
+    config.headers['Authorization'] = `Bearer ${authStore.token}`
+  }
+  
   return config
 })
 
@@ -62,12 +71,27 @@ app.provide('apiBaseURL', API_BASE_URL)
 app.provide('apiURL', API_URL)
 app.provide('api', api)
 
-app.use(createPinia())
 app.use(router)
 app.use(i18n)
 
 library.add(fas, far, fab)
 
 app.component('font-awesome-icon', FontAwesomeIcon)
+
+// Refresh permissions on startup if logged in
+const authStore = useAuthStore(pinia)
+if (authStore.isLoggedIn) {
+  api.get('/me')
+    .then((response) => {
+      authStore.setPermissions(response.data)
+    })
+    .catch((error) => {
+      console.error('Failed to fetch permissions on startup:', error)
+      if (error.response && error.response.status === 401) {
+        authStore.logout()
+        router.push('/login')
+      }
+    })
+}
 
 app.mount('#app')
