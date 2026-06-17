@@ -12,20 +12,39 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class PlanoEstudoTemplateExport implements FromArray, WithTitle, WithStyles, WithColumnWidths
 {
+    private const LAST_COLUMN = 'O';
+
     public function __construct(private Curso $curso)
     {
     }
+
     public function array(): array
     {
         return [
-        ['Plano de Estudo - Template de Importação'],
-        ['Curso'],
-        ['', 'Nome', 'Sigla', 'Código', 'Ano do plano de estudo'],
-        ['', $this->curso->nome, $this->curso->sigla, $this->curso->codigo, ''],
-        ['Unidades Curriculares'],
-        ['Nome em português', 'Nome em inglês', 'Sigla', 'ECTS', 'Horas', 'Semestre'],
-        ['', '', '', '', '', ''],
-    ];
+            ['Plano de Estudo - Template de Importação'],
+            ['Curso'],
+            ['Nome', 'Sigla', 'Código', 'Ano do plano de estudo'],
+            [$this->curso->nome, $this->curso->sigla, $this->curso->codigo, ''],
+            ['Unidades Curriculares'],
+            [
+                'Nome em português',
+                'Nome em inglês',
+                'Sigla',
+                'ECTS',
+                'Horas',
+                'Semestre',
+                'Ano',
+                'Horas T',
+                'Horas TP',
+                'Horas PL',
+                'Horas TC',
+                'Horas S',
+                'Horas E',
+                'Horas OT',
+                'Horas O',
+            ],
+            array_fill(0, 15, ''),
+        ];
     }
 
     public function title(): string
@@ -42,16 +61,25 @@ class PlanoEstudoTemplateExport implements FromArray, WithTitle, WithStyles, Wit
             'D' => 14,
             'E' => 18,
             'F' => 14,
+            'G' => 10,
+            'H' => 12,
+            'I' => 12,
+            'J' => 12,
+            'K' => 12,
+            'L' => 12,
+            'M' => 12,
+            'N' => 12,
+            'O' => 12,
         ];
     }
 
     public function styles(Worksheet $sheet)
     {
-        $sheet->mergeCells('A1:F1');
-        $sheet->mergeCells('A2:F2');
-        $sheet->mergeCells('A5:F5');
+        $sheet->mergeCells('A1:' . self::LAST_COLUMN . '1');
+        $sheet->mergeCells('A2:' . self::LAST_COLUMN . '2');
+        $sheet->mergeCells('A5:' . self::LAST_COLUMN . '5');
 
-        $sheet->getStyle('A1:F1')->applyFromArray([
+        $sheet->getStyle('A1:' . self::LAST_COLUMN . '1')->applyFromArray([
             'font' => [
                 'bold' => true,
                 'size' => 18,
@@ -83,8 +111,8 @@ class PlanoEstudoTemplateExport implements FromArray, WithTitle, WithStyles, Wit
             ],
         ];
 
-        $sheet->getStyle('A2:F2')->applyFromArray($sectionStyle);
-        $sheet->getStyle('A5:F5')->applyFromArray($sectionStyle);
+        $sheet->getStyle('A2:' . self::LAST_COLUMN . '2')->applyFromArray($sectionStyle);
+        $sheet->getStyle('A5:' . self::LAST_COLUMN . '5')->applyFromArray($sectionStyle);
 
         $headerStyle = [
             'font' => [
@@ -101,10 +129,10 @@ class PlanoEstudoTemplateExport implements FromArray, WithTitle, WithStyles, Wit
             ],
         ];
 
-        $sheet->getStyle('A3:F3')->applyFromArray($headerStyle);
-        $sheet->getStyle('A6:F6')->applyFromArray($headerStyle);
+        $sheet->getStyle('A3:' . self::LAST_COLUMN . '3')->applyFromArray($headerStyle);
+        $sheet->getStyle('A6:' . self::LAST_COLUMN . '6')->applyFromArray($headerStyle);
 
-        $sheet->getStyle('A1:F40')->applyFromArray([
+        $sheet->getStyle('A1:' . self::LAST_COLUMN . '40')->applyFromArray([
             'borders' => [
                 'allBorders' => [
                     'borderStyle' => 'thin',
@@ -113,7 +141,7 @@ class PlanoEstudoTemplateExport implements FromArray, WithTitle, WithStyles, Wit
             ],
         ]);
 
-        $sheet->getStyle('A1:F40')->applyFromArray([
+        $sheet->getStyle('A1:' . self::LAST_COLUMN . '40')->applyFromArray([
             'alignment' => [
                 'vertical' => 'center',
             ],
