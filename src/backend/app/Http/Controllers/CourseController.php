@@ -117,7 +117,11 @@ class CourseController extends Controller implements HasMiddleware
 
     public function planos(Curso $curso)
     {
-        $planos = $curso->load('planoEstudos.planoUcs')->planoEstudos;
+        $planos = $curso->planoEstudos()
+            ->with('planoUcs')
+            ->orderByDesc('ano')
+            ->get();
+
         return response()->json([
             'data' => PlanoEstudoByCursoResource::collection($planos),
         ], 200);
