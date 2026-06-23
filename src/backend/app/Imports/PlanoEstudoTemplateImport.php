@@ -18,16 +18,17 @@ class PlanoEstudoTemplateImport implements ToCollection
     {
         $rows = $rows->toArray();
 
-        $anoPlano = $rows[3][4] ?? null; // E4
+        $anoPlano = $rows[3][3] ?? null; // D4
 
         $ucs = [];
 
-        foreach (array_slice($rows, 6) as $row) {
+        foreach (array_slice($rows, 6) as $index => $row) {
             if (empty($row[0]) && empty($row[2])) {
                 continue;
             }
 
             $ucs[] = [
+                'id' => -($index + 1),
                 'nome' => $row[0] ?? '',
                 'name' => $row[1] ?? '',
                 'sigla' => $row[2] ?? '',

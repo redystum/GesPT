@@ -10,7 +10,7 @@ class PlanoEstudoTemplateValidator
 {
     public static function make(array $data, Curso $curso): LaravelValidator
     {
-        return Validator::make($data, [
+        $validator = Validator::make($data, [
             'plan.ano' => [
                 'required',
                 'string',
@@ -54,5 +54,27 @@ class PlanoEstudoTemplateValidator
             'ucs.*.ot' => ['nullable', 'integer', 'min:0'],
             'ucs.*.o' => ['nullable', 'integer', 'min:0'],
         ]);
+
+        $validator->setAttributeNames([
+            'plan.ano' => 'ano letivo do plano',
+            'ucs' => 'unidades curriculares',
+            'ucs.*.nome' => 'nome em português da UC',
+            'ucs.*.name' => 'nome em inglês da UC',
+            'ucs.*.sigla' => 'sigla da UC',
+            'ucs.*.ects' => 'ECTS da UC',
+            'ucs.*.horas_trabalho_totais' => 'horas totais da UC',
+            'ucs.*.semestre' => 'semestre da UC',
+            'ucs.*.ano' => 'ano da UC',
+            'ucs.*.t' => 'horas T da UC',
+            'ucs.*.tp' => 'horas TP da UC',
+            'ucs.*.pl' => 'horas PL da UC',
+            'ucs.*.tc' => 'horas TC da UC',
+            'ucs.*.s' => 'horas S da UC',
+            'ucs.*.e' => 'horas E da UC',
+            'ucs.*.ot' => 'horas OT da UC',
+            'ucs.*.o' => 'horas O da UC',
+        ]);
+
+        return $validator;
     }
 }
