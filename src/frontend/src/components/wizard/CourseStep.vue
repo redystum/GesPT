@@ -78,7 +78,10 @@
           <p v-if="templateMessage" class="mt-3 text-sm text-green-700 dark:text-green-400">
             {{ templateMessage }}
           </p>
-          <p v-if="templateError" class="mt-3 text-sm text-red-600 dark:text-red-400">
+          <p
+            v-if="templateError"
+            class="mt-3 text-sm text-red-600 dark:text-red-400 whitespace-pre-line"
+          >
             {{ templateError }}
           </p>
         </div>
@@ -203,7 +206,7 @@ const downloadTemplate = async () => {
   templateError.value = ''
 
   try {
-    const response = await api.get(`/wizard/course-template/${selectedCourseId.value}`, {
+    const response = await api.get(`/planos-estudo/template/${selectedCourseId.value}`, {
       responseType: 'blob'
     })
 
@@ -223,6 +226,26 @@ const downloadTemplate = async () => {
   }
 }
 
+const formatImportError = (responseData) => {
+  const fallback = t('wizard.course_step.import_template_error')
+  const message = responseData?.message || fallback
+  const errors = responseData?.errors
+
+  if (!errors || typeof errors !== 'object') {
+    return message
+  }
+
+  const errorMessages = Object.values(errors)
+    .flatMap((fieldErrors) => (Array.isArray(fieldErrors) ? fieldErrors : [fieldErrors]))
+    .filter(Boolean)
+
+  if (errorMessages.length === 0) {
+    return message
+  }
+
+  return `${message}\n${errorMessages.join('\n')}`
+}
+
 const importTemplate = async (event) => {
   const file = event.target.files?.[0]
   if (!file) return
@@ -238,7 +261,7 @@ const importTemplate = async (event) => {
       formData.append('course_id', selectedCourseId.value)
     }
 
-    const response = await api.post('/wizard/course-template/import', formData, {
+    const response = await api.post(`/planos-estudo/import/${selectedCourseId.value}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -252,7 +275,7 @@ const importTemplate = async (event) => {
     templateMessage.value = response.data?.message || t('wizard.course_step.import_template_success')
   } catch (err) {
     console.error(err)
-    templateError.value = err.response?.data?.message || t('wizard.course_step.import_template_error')
+    templateError.value = formatImportError(err.response?.data)
   } finally {
     importingTemplate.value = false
     event.target.value = ''

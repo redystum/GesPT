@@ -101,6 +101,7 @@
             v-model="wizardData[steps[currentStep - 1].key]"
             :newPlanUcs="wizardData.ucs"
             :courseData="wizardData.course"
+            @template-imported="handleTemplateImported"
           />
         </template>
         <template v-else>
@@ -376,6 +377,15 @@ const goToStep = (stepNumber) => {
   if (canNavigateToStep(stepNumber)) {
     currentStep.value = stepNumber
   }
+}
+
+const handleTemplateImported = (importedData) => {
+  wizardData.value.course = importedData.course
+  wizardData.value.plan = importedData.plan
+  wizardData.value.ucs = importedData.ucs
+  wizardData.value.equivalences = importedData.equivalences
+
+  currentStep.value = 4
 }
 
 watch(steps, () => {

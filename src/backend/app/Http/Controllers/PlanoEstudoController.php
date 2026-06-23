@@ -10,6 +10,11 @@ use App\Http\Resources\PlanoEstudoResource;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use App\Exports\PlanoEstudoTemplateExport;
+use App\Imports\PlanoEstudoTemplateImport;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Models\Curso;
+use App\Services\PlanoEstudoTemplateValidator;
 
 class PlanoEstudoController extends Controller implements HasMiddleware
 {
@@ -101,5 +106,37 @@ class PlanoEstudoController extends Controller implements HasMiddleware
         return response()->json([
             'data' => PlanoEstudoResource::make($planoEstudo),
         ]);
+    }
+
+    public function exportTemplate(Curso $curso)
+    {
+        return Excel::download(
+            new PlanoEstudoTemplateExport($curso),
+            'plano_estudo_template_' . $curso->codigo . '.xlsx'
+        );
+    }
+
+    public function importTemplate(Request $request, Curso $curso)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls'],
+        ]);
+
+        $import = new PlanoEstudoTemplateImport($curso);
+        Excel::import($import, $request->file('file'));
+
+        $validator = PlanoEstudoTemplateValidator::make($import->data, $curso);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'message' => 'O ficheiro Excel contém dados inválidos.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => 'Plano de estudo importado com sucesso!',
+            'data' => $import->data,
+        ], 200);
     }
 }
