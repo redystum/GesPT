@@ -238,7 +238,7 @@ const importTemplate = async (event) => {
       formData.append('course_id', selectedCourseId.value)
     }
 
-    const response = await api.post('/wizard/course-template/import', formData, {
+    const response = await api.post(`/planos-estudo/import/${selectedCourseId.value}`, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }

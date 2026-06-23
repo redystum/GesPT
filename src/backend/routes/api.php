@@ -32,10 +32,13 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('cursos', CourseController::class);
 
 // Routes for Planos de Estudo
-    Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'getUcs']);
-    Route::apiResource('planos-estudo', PlanoEstudoController::class)
-        ->parameters(['planos-estudo' => 'planoEstudo']);
+Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'getUcs']);
+Route::apiResource('planos-estudo', PlanoEstudoController::class)
+    ->parameters(['planos-estudo' => 'planoEstudo']);
+
+// export/import
 Route::get('/planos-estudo/template/{curso}', [PlanoEstudoController::class, 'exportTemplate']);
+Route::post('/planos-estudo/import/{curso}', [PlanoEstudoController::class, 'importTemplate']);
 
 Route::apiResource('planos-estudo', PlanoEstudoController::class)
     ->parameters(['planos-estudo' => 'planoEstudo']);
