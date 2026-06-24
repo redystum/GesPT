@@ -232,7 +232,7 @@
                 <button
                   v-if="authStore.hasPermission('users.update')"
                   @click="editUser(user)"
-                  :disabled="fetchingUserId === user.id || user.id === 1"
+                  :disabled="fetchingUserId === user.id"
                   class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   :title="$t('admin.edit') || 'Edit'"
                 >
@@ -577,7 +577,7 @@
               <!-- Left Column: User Details & Roles -->
               <div
                 :class="[
-                  authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove']) ? 'lg:col-span-1 lg:border-r border-neutral-100 dark:border-neutral-800 lg:pr-6' : 'lg:col-span-4'
+                  authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove']) && editUserForm.id !== 1 ? 'lg:col-span-1 lg:border-r border-neutral-100 dark:border-neutral-800 lg:pr-6' : 'lg:col-span-4'
                 ]"
               >
                 <div class="lg:sticky lg:top-0 space-y-6">
@@ -593,7 +593,20 @@
                     />
                   </div>
 
-                  <div v-if="authStore.hasPermission(['user_roles.add', 'user_roles.remove'])">
+                  <div v-if="editUserForm.type === 'local'">
+                    <label
+                       class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2"
+                      >{{ $t('admin.add_user_recovery_email') }}</label
+                    >
+                    <input
+                      v-model="editUserForm.recovery_email"
+                      type="email"
+                      required
+                      class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100 focus:outline-none transition-shadow"
+                    />
+                  </div>
+
+                  <div v-if="authStore.hasPermission(['user_roles.add', 'user_roles.remove']) && editUserForm.id !== 1">
                     <h4
                       class="text-sm font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 mb-4 border-b border-neutral-200 dark:border-neutral-800 pb-2"
                     >
@@ -640,9 +653,8 @@
                 </div>
               </div>
 
-              <!-- Right Column: Permissions Categories -->
               <div
-                v-if="authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove'])"
+                v-if="authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove']) && editUserForm.id !== 1"
                 class="lg:col-span-3 space-y-8"
               >
                 <div
@@ -970,6 +982,8 @@ const blockError = ref(null)
 const editUserForm = ref({
   id: null,
   name: '',
+  type: '',
+  recovery_email: '',
   roles: [],
   custom_permissions: []
 })
@@ -1225,6 +1239,8 @@ const editUser = async (user) => {
     editUserForm.value = {
       id: userData.id,
       name: userData.name,
+      type: userData.type,
+      recovery_email: userData.recovery_email,
       roles: (userData.roles || []).map(r => r.id),
       custom_permissions: (userData.custom_permissions || userData.permissoes_personalizadas || []).map(p => p.id)
     }
@@ -1251,11 +1267,16 @@ const saveUser = async () => {
     const payload = {
       name: editUserForm.value.name
     }
-    if (authStore.hasPermission(['user_roles.add', 'user_roles.remove'])) {
-      payload.roles = editUserForm.value.roles
+    if (editUserForm.value.type === 'local') {
+      payload.recovery_email = editUserForm.value.recovery_email
     }
-    if (authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove'])) {
-      payload.custom_permissions = editUserForm.value.custom_permissions
+    if (editUserForm.value.id !== 1) {
+      if (authStore.hasPermission(['user_roles.add', 'user_roles.remove'])) {
+        payload.roles = editUserForm.value.roles
+      }
+      if (authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove'])) {
+        payload.custom_permissions = editUserForm.value.custom_permissions
+      }
     }
     await api.put(`/admin/users/${editUserForm.value.id}`, payload)
 

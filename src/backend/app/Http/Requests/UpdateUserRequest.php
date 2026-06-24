@@ -23,6 +23,7 @@ class UpdateUserRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string', 'max:255'],
+            'recovery_email' => ['nullable', 'email', 'max:255'],
             'custom_permissions' => ['sometimes', 'array'],
             'custom_permissions.*' => ['integer', 'exists:permissoes,id'],
             'roles' => ['sometimes', 'array'],

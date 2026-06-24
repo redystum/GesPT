@@ -61,9 +61,11 @@ class UserController extends Controller implements HasMiddleware
 
     public function update(UpdateUserRequest $request, User $user){
         if ($user->id == 1){
-            return response()->json([
-                'message' => __('messages.user_updated_admin_forbidden'),
-            ], 403);
+            if ($request->has('roles') || $request->has('custom_permissions')) {
+                return response()->json([
+                    'message' => __('messages.user_updated_admin_forbidden'),
+                ], 403);
+            }
         }
 
         if ($request->has('roles')) {
@@ -81,7 +83,7 @@ class UserController extends Controller implements HasMiddleware
         DB::beginTransaction();
 
         try {
-            $user->update($request->only('name'));
+            $user->update($request->only('name', 'recovery_email'));
 
             if ($request->has('roles')) {
                 UserRole::where('id_user', $user->id)->delete();
