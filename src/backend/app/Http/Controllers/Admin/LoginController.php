@@ -8,9 +8,27 @@ use App\Http\Resources\LoginDominiosResource;
 use App\Models\LoginDominios;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class LoginController extends Controller
+class LoginController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:viewAny,' . LoginDominios::class, only: ['get']),
+            new Middleware(function ($request, $next) {
+                $user = $request->user();
+                if (!$user->hasPermission(['login_dominios.create', 'login_dominios.update', 'login_dominios.delete'])) {
+                    abort(403, 'Unauthorized.');
+                }
+                return $next($request);
+            }, only: ['store']),
+        ];
+    }
     public function get()
     {
         $domains = LoginDominios::with('role')->get();

@@ -6,9 +6,31 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\TestRegexRequest;
 use App\Models\Configuration;
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class RegexController extends Controller
+class RegexController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware(function ($request, $next) {
+                if (!$request->user()->hasPermission('login_dominios.view_any')) {
+                    abort(403, 'Unauthorized.');
+                }
+                return $next($request);
+            }, only: ['get']),
+            new Middleware(function ($request, $next) {
+                if (!$request->user()->hasPermission('login_dominios.update')) {
+                    abort(403, 'Unauthorized.');
+                }
+                return $next($request);
+            }, only: ['updateRegex', 'testRegex']),
+        ];
+    }
 
     private function formatRegex($regex)
     {

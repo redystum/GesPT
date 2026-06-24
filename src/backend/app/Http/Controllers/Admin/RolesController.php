@@ -11,9 +11,24 @@ use App\Models\Role;
 use App\Models\RolePermissoes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class RolesController extends Controller
+class RolesController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:viewAny,' . Role::class, only: ['index', 'all']),
+            new Middleware('can:view,role', only: ['show']),
+            new Middleware('can:create,' . Role::class, only: ['store']),
+            new Middleware('can:update,role', only: ['update']),
+            new Middleware('can:delete,role', only: ['destroy']),
+        ];
+    }
     /**
      * Display a listing of the resource.
      */
@@ -68,9 +83,9 @@ class RolesController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Role $role)
     {
-        $role = Role::with(['permissoes'])->findOrFail($id);
+        $role->load(['permissoes']);
         return response()->json([
             'data' => RolesShowResource::make($role),
         ]);

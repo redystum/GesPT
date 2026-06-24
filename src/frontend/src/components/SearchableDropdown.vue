@@ -3,13 +3,14 @@
     <input
       type="text"
       v-model="searchQuery"
+      :disabled="disabled"
       @focus="onFocus"
       @blur="onBlur"
       @keydown.down.prevent="highlightNext"
       @keydown.up.prevent="highlightPrev"
       @keydown.enter.prevent="selectHighlighted"
       @input="onInput"
-      class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
+      class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700 disabled:opacity-50 disabled:cursor-not-allowed"
       :class="inputClass"
       :placeholder="placeholder"
     />
@@ -46,7 +47,8 @@ const props = defineProps({
   placeholder: { type: String, default: 'Search...' },
   valueKey: { type: String, default: 'id' },
   inputClass: { type: String, default: '' },
-  returnObject: { type: Boolean, default: false }
+  returnObject: { type: Boolean, default: false },
+  disabled: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['update:modelValue', 'change'])

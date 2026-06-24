@@ -13,9 +13,25 @@ use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Throwable;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Routing\Controllers\HasMiddleware;
+use Illuminate\Routing\Controllers\Middleware;
 
-class UserController extends Controller
+class UserController extends Controller implements HasMiddleware
 {
+    use AuthorizesRequests;
+
+    public static function middleware(): array
+    {
+        return [
+            new Middleware('can:viewAny,' . User::class, only: ['index']),
+            new Middleware('can:view,user', only: ['show']),
+            new Middleware('can:create,' . User::class, only: ['store']),
+            new Middleware('can:update,user', only: ['update']),
+            new Middleware('can:delete,user', only: ['destroy']),
+            new Middleware('can:block,user', only: ['block', 'unblock']),
+        ];
+    }
     public function index(Request $request){
         $users = User::with(['roles', 'permissoes'])
             ->when($request->has('search'), function ($query) use ($request) {
@@ -50,25 +66,41 @@ class UserController extends Controller
             ], 403);
         }
 
+        if ($request->has('roles')) {
+            $userRoleDummy = new UserRole(['id_user' => $user->id]);
+            $this->authorize('add', $userRoleDummy);
+            $this->authorize('remove', $userRoleDummy);
+        }
+
+        if ($request->has('custom_permissions')) {
+            $userPermsDummy = new UserPermissoes(['id_user' => $user->id]);
+            $this->authorize('add', $userPermsDummy);
+            $this->authorize('remove', $userPermsDummy);
+        }
+
         DB::beginTransaction();
 
         try {
             $user->update($request->only('name'));
 
-            UserRole::where('id_user', $user->id)->delete();
-            foreach ($request->roles ?? [] as $role){
-                UserRole::create([
-                    'id_user' => $user->id,
-                    'id_role' => $role,
-                ]);
+            if ($request->has('roles')) {
+                UserRole::where('id_user', $user->id)->delete();
+                foreach ($request->roles ?? [] as $role){
+                    UserRole::create([
+                        'id_user' => $user->id,
+                        'id_role' => $role,
+                    ]);
+                }
             }
 
-            UserPermissoes::where('id_user', $user->id)->delete();
-            foreach ($request->custom_permissions ?? [] as $permission){
-                UserPermissoes::create([
-                    'id_user' => $user->id,
-                    'id_permissao' => $permission,
-                ]);
+            if ($request->has('custom_permissions')) {
+                UserPermissoes::where('id_user', $user->id)->delete();
+                foreach ($request->custom_permissions ?? [] as $permission){
+                    UserPermissoes::create([
+                        'id_user' => $user->id,
+                        'id_permissao' => $permission,
+                    ]);
+                }
             }
 
             DB::commit();

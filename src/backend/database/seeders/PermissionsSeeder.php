@@ -59,12 +59,16 @@ class PermissionsSeeder extends Seeder
 
             'UserRole' => [
                 'slug' => 'user_roles', 'id_categoria' => 4, 'singular' => 'Role ao Utilizador', 'plural' => 'Roles ao Utilizador',
-                'abilities' => ['add', 'remove']
+                'abilities' => ['add', 'remove'],
+                'required' => [
+                    'add' => ['roles.view_any'],
+                    'remove' => ['roles.view_any']
+                ]
             ],
 
             'UserPermissoes' => [
                 'slug' => 'user_permissoes', 'id_categoria' => 4, 'singular' => 'Permissão ao Utilizador', 'plural' => 'Permissões ao Utilizador',
-                'abilities' => ['add', 'remove']
+                'abilities' => ['add', 'remove'],
             ],
 
             'Role' => [

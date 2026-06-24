@@ -13,7 +13,7 @@ class UserRolePolicy
      */
     public function add(User $user, UserRole $userRole): bool
     {
-        return $user->hasPermission('user_roles.add') || $userRole->id_user !== $user->id;
+        return $user->hasPermission('user_roles.add') && $userRole->id_user !== $user->id;
     }
 
     /**
@@ -21,6 +21,6 @@ class UserRolePolicy
      */
     public function remove(User $user, UserRole $userRole): bool
     {
-        return $user->hasPermission('user_roles.remove') || $userRole->id_user !== $user->id;
+        return $user->hasPermission('user_roles.remove') && $userRole->id_user !== $user->id;
     }
 }
