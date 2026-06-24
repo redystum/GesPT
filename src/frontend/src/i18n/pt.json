@@ -54,7 +54,21 @@
     "unauthorized_domain": "O domínio do email fornecido não está autorizado a aceder a esta plataforma.",
     "user_blocked": "A sua conta foi temporariamente bloqueada. Por favor, contacte o suporte.",
     "invalid_credentials": "Email ou palavra-passe inválidos. Verifique as suas credenciais e tente novamente.",
-    "auth_failed": "A autenticação falhou devido a um erro de sistema. Por favor, tente novamente mais tarde."
+    "auth_failed": "A autenticação falhou devido a um erro de sistema. Por favor, tente novamente mais tarde.",
+    "forgot_title": "Recuperar palavra-passe",
+    "forgot_instructions": "Introduza o seu email de login para lhe enviarmos um link de recuperação.",
+    "forgot_back": "Voltar a iniciar sessão",
+    "forgot_submit": "Enviar email de recuperação",
+    "forgot_success": "Se a conta existir e for local, um email de recuperação foi enviado.",
+    "reset_title": "Repor palavra-passe",
+    "reset_instructions": "Introduza a sua nova palavra-passe abaixo.",
+    "reset_password": "Nova Palavra-passe",
+    "reset_confirm": "Confirmar Nova Palavra-passe",
+    "reset_submit": "Atualizar Palavra-passe",
+    "reset_success": "A sua palavra-passe foi reposta com sucesso.",
+    "reset_error": "Falha ao repor a palavra-passe. Verifique o seu link ou tente novamente.",
+    "reset_error_length": "A palavra-passe deve ter pelo menos 8 caracteres.",
+    "email_local": "GesPT Login Email"
   },
   "home": {
     "kicker": "Gestão Académica",

@@ -32,6 +32,7 @@ class User extends Authenticatable
         'blocked_at',
         'theme',
         'lang',
+        'recovery_email',
     ];
 
     /**

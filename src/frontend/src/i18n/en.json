@@ -54,7 +54,21 @@
     "unauthorized_domain": "The provided email domain is not authorized to access this platform.",
     "user_blocked": "Your account has been temporarily blocked. Please contact support.",
     "invalid_credentials": "Invalid email or password. Please check your credentials and try again.",
-    "auth_failed": "Authentication failed due to a system error. Please try again later."
+    "auth_failed": "Authentication failed due to a system error. Please try again later.",
+    "forgot_title": "Recover password",
+    "forgot_instructions": "Enter your login email address and we'll send you a recovery link.",
+    "forgot_back": "Back to sign in",
+    "forgot_submit": "Send recovery email",
+    "forgot_success": "If the account exists and is local, a recovery email has been sent.",
+    "reset_title": "Reset password",
+    "reset_instructions": "Enter your new password below.",
+    "reset_password": "New Password",
+    "reset_confirm": "Confirm New Password",
+    "reset_submit": "Update Password",
+    "reset_success": "Your password has been successfully reset.",
+    "reset_error": "Failed to reset password. Please check your link or try again.",
+    "reset_error_length": "Password must be at least 8 characters long.",
+    "email_local": "GesPT Login Email"
   },
   "home": {
     "kicker": "Academic Management",

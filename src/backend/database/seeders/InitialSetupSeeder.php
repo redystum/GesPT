@@ -25,6 +25,7 @@ class InitialSetupSeeder extends Seeder
                 'email' => 'admin@gespt.local',
                 'type' => 'local',
                 'password' => bcrypt('admin123'),
+                'recovery_email' => 'admin_recovery@gespt.local',
             ]
         );
 

@@ -7,6 +7,7 @@ const router = createRouter({
   routes: [
     { path: '/', name: 'home', component: HomeView },
     { path: '/login', name: 'login', component: () => import('../views/LoginView.vue') },
+    { path: '/reset-password', name: 'reset-password', component: () => import('../views/ResetPasswordView.vue') },
     { path: '/admin', name: 'admin', component: () => import('../views/AdminView.vue') },
     { path: '/plano/:id', name: 'compare', component: () => import('../views/PlanoView.vue') },
     { path: '/compare', name: 'compare', component: () => import('../views/ComparingView.vue') },
@@ -20,8 +21,9 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   const authStore = useAuthStore()
 
-  // If the user is NOT logged in, they can ONLY access the login page
-  if (!authStore.isLoggedIn && to.path !== '/login') {
+  // If the user is NOT logged in, they can ONLY access login and reset-password pages
+  const allowedGuestRoutes = ['login', 'reset-password']
+  if (!authStore.isLoggedIn && !allowedGuestRoutes.includes(to.name)) {
     return next({ name: 'login' })
   }
 
