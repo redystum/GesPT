@@ -16,15 +16,40 @@
 </template>
 
 <script setup>
-import { watchEffect } from 'vue'
+import { watchEffect, watch, inject } from 'vue'
 import { useI18n } from '@/i18n'
+import { useTheme } from '@/composables/useTheme'
+import { useAuthStore } from '@/stores/auth'
 import NavComponent from '@/components/Navbar/NavComponent.vue'
 import FooterView from '@/components/Footer/FooterView.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
+const { isDark } = useTheme()
+const authStore = useAuthStore()
+const api = inject('api')
 
 watchEffect(() => {
   document.title = t('brand.app_title')
+})
+
+watch([locale, isDark], async ([newLocale, newIsDark]) => {
+  if (authStore.isLoggedIn) {
+    const themeValue = newIsDark ? 'dark' : 'light'
+    if (!authStore.user || authStore.user.lang !== newLocale || authStore.user.theme !== themeValue) {
+      try {
+        const response = await api.put('/me/preferences', {
+          lang: newLocale,
+          theme: themeValue
+        })
+        if (response.data && response.data.user) {
+          authStore.user = response.data.user
+          localStorage.setItem('user', JSON.stringify(response.data.user))
+        }
+      } catch (error) {
+        console.error('Failed to sync user preferences to DB:', error)
+      }
+    }
+  }
 })
 </script>
 

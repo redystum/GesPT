@@ -121,7 +121,7 @@ const handleLogin = async () => {
     // Fetch and store permissions
     try {
       const meResponse = await api.get('/me')
-      authStore.setPermissions(meResponse.data)
+      authStore.setPermissions(meResponse.data.permissions)
     } catch (e) {
       console.error('Failed to load permissions during login:', e)
     }

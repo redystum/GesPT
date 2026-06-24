@@ -24,19 +24,21 @@ function createTranslator(messages, localeRef, fallbackLocale) {
   }
 }
 
+export const activeLocale = ref('en')
+
 export function createI18n(options) {
-  const locale = ref(options.locale ?? 'en')
+  activeLocale.value = options.locale ?? 'en'
   const fallbackLocale = options.fallbackLocale ?? 'en'
   const messages = options.messages ?? {}
-  const t = createTranslator(messages, locale, fallbackLocale)
+  const t = createTranslator(messages, activeLocale, fallbackLocale)
 
   const i18nContext = {
-    locale,
+    locale: activeLocale,
     t
   }
 
   return {
-    locale,
+    locale: activeLocale,
     t,
     install(app) {
       app.provide(I18N_KEY, i18nContext)

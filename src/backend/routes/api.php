@@ -22,6 +22,7 @@ Route::post('login', [AuthController::class, 'login'])->middleware('guest');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [MeController::class, 'me']);
+    Route::put('/me/preferences', [MeController::class, 'updatePreferences']);
 
     Route::get('/compare', [EquivalencesController::class, 'compare']);
 
