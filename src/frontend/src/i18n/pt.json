@@ -357,6 +357,8 @@
     "is_optional_slot": "Esta UC tem opções (Vaga Opcional)",
     "is_optional_slot_hint": "Marque esta opção para permitir a seleção de UCs opcionais.",
     "select_options_placeholder": "Pesquisar e selecionar UCs para adicionar como opções...",
+    "import_course_label": "Adicionar automaticamente todas as UCs de um curso",
+    "import_course_placeholder": "Selecione um curso para adicionar as suas UCs...",
     "no_options_defined": "Nenhuma opção definida ainda.",
     "no_options_available": "Esta Unidade Curricular não tem opções.",
     "options_save_success": "Opções atualizadas com sucesso.",

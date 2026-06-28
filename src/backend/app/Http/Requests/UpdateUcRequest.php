@@ -48,6 +48,7 @@ class UpdateUcRequest extends FormRequest
             'horas_o' => ['sometimes', 'nullable', 'integer', 'min:0'],
             'opcoes' => ['sometimes', 'array'],
             'opcoes.*' => ['integer', 'exists:ucs,id'],
+            'import_curso_id' => ['sometimes', 'nullable', 'integer', 'exists:cursos,id'],
         ];
     }
 }

@@ -357,6 +357,8 @@
     "is_optional_slot": "This UC has options (Optional Slot)",
     "is_optional_slot_hint": "Check this to enable selecting option UCs.",
     "select_options_placeholder": "Search and select UCs to add as options...",
+    "import_course_label": "Auto-add all UCs from a course",
+    "import_course_placeholder": "Select a course to auto-add all its UCs...",
     "no_options_defined": "No options defined yet.",
     "no_options_available": "This Curricular Unit does not have options.",
     "options_save_success": "Options updated successfully.",
