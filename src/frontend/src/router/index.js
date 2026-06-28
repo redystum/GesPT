@@ -37,7 +37,8 @@ router.beforeEach((to, from, next) => {
     const hasAdminAccess = authStore.hasPermission([
       'roles.view_any',
       'users.view_any',
-      'login_dominios.view_any'
+      'login_dominios.view_any',
+      'audit_logs.view_any'
     ])
     if (!hasAdminAccess) {
       return next({ name: 'home' })

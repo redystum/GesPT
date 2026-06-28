@@ -62,6 +62,14 @@ class AuthController extends Controller
         $matched_domain = array_search($user_domain, $domains->pluck('dominio')->toArray());
 
         if ($matched_domain === false) {
+            activity()
+                ->useLog('login_failed')
+                ->withProperties([
+                    'email' => $request->email,
+                    'reason' => 'unauthorized_domain'
+                ])
+                ->log("Failed login: unauthorized domain");
+
             return response()->json([
                 'message' => __('messages.login_unauthorized_domain'),
             ], 401);
@@ -72,6 +80,16 @@ class AuthController extends Controller
             if (auth()->attempt($request->only('email', 'password'), $request->remember)) {
 
                 if ($user->blocked){
+                    activity()
+                        ->performedOn($user)
+                        ->useLog('login_failed')
+                        ->withProperties([
+                            'email' => $request->email,
+                            'user_name' => $user->name,
+                            'reason' => 'blocked'
+                        ])
+                        ->log("Failed login: blocked user");
+
                     return response()->json([
                         'message' => __('messages.login_user_blocked'),
                     ], 403);
@@ -85,6 +103,14 @@ class AuthController extends Controller
                     'user' => UserShowResource::make($user->load('roles', 'permissoes')),
                 ], 200);
             } else {
+                activity()
+                    ->useLog('login_failed')
+                    ->withProperties([
+                        'email' => $request->email,
+                        'reason' => 'invalid_credentials'
+                    ])
+                    ->log("Failed login: invalid credentials");
+
                 return response()->json([
                     'message' => __('messages.login_invalid_credentials'),
                 ], 401);
@@ -94,12 +120,28 @@ class AuthController extends Controller
         $response = $this->requestIPLeiriaAuth($request->email, $request->password);
 
         if ($response < 0) {
+            activity()
+                ->useLog('login_failed')
+                ->withProperties([
+                    'email' => $request->email,
+                    'reason' => 'auth_failed'
+                ])
+                ->log("Failed login: system auth failed");
+
             return response()->json([
                 'message' => __('messages.login_auth_failed'),
             ], 401);
         }
 
         if ($response === 0) {
+            activity()
+                ->useLog('login_failed')
+                ->withProperties([
+                    'email' => $request->email,
+                    'reason' => 'invalid_credentials'
+                ])
+                ->log("Failed login: invalid credentials");
+
             return response()->json([
                 'message' => __('messages.login_invalid_credentials'),
             ], 401);
@@ -107,6 +149,16 @@ class AuthController extends Controller
 
         if ($user) {
             if ($user->blocked){
+                activity()
+                    ->performedOn($user)
+                    ->useLog('login_failed')
+                    ->withProperties([
+                        'email' => $request->email,
+                        'user_name' => $user->name,
+                        'reason' => 'blocked'
+                    ])
+                    ->log("Failed login: blocked user");
+
                 return response()->json([
                     'message' => __('messages.login_user_blocked'),
                 ], 403);

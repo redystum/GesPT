@@ -80,6 +80,9 @@ class UserController extends Controller implements HasMiddleware
             $this->authorize('remove', $userPermsDummy);
         }
 
+        $oldRoles = $user->roles()->pluck('nome')->toArray();
+        $oldPermissions = $user->permissoes()->pluck('nome')->toArray();
+
         DB::beginTransaction();
 
         try {
@@ -103,6 +106,68 @@ class UserController extends Controller implements HasMiddleware
                         'id_permissao' => $permission,
                     ]);
                 }
+            }
+
+            $newRoles = $user->roles()->pluck('nome')->toArray();
+            $newPermissions = $user->permissoes()->pluck('nome')->toArray();
+
+            $addedRoles = array_diff($newRoles, $oldRoles);
+            $removedRoles = array_diff($oldRoles, $newRoles);
+            $addedPermissions = array_diff($newPermissions, $oldPermissions);
+            $removedPermissions = array_diff($oldPermissions, $newPermissions);
+
+            $causer = auth()->user();
+
+            foreach ($addedRoles as $role) {
+                activity()
+                    ->causedBy($causer)
+                    ->performedOn($user)
+                    ->useLog('user_roles')
+                    ->withProperties([
+                        'target_name' => $user->name,
+                        'role_name' => $role,
+                        'action' => 'added'
+                    ])
+                    ->log("Role $role added to {$user->name}");
+            }
+
+            foreach ($removedRoles as $role) {
+                activity()
+                    ->causedBy($causer)
+                    ->performedOn($user)
+                    ->useLog('user_roles')
+                    ->withProperties([
+                        'target_name' => $user->name,
+                        'role_name' => $role,
+                        'action' => 'removed'
+                    ])
+                    ->log("Role $role removed from {$user->name}");
+            }
+
+            if (count($addedPermissions) > 0) {
+                activity()
+                    ->causedBy($causer)
+                    ->performedOn($user)
+                    ->useLog('user_permissions')
+                    ->withProperties([
+                        'target_name' => $user->name,
+                        'permissions' => array_values($addedPermissions),
+                        'action' => 'added'
+                    ])
+                    ->log(count($addedPermissions) . " permissions added to {$user->name}");
+            }
+
+            if (count($removedPermissions) > 0) {
+                activity()
+                    ->causedBy($causer)
+                    ->performedOn($user)
+                    ->useLog('user_permissions')
+                    ->withProperties([
+                        'target_name' => $user->name,
+                        'permissions' => array_values($removedPermissions),
+                        'action' => 'removed'
+                    ])
+                    ->log(count($removedPermissions) . " permissions removed from {$user->name}");
             }
 
             DB::commit();
