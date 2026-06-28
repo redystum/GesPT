@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\RegexController;
 use App\Http\Controllers\Admin\PermitionsController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\AuditLogController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\EquivalencesController;
@@ -78,7 +79,7 @@ Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'g
         Route::get('roles/all', [RolesController::class, 'all']);
         Route::apiResource('roles', RolesController::class);
         Route::get('permissions', [PermitionsController::class, 'index']);
-
+        Route::get('audit-logs', [AuditLogController::class, 'index']);
     });
 
 });
