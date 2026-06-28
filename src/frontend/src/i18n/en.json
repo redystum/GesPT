@@ -286,7 +286,8 @@
       "workload_title": "Workload",
       "workload_total": "Total workload hours",
       "contact_total": "Total contact hours",
-      "create_add": "Create & Add UC"
+      "create_add": "Create & Add UC",
+      "optional_info": "If the UC has options, they must be configured on its UC page."
     },
     "equivalence_step": {
       "title": "Equivalences",

@@ -286,7 +286,8 @@
       "workload_title": "Horas de trabalho",
       "workload_total": "Horas de trabalho totais",
       "contact_total": "Horas totais de contacto",
-      "create_add": "Criar e Adicionar UC"
+      "create_add": "Criar e Adicionar UC",
+      "optional_info": "Se a UC tiver opções, pode configurá-las na página da respetiva UC."
     },
     "equivalence_step": {
       "title": "Equivalências",

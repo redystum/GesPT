@@ -1,5 +1,8 @@
 <script setup>
 import SearchableDropdown from '@/components/SearchableDropdown.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const authStore = useAuthStore()
 
 defineProps({
   equivalences: {},
@@ -44,7 +47,14 @@ function dividerClass(item, side, idx, listLength) {
           <div class="flex justify-between">
             <div class="mr-2 sm:mr-12 wrap-break-word sm:text-nowrap text-sm sm:text-base">
               <p class="font-semibold flex flex-wrap items-center gap-1.5">
-                <span>{{ part.data.uc.nome }}</span>
+                <router-link
+                  v-if="authStore.hasPermission('ucs.view')"
+                  :to="{ name: 'uc-detail', params: { id: part.data.uc.id } }"
+                  class="hover:underline hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                >
+                  {{ part.data.uc.nome }}
+                </router-link>
+                <span v-else>{{ part.data.uc.nome }}</span>
                 <span v-if="part.data.opcoes && part.data.opcoes.length > 0" class="inline-flex items-center gap-1.5 font-medium min-w-[200px] text-xs">
                   <font-awesome-icon :icon="['fas', 'arrow-right']" class="text-neutral-500" />
                   <SearchableDropdown
@@ -59,7 +69,14 @@ function dividerClass(item, side, idx, listLength) {
                 </span>
                 <span v-else-if="part.data.opcao_escolhida" class="font-medium">
                   <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
-                  {{ part.data.opcao_escolhida.nome }}
+                  <router-link
+                    v-if="authStore.hasPermission('ucs.view')"
+                    :to="{ name: 'uc-detail', params: { id: part.data.opcao_escolhida.id } }"
+                    class="hover:underline hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                  >
+                    {{ part.data.opcao_escolhida.nome }}
+                  </router-link>
+                  <span v-else>{{ part.data.opcao_escolhida.nome }}</span>
                 </span>
               </p>
               <div class="flex flex-wrap sm:flex-nowrap">
@@ -97,7 +114,14 @@ function dividerClass(item, side, idx, listLength) {
           <div class="flex justify-between">
             <div class="mr-2 sm:mr-12 wrap-break-word sm:text-nowrap text-sm sm:text-base">
               <p class="font-semibold flex flex-wrap items-center gap-1.5">
-                <span>{{ part.data.uc.nome }}</span>
+                <router-link
+                  v-if="authStore.hasPermission('ucs.view')"
+                  :to="{ name: 'uc-detail', params: { id: part.data.uc.id } }"
+                  class="hover:underline hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                >
+                  {{ part.data.uc.nome }}
+                </router-link>
+                <span v-else>{{ part.data.uc.nome }}</span>
                 <span v-if="part.data.opcoes && part.data.opcoes.length > 0" class="inline-flex items-center gap-1.5 font-medium min-w-[200px] text-xs">
                   <font-awesome-icon :icon="['fas', 'arrow-right']" class="text-neutral-500" />
                   <SearchableDropdown
@@ -112,7 +136,14 @@ function dividerClass(item, side, idx, listLength) {
                 </span>
                 <span v-else-if="part.data.opcao_escolhida" class="font-medium">
                   <font-awesome-icon :icon="['fas', 'arrow-right']" class="mr-1" />
-                  {{ part.data.opcao_escolhida.nome }}
+                  <router-link
+                    v-if="authStore.hasPermission('ucs.view')"
+                    :to="{ name: 'uc-detail', params: { id: part.data.opcao_escolhida.id } }"
+                    class="hover:underline hover:text-blue-600 dark:hover:text-blue-400 cursor-pointer"
+                  >
+                    {{ part.data.opcao_escolhida.nome }}
+                  </router-link>
+                  <span v-else>{{ part.data.opcao_escolhida.nome }}</span>
                 </span>
               </p>
               <div class="flex flex-wrap sm:flex-nowrap">
