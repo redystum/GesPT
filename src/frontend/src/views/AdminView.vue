@@ -35,7 +35,8 @@
       </aside>
 
       <main class="flex-1 min-w-0">
-        <LoginView v-if="activeTab === 'auth'" />
+        <DashboardView v-if="activeTab === 'dashboard'" />
+        <LoginView v-else-if="activeTab === 'auth'" />
         <RolesView v-else-if="activeTab === 'roles'" />
         <div v-else class="flex flex-col items-center justify-center h-[500px] rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-neutral-50/50 dark:bg-neutral-800/10">
           <font-awesome-icon :icon="['fas', 'hammer']" class="text-4xl text-neutral-300 dark:text-neutral-600 mb-4" />
@@ -49,6 +50,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
+import DashboardView from '@/components/Admin/DashboardView.vue'
 import LoginView from '@/components/Admin/LoginView.vue'
 import RolesView from '@/components/Admin/RolesView.vue'
 
@@ -85,12 +87,7 @@ const tabs = computed(() => {
 
 onMounted(() => {
   if (tabs.value.length > 0) {
-    const hasAuthTab = tabs.value.some((t) => t.id === 'auth')
-    if (hasAuthTab) {
-      activeTab.value = 'auth'
-    } else {
-      activeTab.value = tabs.value[0].id
-    }
+    activeTab.value = tabs.value[0].id
   }
 })
 </script>

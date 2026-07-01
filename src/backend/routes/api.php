@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\LoginController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\RegexController;
 use App\Http\Controllers\Admin\PermitionsController;
 use App\Http\Controllers\Admin\RolesController;
@@ -58,6 +59,8 @@ Route::get('/planos-estudo/{planoEstudo}/ucs', [PlanoEstudoController::class, 'g
 
 // route for testing admin regex builder
     Route::prefix('admin')->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'index']);
+
         Route::post('users/{user}/block', [UserController::class, 'block']);
         Route::post('users/{user}/unblock', [UserController::class, 'unblock']);
         Route::apiResource('users', UserController::class);
