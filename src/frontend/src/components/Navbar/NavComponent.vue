@@ -182,6 +182,6 @@ const toggleLanguage = () => {
 const logout = () => {
   authStore.logout()
   isDropdownOpen.value = false
-  router.push('/')
+  router.push('/login')
 }
 </script>

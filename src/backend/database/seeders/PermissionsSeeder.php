@@ -59,12 +59,20 @@ class PermissionsSeeder extends Seeder
 
             'UserRole' => [
                 'slug' => 'user_roles', 'id_categoria' => 4, 'singular' => 'Role ao Utilizador', 'plural' => 'Roles ao Utilizador',
-                'abilities' => ['add', 'remove']
+                'abilities' => ['add', 'remove'],
+                'required' => [
+                    'add' => ['roles.view_any', 'user_roles.remove'],
+                    'remove' => ['roles.view_any', 'user_roles.add']
+                ]
             ],
 
             'UserPermissoes' => [
                 'slug' => 'user_permissoes', 'id_categoria' => 4, 'singular' => 'Permissão ao Utilizador', 'plural' => 'Permissões ao Utilizador',
-                'abilities' => ['add', 'remove']
+                'abilities' => ['add', 'remove'],
+                'required' => [
+                    'add' => ['user_permissoes.remove'],
+                    'remove' => ['user_permissoes.add']
+                ]
             ],
 
             'Role' => [
@@ -75,6 +83,11 @@ class PermissionsSeeder extends Seeder
             'LoginDominios' => [
                 'slug' => 'login_dominios', 'id_categoria' => 6, 'singular' => 'Domínio de Login', 'plural' => 'Domínios de Login',
                 'abilities' => ['viewAny', 'create', 'update', 'delete']
+            ],
+
+            'AuditLogs' => [
+                'slug' => 'audit_logs', 'id_categoria' => 7, 'singular' => 'Log de Auditoria', 'plural' => 'Logs de Auditoria',
+                'abilities' => ['viewAny']
             ],
 
             // TODO: ao adicionar estudantes e opções...

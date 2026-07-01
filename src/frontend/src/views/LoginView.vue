@@ -31,7 +31,7 @@
           </div>
         </div>
 
-        <form class="space-y-5" @submit.prevent="handleLogin">
+        <form v-if="!isForgotMode" class="space-y-5" @submit.prevent="handleLogin">
           <div>
             <label for="email" class="mb-1.5 block text-sm font-semibold">
               {{ $t('login.email') }}
@@ -51,7 +51,7 @@
               <label for="password" class="block text-sm font-semibold">
                 {{ $t('login.password') }}
               </label>
-              <a href="#" class="text-xs font-medium transition-colors duration-200">{{
+              <a href="#" @click.prevent="toggleForgotMode(true)" class="text-xs font-medium transition-colors duration-200 hover:text-neutral-600 dark:hover:text-neutral-300">{{
                 $t('login.forgot')
               }}</a>
             </div>
@@ -84,6 +84,49 @@
             {{ $t('login.submit') }}
           </button>
         </form>
+
+        <form v-else class="space-y-5" @submit.prevent="handleForgotPassword">
+          <div class="mb-2">
+            <h2 class="text-xl font-bold">{{ $t('login.forgot_title') }}</h2>
+            <p class="mt-1 text-sm text-neutral-500 dark:text-neutral-400">
+              {{ $t('login.forgot_instructions') }}
+            </p>
+          </div>
+
+          <div>
+            <label for="forgot-email" class="mb-1.5 block text-sm font-semibold">
+              {{ $t('login.email_local') }}
+            </label>
+            <input
+              id="forgot-email"
+              type="text"
+              required
+              v-model="forgotEmail"
+              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
+              placeholder="...@gespt.local"
+            />
+          </div>
+
+          <div v-if="successMessage" class="rounded-md bg-green-50 dark:bg-green-900/30 p-4 border border-green-200 dark:border-green-800/50 transition-all">
+            <p class="text-sm font-medium text-green-800 dark:text-green-200">
+              {{ successMessage }}
+            </p>
+          </div>
+
+          <button
+            type="submit"
+            :disabled="isLoading"
+            class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-md px-4 py-2.5 text-sm font-semibold transition-colors duration-150 bg-neutral-900 dark:bg-neutral-200 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-300 border border-neutral-800 dark:border-neutral-300 w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {{ isLoading ? $t('common.loading') : $t('login.forgot_submit') }}
+          </button>
+
+          <div class="text-center mt-4">
+            <a href="#" @click.prevent="toggleForgotMode(false)" class="text-sm font-medium transition-colors duration-200 hover:text-neutral-600 dark:hover:text-neutral-300">
+              &larr; {{ $t('login.forgot_back') }}
+            </a>
+          </div>
+        </form>
       </section>
     </div>
   </div>
@@ -105,6 +148,47 @@ const password = ref('')
 const rememberMe = ref(false)
 const errorMessage = ref('')
 
+const isForgotMode = ref(false)
+const forgotEmail = ref('')
+const successMessage = ref('')
+const isLoading = ref(false)
+
+const toggleForgotMode = (val) => {
+  isForgotMode.value = val
+  errorMessage.value = ''
+  successMessage.value = ''
+  forgotEmail.value = ''
+}
+
+const handleForgotPassword = async () => {
+  errorMessage.value = ''
+  successMessage.value = ''
+
+  let emailVal = forgotEmail.value.trim()
+  if (emailVal && !emailVal.endsWith('@gespt.local')) {
+    const username = emailVal.includes('@') ? emailVal.split('@')[0] : emailVal
+    emailVal = `${username}@gespt.local`
+    forgotEmail.value = emailVal
+  }
+
+  isLoading.value = true
+  try {
+    const response = await api.post('/forgot-password', {
+      email: forgotEmail.value
+    })
+    successMessage.value = response.data.message || t('login.forgot_success')
+  } catch (error) {
+    console.error('Password recovery failed:', error.response ? error.response.data : error.message)
+    if (error.response && error.response.data && error.response.data.message) {
+      errorMessage.value = error.response.data.message
+    } else {
+      errorMessage.value = t('error.unexpected')
+    }
+  } finally {
+    isLoading.value = false
+  }
+}
+
 const handleLogin = async () => {
   errorMessage.value = ''
   try {
@@ -121,7 +205,7 @@ const handleLogin = async () => {
     // Fetch and store permissions
     try {
       const meResponse = await api.get('/me')
-      authStore.setPermissions(meResponse.data)
+      authStore.setPermissions(meResponse.data.permissions)
     } catch (e) {
       console.error('Failed to load permissions during login:', e)
     }

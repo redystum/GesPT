@@ -24,6 +24,8 @@ class UserShowResource extends JsonResource
             'blocked' => $this->blocked,
             'blocked_reason' => $this->blocked_reason,
             'blocked_at' => $this->blocked_at,
+            'theme' => $this->theme,
+            'lang' => $this->lang,
             'roles' => RolesShowResource::collection($this->whenLoaded('roles')),
             'custom_permissions' => PermissionsResource::collection($this->whenLoaded('permissoes'))
         ];

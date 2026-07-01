@@ -17,6 +17,7 @@
             />
           </div>
           <button
+            v-if="authStore.hasPermission('roles.create')"
             @click="openCreateModal"
             class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-sm whitespace-nowrap"
           >
@@ -34,7 +35,7 @@
               <th class="px-6 py-4">{{ $t('admin.table_role_desc') || 'Description' }}</th>
               <th class="px-6 py-4">{{ $t('admin.table_permissions_count') || 'Permissions' }}</th>
               <th class="px-6 py-4">{{ $t('admin.table_users_count') || 'Users' }}</th>
-              <th class="px-6 py-4 text-right">{{ $t('admin.table_actions') || 'Actions' }}</th>
+              <th v-if="authStore.hasPermission(['roles.update', 'roles.delete'])" class="px-6 py-4 text-right">{{ $t('admin.table_actions') || 'Actions' }}</th>
             </tr>
           </thead>
           <tbody v-if="isLoading" class="divide-y divide-neutral-100 dark:divide-neutral-800">
@@ -71,8 +72,9 @@
                   {{ role.users ?? role.users_count ?? 0 }}
                 </span>
               </td>
-              <td class="px-6 py-3.5 text-right">
+              <td v-if="authStore.hasPermission(['roles.update', 'roles.delete'])" class="px-6 py-3.5 text-right">
                   <button
+                    v-if="authStore.hasPermission('roles.update')"
                     @click="editRole(role)"
                     :disabled="fetchingRoleId === role.id || role.id === 1"
                     class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -82,6 +84,7 @@
                     <font-awesome-icon v-else :icon="['fas', 'pen']" class="text-sm" />
                   </button>
                   <button
+                    v-if="authStore.hasPermission('roles.delete')"
                     @click="confirmDelete(role)"
                     :disabled="role.id === 1"
                     class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -267,8 +270,10 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, inject, watch } from 'vue'
+import { useAuthStore } from '@/stores/auth'
 
 const api = inject('api')
+const authStore = useAuthStore()
 
 const roles = ref([])
 const searchQuery = ref('')

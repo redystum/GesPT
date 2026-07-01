@@ -3,7 +3,13 @@
 <template>
   <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 lg:gap-8 items-start">
     <!-- Rule Configuration -->
-    <div class="xl:col-span-1 space-y-6">
+    <div
+      v-if="authStore.hasPermission('login_dominios.view_any')"
+      :class="[
+        authStore.hasPermission('users.view_any') ? 'xl:col-span-1' : 'xl:col-span-3'
+      ]"
+      class="space-y-6"
+    >
       <section
         class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] shadow-sm flex flex-col p-5 sm:p-6"
       >
@@ -26,11 +32,13 @@
               <input
                 type="text"
                 v-model="domainInput"
+                :disabled="!authStore.hasPermission('login_dominios.create')"
                 :placeholder="$t('admin.accepted_domains_placeholder')"
-                class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3.5 py-2.5 text-sm bg-neutral-50 dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100 focus:outline-none transition-shadow font-mono"
+                class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3.5 py-2.5 text-sm bg-neutral-50 dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100 focus:outline-none transition-shadow font-mono disabled:opacity-50 disabled:cursor-not-allowed"
                 @keydown.enter.prevent="addDomain"
               />
               <button
+                v-if="authStore.hasPermission('login_dominios.create')"
                 class="inline-flex cursor-pointer items-center justify-center rounded-lg px-4 py-2 text-sm font-medium transition-colors border border-neutral-200 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a] text-neutral-700 dark:text-neutral-200 hover:bg-neutral-50 dark:hover:bg-neutral-800 focus:outline-none focus:ring-2 focus:ring-neutral-900/10 dark:focus:ring-neutral-100/10"
                 @click="addDomain"
               >
@@ -54,6 +62,7 @@
               <div class="flex items-center justify-between gap-3">
                 <span class="truncate font-mono">{{ domainEntry.domain }}</span>
                 <button
+                  v-if="authStore.hasPermission('login_dominios.delete')"
                   class="inline-flex cursor-pointer items-center justify-center w-7 h-7 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/10 transition-colors disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-neutral-400"
                   @click="removeDomain(domainEntry.domain)"
                   :disabled="domainEntry.id === 1 || domainEntry.domain === 'gespt.local'"
@@ -74,6 +83,7 @@
                   :displayFn="(role) => role.nome || role.name"
                   valueKey="id"
                   :placeholder="$t('admin.default_role_placeholder')"
+                  :disabled="!authStore.hasPermission('login_dominios.update')"
                 />
               </div>
             </div>
@@ -100,7 +110,11 @@
 
     <!-- Whitelist Table -->
     <section
-      class="xl:col-span-2 rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] shadow-sm flex flex-col h-[550px] sm:h-[650px]"
+      v-if="authStore.hasPermission('users.view_any')"
+      :class="[
+        authStore.hasPermission('login_dominios.view_any') ? 'xl:col-span-2' : 'xl:col-span-3'
+      ]"
+      class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] shadow-sm flex flex-col h-[550px] sm:h-[650px]"
     >
       <header
         class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 border-b border-neutral-100 dark:border-neutral-800 shrink-0"
@@ -127,6 +141,7 @@
             />
           </div>
           <button
+            v-if="authStore.hasPermission('users.create')"
             @click="showAddModal = true"
             class="inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-medium transition-colors bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-900 hover:bg-neutral-800 dark:hover:bg-neutral-200 shadow-sm whitespace-nowrap"
           >
@@ -149,7 +164,7 @@
               <th class="px-6 py-4">
                 {{ $t('admin.table_custom_permissions') || 'Custom Permissions' }}
               </th>
-              <th class="px-6 py-4 text-right">{{ $t('admin.table_actions') }}</th>
+              <th v-if="authStore.hasPermission(['users.update', 'users.block', 'users.delete'])" class="px-6 py-4 text-right">{{ $t('admin.table_actions') }}</th>
             </tr>
           </thead>
           <tbody v-if="isLoading" class="divide-y divide-neutral-100 dark:divide-neutral-800">
@@ -213,10 +228,11 @@
                   {{ user.custom_permissions ?? 0 }}
                 </span>
               </td>
-              <td class="px-6 py-3.5 text-right">
+              <td v-if="authStore.hasPermission(['users.update', 'users.block', 'users.delete'])" class="px-6 py-3.5 text-right">
                 <button
+                  v-if="authStore.hasPermission('users.update')"
                   @click="editUser(user)"
-                  :disabled="fetchingUserId === user.id || user.id === 1"
+                  :disabled="fetchingUserId === user.id"
                   class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-blue-600 dark:hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
                   :title="$t('admin.edit') || 'Edit'"
                 >
@@ -229,6 +245,7 @@
                   <font-awesome-icon v-else :icon="['fas', 'pen']" class="text-sm" />
                 </button>
                 <button
+                  v-if="authStore.hasPermission('users.block')"
                   @click="openBlockModal(user)"
                   :disabled="user.id === 1"
                   class="inline-flex items-center justify-center w-8 h-8 rounded-md transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -245,6 +262,7 @@
                   />
                 </button>
                 <button
+                  v-if="authStore.hasPermission('users.delete')"
                   @click="confirmDelete(user)"
                   :disabled="user.id === 1"
                   class="inline-flex items-center justify-center w-8 h-8 rounded-md text-neutral-400 hover:text-red-600 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
@@ -558,12 +576,14 @@
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
               <!-- Left Column: User Details & Roles -->
               <div
-                class="lg:col-span-1 lg:border-r border-neutral-100 dark:border-neutral-800 lg:pr-6"
+                :class="[
+                  authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove']) && editUserForm.id !== 1 ? 'lg:col-span-1 lg:border-r border-neutral-100 dark:border-neutral-800 lg:pr-6' : 'lg:col-span-4'
+                ]"
               >
                 <div class="lg:sticky lg:top-0 space-y-6">
                   <div>
                     <label
-                      class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2"
+                       class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2"
                       >{{ $t('admin.add_user_name') }}</label
                     >
                     <input
@@ -573,7 +593,20 @@
                     />
                   </div>
 
-                  <div>
+                  <div v-if="editUserForm.type === 'local'">
+                    <label
+                       class="block text-sm font-semibold text-neutral-700 dark:text-neutral-300 mb-2"
+                      >{{ $t('admin.add_user_recovery_email') }}</label
+                    >
+                    <input
+                      v-model="editUserForm.recovery_email"
+                      type="email"
+                      required
+                      class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900/50 text-neutral-900 dark:text-neutral-100 focus:border-neutral-900 dark:focus:border-neutral-100 focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-100 focus:outline-none transition-shadow"
+                    />
+                  </div>
+
+                  <div v-if="authStore.hasPermission(['user_roles.add', 'user_roles.remove']) && editUserForm.id !== 1">
                     <h4
                       class="text-sm font-bold uppercase tracking-wider text-neutral-800 dark:text-neutral-200 mb-4 border-b border-neutral-200 dark:border-neutral-800 pb-2"
                     >
@@ -620,8 +653,10 @@
                 </div>
               </div>
 
-              <!-- Right Column: Permissions Categories -->
-              <div class="lg:col-span-3 space-y-8">
+              <div
+                v-if="authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove']) && editUserForm.id !== 1"
+                class="lg:col-span-3 space-y-8"
+              >
                 <div
                   class="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/20 text-blue-700 dark:text-blue-400 p-3 rounded-lg flex items-start gap-3 text-sm"
                 >
@@ -901,9 +936,11 @@
 import { ref, watch, onMounted, onUnmounted, inject, computed } from 'vue'
 import { useI18n } from '@/i18n'
 import SearchableDropdown from '../SearchableDropdown.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const { t } = useI18n()
 const api = inject('api')
+const authStore = useAuthStore()
 
 const domains = ref([])
 const domainInput = ref('')
@@ -945,6 +982,8 @@ const blockError = ref(null)
 const editUserForm = ref({
   id: null,
   name: '',
+  type: '',
+  recovery_email: '',
   roles: [],
   custom_permissions: []
 })
@@ -1200,6 +1239,8 @@ const editUser = async (user) => {
     editUserForm.value = {
       id: userData.id,
       name: userData.name,
+      type: userData.type,
+      recovery_email: userData.recovery_email,
       roles: (userData.roles || []).map(r => r.id),
       custom_permissions: (userData.custom_permissions || userData.permissoes_personalizadas || []).map(p => p.id)
     }
@@ -1224,9 +1265,18 @@ const saveUser = async () => {
   editUserError.value = null
   try {
     const payload = {
-      name: editUserForm.value.name,
-      roles: editUserForm.value.roles,
-      custom_permissions: editUserForm.value.custom_permissions
+      name: editUserForm.value.name
+    }
+    if (editUserForm.value.type === 'local') {
+      payload.recovery_email = editUserForm.value.recovery_email
+    }
+    if (editUserForm.value.id !== 1) {
+      if (authStore.hasPermission(['user_roles.add', 'user_roles.remove'])) {
+        payload.roles = editUserForm.value.roles
+      }
+      if (authStore.hasPermission(['user_permissoes.add', 'user_permissoes.remove'])) {
+        payload.custom_permissions = editUserForm.value.custom_permissions
+      }
     }
     await api.put(`/admin/users/${editUserForm.value.id}`, payload)
 

@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreUcRequest;
 use App\Http\Requests\UpdateUcRequest;
 use App\Http\Resources\UcResource;
+use App\Models\Opcoes;
 use App\Models\PlanoUc;
 use Illuminate\Http\Request;
 use App\Models\Uc;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Routing\Controllers\HasMiddleware;
 use Illuminate\Routing\Controllers\Middleware;
+use Illuminate\Support\Facades\DB;
 
 class UnidadeCurricularController extends Controller implements HasMiddleware
 {
@@ -82,18 +84,26 @@ class UnidadeCurricularController extends Controller implements HasMiddleware
     {
         $uc->update($request->validated());
 
-        if ($request->has('opcoes')) {
+        if ($request->has('opcoes') || $request->has('import_curso_id')) {
             $opcaoIds = $request->input('opcoes') ?? [];
-            $planoUcIds = \App\Models\PlanoUc::where('id_uc', $uc->id)->pluck('id');
 
-            \Illuminate\Support\Facades\DB::transaction(function () use ($planoUcIds, $opcaoIds) {
-                // Delete old options for these plano_ucs
-                \App\Models\Opcoes::whereIn('id_uc_opcional', $planoUcIds)->delete();
+            if ($request->filled('import_curso_id')) {
+                $importCursoId = $request->input('import_curso_id');
+                $courseUcIds = Uc::where('id_curso', $importCursoId)
+                    ->where('id', '!=', $uc->id)
+                    ->pluck('id')
+                    ->toArray();
+                $opcaoIds = array_unique(array_merge($opcaoIds, $courseUcIds));
+            }
 
-                // Create new options
+            $planoUcIds = PlanoUc::where('id_uc', $uc->id)->pluck('id');
+
+            DB::transaction(function () use ($planoUcIds, $opcaoIds) {
+                Opcoes::whereIn('id_uc_opcional', $planoUcIds)->delete();
+
                 foreach ($planoUcIds as $planoUcId) {
                     foreach ($opcaoIds as $opcaoId) {
-                        \App\Models\Opcoes::create([
+                        Opcoes::create([
                             'id_uc_opcional' => $planoUcId,
                             'id_uc' => $opcaoId
                         ]);

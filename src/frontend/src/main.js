@@ -83,7 +83,10 @@ const authStore = useAuthStore(pinia)
 if (authStore.isLoggedIn) {
   api.get('/me')
     .then((response) => {
-      authStore.setPermissions(response.data)
+      authStore.setPermissions(response.data.permissions)
+      if (response.data.user) {
+        authStore.updateUser(response.data.user)
+      }
     })
     .catch((error) => {
       console.error('Failed to fetch permissions on startup:', error)

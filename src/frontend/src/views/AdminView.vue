@@ -38,6 +38,7 @@
         <DashboardView v-if="activeTab === 'dashboard'" />
         <LoginView v-else-if="activeTab === 'auth'" />
         <RolesView v-else-if="activeTab === 'roles'" />
+        <AuditLogsView v-else-if="activeTab === 'audit'" />
         <div v-else class="flex flex-col items-center justify-center h-[500px] rounded-xl border border-dashed border-neutral-300 dark:border-neutral-700 bg-neutral-50/50 dark:bg-neutral-800/10">
           <font-awesome-icon :icon="['fas', 'hammer']" class="text-4xl text-neutral-300 dark:text-neutral-600 mb-4" />
           <h2 class="text-lg font-bold text-neutral-600 dark:text-neutral-400">{{ $t(tabs.find(t => t.id === activeTab)?.translationKey || '') }}</h2>
@@ -53,6 +54,7 @@ import { useAuthStore } from '@/stores/auth'
 import DashboardView from '@/components/Admin/DashboardView.vue'
 import LoginView from '@/components/Admin/LoginView.vue'
 import RolesView from '@/components/Admin/RolesView.vue'
+import AuditLogsView from '@/components/Admin/AuditLogsView.vue'
 
 const authStore = useAuthStore()
 
@@ -78,7 +80,7 @@ const tabs = computed(() => {
     list.push({ id: 'roles', translationKey: 'admin.menu_roles' })
   }
 
-  if (hasAdmin) {
+  if (authStore.hasPermission('audit_logs.view_any')) {
     list.push({ id: 'audit', translationKey: 'admin.menu_audit' })
   }
 

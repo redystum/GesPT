@@ -30,6 +30,9 @@ class User extends Authenticatable
         'blocked',
         'blocked_reason',
         'blocked_at',
+        'theme',
+        'lang',
+        'recovery_email',
     ];
 
     /**

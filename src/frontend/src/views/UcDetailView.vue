@@ -418,6 +418,27 @@
                   </div>
                 </div>
 
+                <!-- Auto-add all UCs from a course -->
+                <div class="space-y-2 pt-4 border-t border-neutral-200 dark:border-neutral-800">
+                  <label class="block text-xs font-semibold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
+                    {{ $t('uc_detail.import_course_label') }}
+                  </label>
+                  <div class="relative flex-1">
+                    <SearchableDropdown
+                      v-model="selectedImportCourse"
+                      :options="dbAllCourses"
+                      :return-object="true"
+                      :display-fn="(c) => `${c.nome} (${c.sigla})`"
+                      :search-fn="
+                        (c, q) =>
+                          normalizeString(c.nome?.toLowerCase() || '').includes(q) ||
+                          normalizeString(c.sigla?.toLowerCase() || '').includes(q)
+                      "
+                      :placeholder="$t('uc_detail.import_course_placeholder')"
+                    />
+                  </div>
+                </div>
+
                 <!-- Options List -->
                 <div class="space-y-3">
                   <h3 class="text-xs font-bold text-neutral-400 dark:text-neutral-500 uppercase tracking-wider">
@@ -509,10 +530,13 @@ const hasOptions = ref(false)
 const options = ref([]) // array of UC objects
 const dbAllUcs = ref([]) // loaded from database
 const selectedOptionUc = ref(null)
+const dbAllCourses = ref([])
+const selectedImportCourse = ref(null)
 
 const loading = ref({
   uc: false,
-  allUcs: false
+  allUcs: false,
+  allCourses: false
 })
 
 // Normalization function for searchable dropdown filtering
@@ -564,6 +588,18 @@ const fetchAllUcs = async () => {
   }
 }
 
+const fetchAllCourses = async () => {
+  loading.value.allCourses = true
+  try {
+    const response = await api.get('/cursos')
+    dbAllCourses.value = response.data.data
+  } catch (err) {
+    console.error('Error fetching all courses:', err)
+  } finally {
+    loading.value.allCourses = false
+  }
+}
+
 const resetFormValues = () => {
   if (!uc.value) return
   form.value = {
@@ -591,6 +627,7 @@ const cancelEdit = () => {
   resetFormValues()
   options.value = uc.value.opcoes || []
   hasOptions.value = options.value.length > 0
+  selectedImportCourse.value = null
 }
 
 const addOption = () => {
@@ -616,11 +653,16 @@ const saveUc = async () => {
       opcoes: optionsPayload
     }
 
+    if (hasOptions.value && selectedImportCourse.value) {
+      payload.import_curso_id = selectedImportCourse.value.id
+    }
+
     const response = await api.put(`/ucs/${ucId.value}`, payload)
     
     uc.value = response.data.data
     options.value = uc.value.opcoes || []
     hasOptions.value = options.value.length > 0
+    selectedImportCourse.value = null
     editMode.value = false
   } catch (err) {
     console.error('Error saving UC details:', err)
@@ -633,6 +675,7 @@ const saveUc = async () => {
 onMounted(() => {
   fetchUcDetails()
   fetchAllUcs()
+  fetchAllCourses()
 })
 
 watch(ucId, () => {

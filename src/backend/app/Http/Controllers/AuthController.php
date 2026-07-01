@@ -10,6 +10,12 @@ use App\Models\UserRole;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use App\Mail\ResetPasswordMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class AuthController extends Controller
 {
@@ -56,6 +62,14 @@ class AuthController extends Controller
         $matched_domain = array_search($user_domain, $domains->pluck('dominio')->toArray());
 
         if ($matched_domain === false) {
+            activity()
+                ->useLog('login_failed')
+                ->withProperties([
+                    'email' => $request->email,
+                    'reason' => 'unauthorized_domain'
+                ])
+                ->log("Failed login: unauthorized domain");
+
             return response()->json([
                 'message' => __('messages.login_unauthorized_domain'),
             ], 401);
@@ -66,6 +80,16 @@ class AuthController extends Controller
             if (auth()->attempt($request->only('email', 'password'), $request->remember)) {
 
                 if ($user->blocked){
+                    activity()
+                        ->performedOn($user)
+                        ->useLog('login_failed')
+                        ->withProperties([
+                            'email' => $request->email,
+                            'user_name' => $user->name,
+                            'reason' => 'blocked'
+                        ])
+                        ->log("Failed login: blocked user");
+
                     return response()->json([
                         'message' => __('messages.login_user_blocked'),
                     ], 403);
@@ -79,6 +103,14 @@ class AuthController extends Controller
                     'user' => UserShowResource::make($user->load('roles', 'permissoes')),
                 ], 200);
             } else {
+                activity()
+                    ->useLog('login_failed')
+                    ->withProperties([
+                        'email' => $request->email,
+                        'reason' => 'invalid_credentials'
+                    ])
+                    ->log("Failed login: invalid credentials");
+
                 return response()->json([
                     'message' => __('messages.login_invalid_credentials'),
                 ], 401);
@@ -88,12 +120,28 @@ class AuthController extends Controller
         $response = $this->requestIPLeiriaAuth($request->email, $request->password);
 
         if ($response < 0) {
+            activity()
+                ->useLog('login_failed')
+                ->withProperties([
+                    'email' => $request->email,
+                    'reason' => 'auth_failed'
+                ])
+                ->log("Failed login: system auth failed");
+
             return response()->json([
                 'message' => __('messages.login_auth_failed'),
             ], 401);
         }
 
         if ($response === 0) {
+            activity()
+                ->useLog('login_failed')
+                ->withProperties([
+                    'email' => $request->email,
+                    'reason' => 'invalid_credentials'
+                ])
+                ->log("Failed login: invalid credentials");
+
             return response()->json([
                 'message' => __('messages.login_invalid_credentials'),
             ], 401);
@@ -101,6 +149,16 @@ class AuthController extends Controller
 
         if ($user) {
             if ($user->blocked){
+                activity()
+                    ->performedOn($user)
+                    ->useLog('login_failed')
+                    ->withProperties([
+                        'email' => $request->email,
+                        'user_name' => $user->name,
+                        'reason' => 'blocked'
+                    ])
+                    ->log("Failed login: blocked user");
+
                 return response()->json([
                     'message' => __('messages.login_user_blocked'),
                 ], 403);
@@ -129,5 +187,83 @@ class AuthController extends Controller
             'user' => UserShowResource::make($user->load('roles', 'permissoes')),
         ], 200);
 
+    }
+
+    public function forgotPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+
+        // Check if user exists and is local
+        if ($user && $user->type === User::USER_TYPE_LOCAL) {
+            $recipient = $user->recovery_email ?: $user->email;
+
+            if ($recipient) {
+                // Generate a token
+                $token = Str::random(60);
+
+                DB::table('password_reset_tokens')->updateOrInsert(
+                    ['email' => $user->email],
+                    [
+                        'token' => Hash::make($token),
+                        'created_at' => now()
+                    ]
+                );
+
+                Mail::to($recipient)->send(new ResetPasswordMail($user, $token));
+            }
+        }
+
+        // Return a generic response for security to avoid email enumeration
+        return response()->json([
+            'message' => __('messages.password_recovery_sent'),
+        ], 200);
+    }
+
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+            'token' => 'required|string',
+            'password' => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = User::where('email', $request->email)->first();
+        if (!$user || $user->type !== User::USER_TYPE_LOCAL) {
+            return response()->json([
+                'message' => __('messages.password_reset_token_invalid'),
+            ], 400);
+        }
+
+        $record = DB::table('password_reset_tokens')->where('email', $request->email)->first();
+
+        if (!$record || !Hash::check($request->token, $record->token)) {
+            return response()->json([
+                'message' => __('messages.password_reset_token_invalid'),
+            ], 400);
+        }
+
+        // Check if token is expired (e.g. 60 minutes)
+        if (Carbon::parse($record->created_at)->addMinutes(60)->isPast()) {
+            DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+            return response()->json([
+                'message' => __('messages.password_reset_token_invalid'),
+            ], 400);
+        }
+
+        // Update password
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Clean up token
+        DB::table('password_reset_tokens')->where('email', $request->email)->delete();
+
+        return response()->json([
+            'message' => __('messages.password_reset_success'),
+        ], 200);
     }
 }

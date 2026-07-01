@@ -286,6 +286,14 @@
           </div>
         </div>
       </div>
+
+      <div
+        class="mt-4 p-3 bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 text-blue-800 dark:text-blue-300 rounded-md text-sm flex gap-3"
+      >
+        <font-awesome-icon :icon="['fas', 'info-circle']" class="text-lg mt-0.5 shrink-0" />
+        <p>{{ $t('wizard.uc_step.optional_info') }}</p>
+      </div>
+
       <button
         @click="addNewUc"
         class="mt-4 bg-green-600 text-white px-4 py-2 rounded-md hover:bg-green-700 cursor-pointer"

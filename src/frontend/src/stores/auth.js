@@ -1,5 +1,7 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
+import { activeLocale } from '@/i18n'
+import { useTheme } from '@/composables/useTheme'
 
 export const useAuthStore = defineStore('auth', () => {
   const user = ref(localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')) : null)
@@ -21,10 +23,25 @@ export const useAuthStore = defineStore('auth', () => {
   })
 
   function login(data) {
-    user.value = data.user
     token.value = data.access_token
-    localStorage.setItem('user', JSON.stringify(data.user))
     localStorage.setItem('token', data.access_token)
+    updateUser(data.user)
+  }
+
+  function updateUser(userData) {
+    user.value = userData
+    localStorage.setItem('user', JSON.stringify(userData))
+
+    if (userData) {
+      if (userData.theme) {
+        const { setTheme } = useTheme()
+        setTheme(userData.theme === 'dark')
+      }
+      if (userData.lang) {
+        activeLocale.value = userData.lang
+        localStorage.setItem('gespt.locale', userData.lang)
+      }
+    }
   }
 
   function logout() {
@@ -50,5 +67,5 @@ export const useAuthStore = defineStore('auth', () => {
     return permissions.value.includes(permissionName)
   }
 
-  return { user, token, permissions, isLoggedIn, initials, login, logout, setPermissions, hasPermission }
+  return { user, token, permissions, isLoggedIn, initials, login, updateUser, logout, setPermissions, hasPermission }
 })
