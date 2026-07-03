@@ -109,7 +109,7 @@ class CourseController extends Controller implements HasMiddleware
 
     public function ucs(Curso $curso)
     {
-        $ucs = $curso->ucs;
+        $ucs = $curso->ucs()->with('planoUcs')->get();
         return response()->json([
             'data' => UcResource::collection($ucs),
         ], 200);

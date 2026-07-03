@@ -82,225 +82,22 @@
 
       <!-- Grid for Side-by-Side Tables -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        <!-- Left Table: Curricular Units (UCs) -->
-        <article
-          class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] shadow-xs flex flex-col overflow-hidden"
-        >
-          <div
-            class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between gap-4"
-          >
-            <div>
-              <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-                {{ $t('course_detail.ucs_table_title') }}
-              </h2>
-              <p class="text-xs text-neutral-400 mt-0.5">
-                {{ ucs.length }} {{ $t('course_detail.ucs_table_title').toLowerCase() }}
-              </p>
-            </div>
-            <button
-              v-if="authStore.hasPermission('ucs.create')"
-              @click="openAddUcModal"
-              class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 cursor-pointer"
-            >
-              <font-awesome-icon :icon="['fas', 'plus']" class="text-[10px]" />
-              {{ $t('course_detail.add_uc') }}
-            </button>
-          </div>
 
-          <!-- Loader for UCs -->
-          <div v-if="loading.ucs" class="p-8 flex justify-center items-center">
-            <font-awesome-icon :icon="['fas', 'circle-notch']" spin class="text-2xl text-neutral-400" />
-          </div>
+        <!-- left Table: Study Plans (Planos) -->
+        <PlansTable
+          :planos="planos"
+          :loading="loading.planos"
+          :course-id="courseId"
+          @delete-plan="openDeletePlanModal"
+        />
 
-          <div v-else-if="ucs.length === 0" class="p-8 text-center flex flex-col items-center">
-            <div
-              class="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 mb-3"
-            >
-              <font-awesome-icon :icon="['fas', 'book-open']" class="text-lg" />
-            </div>
-            <h3 class="text-sm font-bold text-neutral-700 dark:text-neutral-300">
-              {{ $t('course_detail.no_ucs') }}
-            </h3>
-          </div>
-
-          <div v-else class="overflow-x-auto">
-            <table class="w-full text-sm border-collapse text-left">
-              <thead>
-                <tr class="bg-neutral-50 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400 text-xs font-semibold border-b border-neutral-100 dark:border-neutral-800">
-                  <th class="px-6 py-4">{{ $t('wizard.uc_step.year') }}</th>
-                  <th class="px-6 py-4">{{ $t('course_detail.pt_name') }}</th>
-                  <th class="px-6 py-4">{{ $t('course_detail.acronym') }}</th>
-                  <th class="px-6 py-4 text-center">{{ $t('course_detail.ects') }}</th>
-                  <th class="px-6 py-4 text-center">{{ $t('course_detail.semester') }}</th>
-                  <th class="px-6 py-4 text-center">{{ $t('course_detail.hours') }}</th>
-                  <th v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800/60">
-                <tr
-                  v-for="uc in sortedUcs"
-                  :key="uc.id"
-                  class="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/20 transition-colors"
-                >
-                  <td class="px-6 py-3.5 font-medium text-neutral-600 dark:text-neutral-400">
-                    {{ uc.ano ? `${uc.ano}º` : 'N/A' }}
-                  </td>
-                  <td class="px-6 py-3.5 font-semibold text-neutral-900 dark:text-neutral-100">
-                    <div>
-                      <router-link
-                        v-if="authStore.hasPermission('ucs.view')"
-                        :to="{ name: 'uc-detail', params: { id: uc.id } }"
-                        class="hover:underline hover:text-neutral-600 dark:hover:text-neutral-300"
-                      >
-                        {{ locale === 'pt' ? uc.nome : (uc.name || uc.nome) }}
-                      </router-link>
-                      <span v-else>{{ locale === 'pt' ? uc.nome : (uc.name || uc.nome) }}</span>
-                      <p v-if="locale === 'pt' && uc.name" class="text-[11px] font-normal text-neutral-400 dark:text-neutral-500">
-                        {{ uc.name }}
-                      </p>
-                      <p v-else-if="locale === 'en' && uc.name && uc.nome !== uc.name" class="text-[11px] font-normal text-neutral-400 dark:text-neutral-500">
-                        {{ uc.nome }}
-                      </p>
-                    </div>
-                  </td>
-                  <td class="px-6 py-3.5">
-                    <span class="px-2 py-0.5 rounded-md text-xs font-semibold bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-400">
-                      {{ uc.sigla }}
-                    </span>
-                  </td>
-                  <td class="px-6 py-3.5 text-center font-bold text-neutral-800 dark:text-neutral-200">
-                    {{ uc.ects }}
-                  </td>
-                  <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
-                    {{ uc.semestre ? `${uc.semestre}º` : 'N/A' }}
-                  </td>
-                  <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
-                    {{ uc.horas }}h
-                  </td>
-                  <td v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-3.5 text-right whitespace-nowrap">
-                    <div class="inline-flex gap-2">
-                      <router-link
-                        v-if="authStore.hasPermission('ucs.update')"
-                        :to="{ name: 'uc-detail', params: { id: uc.id } }"
-                        class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
-                        :title="$t('course_detail.edit_uc')"
-                      >
-                        <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
-                      </router-link>
-                      <button
-                        v-if="authStore.hasPermission('ucs.delete')"
-                        @click="openDeleteUcModal(uc)"
-                        class="p-1.5 rounded-md text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        :title="$t('course_detail.delete_uc')"
-                      >
-                        <font-awesome-icon :icon="['fas', 'trash']" class="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
-
-        <!-- Right Table: Study Plans (Planos) -->
-        <article
-          class="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] shadow-xs flex flex-col overflow-hidden"
-        >
-          <div
-            class="px-6 py-5 border-b border-neutral-100 dark:border-neutral-800 flex items-center justify-between gap-4"
-          >
-            <div>
-              <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-                {{ $t('course_detail.plans_table_title') }}
-              </h2>
-              <p class="text-xs text-neutral-400 mt-0.5">
-                {{ planos.length }} {{ $t('course_detail.plans_table_title').toLowerCase() }}
-              </p>
-            </div>
-            <router-link v-if="authStore.hasPermission('planos_estudo.create')" :to="{ name: 'wizard'}"
-              class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 cursor-pointer"
-            >
-              <font-awesome-icon :icon="['fas', 'plus']" class="text-[10px]" />
-              {{ $t('course_detail.add_plan') }}
-            </router-link>
-          </div>
-
-          <!-- Loader for Planos -->
-          <div v-if="loading.planos" class="p-8 flex justify-center items-center">
-            <font-awesome-icon :icon="['fas', 'circle-notch']" spin class="text-2xl text-neutral-400" />
-          </div>
-
-          <div v-else-if="planos.length === 0" class="p-8 text-center flex flex-col items-center">
-            <div
-              class="w-12 h-12 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-400 mb-3"
-            >
-              <font-awesome-icon :icon="['fas', 'scroll']" class="text-lg" />
-            </div>
-            <h3 class="text-sm font-bold text-neutral-700 dark:text-neutral-300">
-              {{ $t('course_detail.no_plans') }}
-            </h3>
-          </div>
-
-          <div v-else class="overflow-x-auto">
-            <table class="w-full text-sm border-collapse text-left">
-              <thead>
-                <tr class="bg-neutral-50 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400 text-xs font-semibold border-b border-neutral-100 dark:border-neutral-800">
-                  <th class="px-6 py-4">ID</th>
-                  <th class="px-6 py-4">{{ $t('wizard.plan_step.academic_year') }}</th>
-                  <th class="px-6 py-4 text-center">{{ $t('course_detail.ucs_table_title') }}</th>
-                  <th class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800/60">
-                <tr
-                  v-for="plan in planos"
-                  :key="plan.id"
-                  class="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/20 transition-colors"
-                >
-                  <td class="px-6 py-3.5 font-medium text-neutral-400">
-                    #{{ plan.id }}
-                  </td>
-                  <td class="px-6 py-3.5 font-semibold text-neutral-900 dark:text-neutral-100">
-                    {{ plan.ano }}
-                  </td>
-                  <td class="px-6 py-3.5 text-center">
-                    <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400">
-                      {{ plan.ucs }} UCs
-                    </span>
-                  </td>
-                  <td class="px-6 py-3.5 text-right whitespace-nowrap">
-                    <div class="inline-flex gap-2">
-                      <router-link
-                        :to="{ path: '/compare', query: { course: course.id, plan: plan.id } }"
-                        class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                        title="Compare/View Equivalences"
-                      >
-                        <font-awesome-icon :icon="['fas', 'eye']" class="w-3.5 h-3.5" />
-                      </router-link>
-                      <router-link
-                        v-if="authStore.hasPermission('planos_estudo.update')"
-                        :to="{ name: 'plan-edit-wizard', params: { id: plan.id } }"
-                        class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800"
-                        :title="$t('course_detail.edit_plan')"
-                      >
-                        <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
-                      </router-link>
-                      <button
-                        v-if="authStore.hasPermission('planos_estudo.delete')"
-                        @click="openDeletePlanModal(plan)"
-                        class="p-1.5 rounded-md text-neutral-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-950/20 cursor-pointer"
-                        :title="$t('course_detail.delete_plan')"
-                      >
-                        <font-awesome-icon :icon="['fas', 'trash']" class="w-3.5 h-3.5" />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </article>
+        <!-- right Table: Curricular Units (UCs) -->
+        <UcsTable
+          :ucs="ucs"
+          :loading="loading.ucs"
+          @add-uc="openAddUcModal"
+          @delete-uc="openDeleteUcModal"
+        />
       </div>
     </div>
 
@@ -632,6 +429,8 @@ import { inject, ref, reactive, computed, onMounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from '@/i18n'
 import { useAuthStore } from '@/stores/auth'
+import UcsTable from '@/components/Course/UcsTable.vue'
+import PlansTable from '@/components/Course/PlansTable.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -699,16 +498,6 @@ const deleteConfig = reactive({
   type: '', // 'course', 'uc', 'plan'
   targetId: null,
   message: ''
-})
-
-// Sorted UCs (by year and then semester)
-const sortedUcs = computed(() => {
-  return [...ucs.value].sort((a, b) => {
-    if (a.ano !== b.ano) {
-      return (a.ano || 99) - (b.ano || 99)
-    }
-    return (a.semestre || 99) - (b.semestre || 99)
-  })
 })
 
 // Initialization
@@ -820,35 +609,6 @@ const openAddUcModal = () => {
   modals.uc = true
 }
 
-const openEditUcModal = (uc) => {
-  isEditing.value = true
-  modalError.value = null
-  showWorkloadDetails.value = false
-  modalData.uc = {
-    id: uc.id,
-    nome: uc.nome,
-    name: uc.name || '',
-    sigla: uc.sigla,
-    ects: uc.ects,
-    horas: uc.horas,
-    semestre: uc.semestre,
-    ano: uc.ano,
-    horas_t: uc.horas_t,
-    horas_tp: uc.horas_tp,
-    horas_pl: uc.horas_pl,
-    horas_tc: uc.horas_tc,
-    horas_s: uc.horas_s,
-    horas_e: uc.horas_e,
-    horas_ot: uc.horas_ot,
-    horas_o: uc.horas_o
-  }
-  // Check if there are workload hours defined to expand the workload section
-  if (uc.horas_t != null || uc.horas_tp != null || uc.horas_pl != null || uc.horas_tc != null) {
-    showWorkloadDetails.value = true
-  }
-  modals.uc = true
-}
-
 const saveUc = async () => {
   saving.value = true
   modalError.value = null
@@ -925,7 +685,7 @@ const confirmDeletion = async () => {
       modals.delete = false
     } else if (deleteConfig.type === 'plan') {
       await api.delete(`/planos-estudo/${deleteConfig.targetId}`)
-      await fetchPlanos()
+      await Promise.all([fetchUcs(), fetchPlanos()])
       modals.delete = false
     }
   } catch (err) {

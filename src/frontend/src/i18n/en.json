@@ -368,7 +368,13 @@
     "confirm_delete_uc": "Are you sure you want to delete this Curricular Unit? This action cannot be undone.",
     "confirm_delete_plan": "Are you sure you want to delete this Study Plan? This action cannot be undone.",
     "save_success": "Changes saved successfully.",
-    "delete_success": "Deleted successfully."
+    "delete_success": "Deleted successfully.",
+    "search_ucs_placeholder": "Search UC by name or acronym...",
+    "search_plans_placeholder": "Search plan by academic year...",
+    "filter_all": "All",
+    "filter_on_plan": "On a plan",
+    "filter_not_on_plan": "Not on any plan",
+    "showing_filtered_ucs": "Showing {count} of {total} UCs"
   },
   "uc_detail": {
     "title": "Curricular Unit Details",

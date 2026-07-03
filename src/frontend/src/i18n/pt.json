@@ -368,7 +368,13 @@
     "confirm_delete_uc": "Tem a certeza que pretende eliminar esta Unidade Curricular? Esta ação não pode ser desfeita.",
     "confirm_delete_plan": "Tem a certeza que pretende eliminar este Plano de Estudo? Esta ação não pode ser desfeita.",
     "save_success": "Alterações guardadas com sucesso.",
-    "delete_success": "Eliminado com sucesso."
+    "delete_success": "Eliminado com sucesso.",
+    "search_ucs_placeholder": "Pesquisar UC por nome ou sigla...",
+    "search_plans_placeholder": "Pesquisar plano por ano letivo...",
+    "filter_all": "Todas",
+    "filter_on_plan": "Num plano",
+    "filter_not_on_plan": "Fora de planos",
+    "showing_filtered_ucs": "A apresentar {count} de {total} UCs"
   },
   "uc_detail": {
     "title": "Detalhes da Unidade Curricular",
