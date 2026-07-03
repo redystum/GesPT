@@ -374,7 +374,11 @@
     "filter_all": "All",
     "filter_on_plan": "On a plan",
     "filter_not_on_plan": "Not on any plan",
-    "showing_filtered_ucs": "Showing {count} of {total} UCs"
+    "showing_filtered_ucs": "Showing {count} of {total} UCs",
+    "in_plan": "In Plan",
+    "not_in_plan": "Not in Plan",
+    "ucs_ects": "UCs & ECTS",
+    "ucs": "UCs"
   },
   "uc_detail": {
     "title": "Curricular Unit Details",
@@ -391,6 +395,9 @@
     "no_options_available": "This Curricular Unit does not have options.",
     "options_save_success": "Options updated successfully.",
     "not_in_any_plan_warning": "This Curricular Unit is not currently part of any Study Plan. You must add it to a Study Plan first using the Wizard before you can define options.",
+    "associated_plans_title": "Associated Study Plans",
+    "associated_plans_desc": "Study plans in which this curricular unit is included. Click a plan to view its equivalences and comparisons.",
+    "not_in_any_plan": "This curricular unit is not currently part of any study plan.",
     "workload_breakdown": "Workload Breakdown",
     "general_info": "General Information",
     "academic_details": "Academic Details",

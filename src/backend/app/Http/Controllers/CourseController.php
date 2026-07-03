@@ -118,7 +118,7 @@ class CourseController extends Controller implements HasMiddleware
     public function planos(Curso $curso)
     {
         $planos = $curso->planoEstudos()
-            ->with('planoUcs')
+            ->with(['planoUcs', 'planoUcs.uc'])
             ->orderByDesc('ano')
             ->get();
 

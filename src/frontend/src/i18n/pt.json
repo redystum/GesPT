@@ -374,7 +374,11 @@
     "filter_all": "Todas",
     "filter_on_plan": "Num plano",
     "filter_not_on_plan": "Fora de planos",
-    "showing_filtered_ucs": "A apresentar {count} de {total} UCs"
+    "showing_filtered_ucs": "A apresentar {count} de {total} UCs",
+    "in_plan": "No Plano",
+    "not_in_plan": "Sem Plano",
+    "ucs_ects": "UCs e ECTS",
+    "ucs": "UCs"
   },
   "uc_detail": {
     "title": "Detalhes da Unidade Curricular",
@@ -391,6 +395,9 @@
     "no_options_available": "Esta Unidade Curricular não tem opções.",
     "options_save_success": "Opções atualizadas com sucesso.",
     "not_in_any_plan_warning": "Esta Unidade Curricular não faz parte de nenhum Plano de Estudos de momento. Deve adicioná-la a um Plano de Estudos primeiro usando o Assistente para poder definir opções.",
+    "associated_plans_title": "Planos de Estudo Associados",
+    "associated_plans_desc": "Planos de estudo nos quais esta unidade curricular está inserida. Clique num plano para ver equivalências e comparações.",
+    "not_in_any_plan": "Esta unidade curricular não faz parte de nenhum plano de estudo atualmente.",
     "workload_breakdown": "Distribuição de Carga Horária",
     "general_info": "Informações Gerais",
     "academic_details": "Detalhes Académicos",

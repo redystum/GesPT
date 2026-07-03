@@ -58,7 +58,8 @@
           <tr class="bg-neutral-50 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400 text-xs font-semibold border-b border-neutral-100 dark:border-neutral-800">
             <th class="px-6 py-4">ID</th>
             <th class="px-6 py-4">{{ $t('wizard.plan_step.academic_year') }}</th>
-            <th class="px-6 py-4 text-center">{{ $t('course_detail.ucs_table_title') }}</th>
+            <th class="px-6 py-4 text-center">{{ $t('course_detail.ects') }}</th>
+            <th class="px-6 py-4 text-center">{{ $t('course_detail.ucs') }}</th>
             <th class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
           </tr>
         </thead>
@@ -74,10 +75,11 @@
             <td class="px-6 py-3.5 font-semibold text-neutral-900 dark:text-neutral-100">
               {{ plan.ano }}
             </td>
-            <td class="px-6 py-3.5 text-center">
-              <span class="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-50 dark:bg-blue-900/10 text-blue-600 dark:text-blue-400">
-                {{ plan.ucs }} UCs
-              </span>
+            <td class="px-6 py-3.5 text-center text-neutral-700 dark:text-neutral-300">
+              {{ plan.ects }}
+            </td>
+            <td class="px-6 py-3.5 text-center text-neutral-700 dark:text-neutral-300">
+              {{ plan.ucs }}
             </td>
             <td class="px-6 py-3.5 text-right whitespace-nowrap">
               <div class="inline-flex gap-2">

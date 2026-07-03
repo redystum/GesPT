@@ -46,7 +46,7 @@ class UnidadeCurricularController extends Controller implements HasMiddleware
 
     public function show(Uc $uc)
     {
-        $uc->load(['curso:id,nome,sigla,codigo', 'planoUcs.opcoes.ucEscolhida']);
+        $uc->load(['curso:id,nome,sigla,codigo', 'planoUcs.opcoes.ucEscolhida', 'planoUcs.planoEstudo']);
 
         return response()->json([
             'data' => UcResource::make($uc),
@@ -112,7 +112,7 @@ class UnidadeCurricularController extends Controller implements HasMiddleware
             });
         }
 
-        $uc->load(['curso:id,nome,sigla,codigo', 'planoUcs.opcoes.ucEscolhida']);
+        $uc->load(['curso:id,nome,sigla,codigo', 'planoUcs.opcoes.ucEscolhida', 'planoUcs.planoEstudo']);
 
         return response()->json([
             'message' => 'Unidade curricular atualizada com sucesso!',

@@ -79,7 +79,7 @@
             <th class="px-6 py-4 text-center">{{ $t('course_detail.ects') }}</th>
             <th class="px-6 py-4 text-center">{{ $t('course_detail.semester') }}</th>
             <th class="px-6 py-4 text-center">{{ $t('course_detail.hours') }}</th>
-            <th v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
+            <th class="px-6 py-4 text-right">{{ $t('course_detail.actions') }}</th>
           </tr>
         </thead>
         <tbody class="divide-y divide-neutral-100 dark:divide-neutral-800/60">
@@ -114,7 +114,7 @@
                 {{ uc.sigla }}
               </span>
             </td>
-            <td class="px-6 py-3.5 text-center font-bold text-neutral-800 dark:text-neutral-200">
+            <td class="px-6 py-3.5 text-center text-neutral-800 dark:text-neutral-200">
               {{ uc.ects }}
             </td>
             <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
@@ -123,8 +123,18 @@
             <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
               {{ uc.horas }}h
             </td>
-            <td v-if="authStore.hasPermission('ucs.update') || authStore.hasPermission('ucs.delete')" class="px-6 py-3.5 text-right whitespace-nowrap">
-              <div class="inline-flex gap-2">
+            <td class="px-6 py-3.5 text-right whitespace-nowrap">
+              <div class="inline-flex items-center gap-2">
+                <!-- Plan status indicator -->
+                <router-link
+                  :to="{ name: 'uc-detail', params: { id: uc.id } }"
+                  class="p-1.5 rounded-md text-xs font-semibold"
+                  :class="uc.plano_ucs_count > 0 ? 'text-emerald-500' : 'text-neutral-300 dark:text-neutral-700'"
+                  :title="uc.plano_ucs_count > 0 ? $t('course_detail.in_plan') : $t('course_detail.not_in_plan')"
+                >
+                  <font-awesome-icon :icon="['fas', 'scroll']" class="w-3.5 h-3.5" />
+                </router-link>
+
                 <router-link
                   v-if="authStore.hasPermission('ucs.update')"
                   :to="{ name: 'uc-detail', params: { id: uc.id } }"

@@ -317,7 +317,7 @@
 
         <!-- Right 1 Column: Options Management -->
         <div class="space-y-6">
-          <article class="bg-white dark:bg-[#1a1a1a] border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 shadow-sm h-full">
+          <article class="bg-white dark:bg-[#1a1a1a] border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 shadow-sm">
             <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2">
               {{ $t('uc_detail.options_section_title') }}
             </h2>
@@ -480,6 +480,40 @@
               </div>
             </template>
           </article>
+
+          <!-- Study Plans Card -->
+          <article class="bg-white dark:bg-[#1a1a1a] border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 shadow-sm">
+            <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100 mb-2">
+              {{ $t('uc_detail.associated_plans_title') }}
+            </h2>
+            <p class="text-xs text-neutral-400 dark:text-neutral-500 mb-6">
+              {{ $t('uc_detail.associated_plans_desc') }}
+            </p>
+
+            <div v-if="!uc.planos || uc.planos.length === 0" class="text-sm text-neutral-500 dark:text-neutral-400 py-4 text-center border border-dashed border-neutral-200 dark:border-neutral-800 rounded-xl p-4 bg-neutral-50/50 dark:bg-neutral-800/10">
+              {{ $t('uc_detail.not_in_any_plan') }}
+            </div>
+            
+            <ul v-else class="space-y-3">
+              <li
+                v-for="plan in uc.planos"
+                :key="plan.id"
+                class="transition-all"
+              >
+                <router-link
+                  :to="{ path: '/compare', query: { course: uc.id_curso, plan: plan.id } }"
+                  class="flex items-center justify-between p-3 border rounded-xl bg-neutral-50 dark:bg-neutral-800/30 border-neutral-200/60 dark:border-neutral-800/60 hover:bg-neutral-100 dark:hover:bg-neutral-800 hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors"
+                >
+                  <div class="min-w-0">
+                    <span class="text-sm font-bold text-neutral-900 dark:text-neutral-200">
+                      {{ plan.ano }}
+                    </span>
+                  </div>
+                  <font-awesome-icon :icon="['fas', 'eye']" class="text-neutral-400 w-3.5 h-3.5" />
+                </router-link>
+              </li>
+            </ul>
+          </article>
         </div>
       </div>
     </div>
@@ -488,15 +522,14 @@
 
 <script setup>
 import { inject, ref, onMounted, computed, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useI18n } from '@/i18n'
 import SearchableDropdown from '@/components/SearchableDropdown.vue'
 
 const route = useRoute()
-const router = useRouter()
 const authStore = useAuthStore()
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 const api = inject('api')
 
 const ucId = computed(() => route.params.id)

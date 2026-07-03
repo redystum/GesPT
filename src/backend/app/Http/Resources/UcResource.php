@@ -43,6 +43,15 @@ class UcResource extends JsonResource
 
             $data['opcoes'] = UcResource::collection($opcoesUcs);
             $data['plano_ucs_count'] = $this->planoUcs->count();
+            $data['planos'] = $this->planoUcs->map(function ($planoUc) {
+                if ($planoUc->relationLoaded('planoEstudo') && $planoUc->planoEstudo) {
+                    return [
+                        'id' => $planoUc->planoEstudo->id,
+                        'ano' => $planoUc->planoEstudo->ano,
+                    ];
+                }
+                return null;
+            })->filter()->values();
         }
 
         return $data;
