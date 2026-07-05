@@ -24,6 +24,15 @@ class PlanoEstudoResource extends JsonResource
             'curso' => $this->whenLoaded('curso', function () {
                 return $this->curso ? new CursoResource($this->curso) : null;
             }),
+            'ects' => $this->when($this->relationLoaded('planoUcs'), function () {
+                $ectsSum = 0;
+                foreach ($this->planoUcs as $planoUc) {
+                    if ($planoUc->relationLoaded('uc') && $planoUc->uc) {
+                        $ectsSum += $planoUc->uc->ects;
+                    }
+                }
+                return $ectsSum;
+            }),
             'ucs' => $this->whenLoaded('planoUcs', function () {
                 return PlanoUcResource::collection(
                     $this->planoUcs

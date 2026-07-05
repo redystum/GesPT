@@ -42,14 +42,14 @@
             <label class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em]">
               {{ $t('compare.course') }}
             </label>
-            <select
+            <SearchableDropdown
               v-model="curso_id"
-              class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
-            >
-              <option v-for="c in cursos" :key="c.id" :value="c.id">
-                {{ locale === 'pt' ? c.nome : c.name }}
-              </option>
-            </select>
+              :options="cursos"
+              :displayFn="displayCourse"
+              valueKey="id"
+              :placeholder="$t('compare.course')"
+              inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
+            />
           </div>
         </div>
       </section>
@@ -92,23 +92,24 @@
 
     <section
       v-if="isReady"
-      class="overflow-hidden rounded-md border-2 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a]"
+      class="rounded-md border-2 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a]"
     >
       <div
-        class="border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 grid grid-cols-1 p-4 sm:grid-cols-2 sm:gap-4"
+        class="rounded-t-md border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 grid grid-cols-1 p-4 sm:grid-cols-2 sm:gap-4"
       >
         <div class="space-y-1">
           <label
             class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
             >{{ $t('compare.initial_plan') }}</label
           >
-          <select
+          <SearchableDropdown
             v-model="plano_inicial"
-            class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
-          >
-            <option :value="null" disabled>&mdash;</option>
-            <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
-          </select>
+            :options="planos_disponiveis"
+            :displayFn="displayPlan"
+            valueKey="id"
+            :placeholder="$t('compare.initial_plan')"
+            inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
+          />
         </div>
 
         <div class="space-y-1">
@@ -116,13 +117,14 @@
             class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
             >{{ $t('compare.target_plan') }}</label
           >
-          <select
+          <SearchableDropdown
             v-model="plano_final"
-            class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2.5 text-sm outline-none transition-all duration-150 bg-white dark:bg-[#1a1a1a] text-neutral-900 dark:text-neutral-100 focus:border-neutral-500 focus:ring-4 focus:ring-neutral-500/20"
-          >
-            <option :value="null" disabled>&mdash;</option>
-            <option v-for="p in planos_disponiveis" :key="p.id" :value="p.id">{{ p.ano }}</option>
-          </select>
+            :options="planosFinalDisponiveis"
+            :displayFn="displayPlan"
+            valueKey="id"
+            :placeholder="$t('compare.target_plan')"
+            inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
+          />
         </div>
       </div>
 
@@ -138,6 +140,8 @@
 
       <CompareTable
         :equivalences="equivalences"
+        :plano-inicial="planoInicialObj"
+        :plano-final-obj="planoFinalObj"
         :plano_final="plano_final"
       />
     </section>
@@ -159,10 +163,21 @@ import { computed, inject, onMounted, ref, watch } from 'vue'
 import { useI18n } from '@/i18n'
 import { useRoute } from 'vue-router'
 import CompareTable from '@/components/CompareTable.vue'
+import SearchableDropdown from '@/components/SearchableDropdown.vue'
 
-const { locale } = useI18n()
+const { locale, t } = useI18n()
 const route = useRoute()
 const api = inject('api')
+
+const displayCourse = (c) => {
+  if (!c) return ''
+  return locale.value === 'pt' ? c.nome : c.name
+}
+
+const displayPlan = (p) => {
+  if (!p) return ''
+  return p.ects !== undefined ? `${p.ano}` : p.ano
+}
 
 const estudante_id = ref(1)
 const curso_id = ref(null)
@@ -193,6 +208,18 @@ const statsEquivalences = computed(() => {
 const planos_disponiveis = computed(() => {
   const curso = cursos.value.find((c) => c.id === curso_id.value)
   return curso ? curso.planos_estudo : []
+})
+
+const planoInicialObj = computed(() => {
+  return planos_disponiveis.value.find((p) => p.id === plano_inicial.value) || null
+})
+
+const planoFinalObj = computed(() => {
+  return planos_disponiveis.value.find((p) => p.id === plano_final.value) || null
+})
+
+const planosFinalDisponiveis = computed(() => {
+  return planos_disponiveis.value.filter((p) => p.id !== plano_inicial.value)
 })
 
 async function fetchCursos() {
@@ -274,6 +301,11 @@ onMounted(async () => {
 })
 
 watch([estudante_id, plano_inicial, plano_final], fetchData)
+watch(plano_inicial, (newVal) => {
+  if (newVal && plano_final.value === newVal) {
+    plano_final.value = null
+  }
+})
 watch(curso_id, (newVal, oldVal) => {
   if (oldVal !== null) {
     plano_inicial.value = null

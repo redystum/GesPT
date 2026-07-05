@@ -6,7 +6,15 @@ const authStore = useAuthStore()
 
 defineProps({
   equivalences: {},
-  plano_final: {}
+  plano_final: {},
+  planoInicial: {
+    type: Object,
+    default: null
+  },
+  planoFinalObj: {
+    type: Object,
+    default: null
+  }
 })
 function mappingCount(item, side) {
   return item[side].filter((part) => part.data).length
@@ -31,6 +39,25 @@ function dividerClass(item, side, idx, listLength) {
 </script>
 
 <template>
+  <!-- Header Row with Plan details and Total ECTS -->
+  <div
+    v-if="planoInicial || planoFinalObj"
+    class="border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800/80 grid grid-cols-2 text-sm font-bold text-neutral-700 dark:text-neutral-300"
+  >
+    <div class="p-3 sm:p-5 border-r-2 border-r-neutral-500 flex justify-between items-center">
+      <span>{{ planoInicial ? planoInicial.ano : $t('compare.initial_plan') }}</span>
+      <span v-if="planoInicial && planoInicial.ects !== undefined" class="text-xs px-2.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-700 font-semibold text-neutral-600 dark:text-neutral-300">
+        {{ planoInicial.ects }} {{ $t('compare.ects') }}
+      </span>
+    </div>
+    <div class="p-3 sm:p-5 flex justify-between items-center">
+      <span>{{ planoFinalObj ? planoFinalObj.ano : $t('compare.target_plan') }}</span>
+      <span v-if="planoFinalObj && planoFinalObj.ects !== undefined" class="text-xs px-2.5 py-0.5 rounded-full bg-neutral-200 dark:bg-neutral-700 font-semibold text-neutral-600 dark:text-neutral-300">
+        {{ planoFinalObj.ects }} {{ $t('compare.ects') }}
+      </span>
+    </div>
+  </div>
+
   <div
     v-for="(item, index) in equivalences"
     :key="index"

@@ -40,7 +40,7 @@ class CourseController extends Controller implements HasMiddleware
         $cursos = Curso::query()
             ->orderByDesc('id')
             ->when($request->with_planos_estudo, function ($query) {
-                $query->with('planoEstudos');
+                $query->with('planoEstudos.planoUcs.uc');
             })
             ->when($request->search, function ($query, $search) {
                 $query->where('nome', 'like', "%{$search}%")
@@ -93,7 +93,10 @@ class CourseController extends Controller implements HasMiddleware
 
     public function getLatestPlan(Curso $curso)
     {
-        $plano = PlanoEstudo::where('id_curso', $curso->id)->orderBy('ano', 'desc')->first();
+        $plano = PlanoEstudo::where('id_curso', $curso->id)
+            ->with(['planoUcs.uc'])
+            ->orderBy('ano', 'desc')
+            ->first();
 
         if  (!$plano) {
             return response()->json([
