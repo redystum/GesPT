@@ -165,7 +165,7 @@ import { useRoute } from 'vue-router'
 import CompareTable from '@/components/CompareTable.vue'
 import SearchableDropdown from '@/components/SearchableDropdown.vue'
 
-const { locale, t } = useI18n()
+const { locale } = useI18n()
 const route = useRoute()
 const api = inject('api')
 

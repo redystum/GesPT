@@ -10,7 +10,7 @@
         class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
       >
         <option value="" disabled>{{ $t('wizard.equivalence_step.select_previous_plan') }}</option>
-        <option v-for="plan in prevPlans" :key="plan.id" :value="plan.id">
+        <option v-for="plan in filteredPrevPlans" :key="plan.id" :value="plan.id">
           {{ plan.ano }} ({{ plan.curso?.nome || $t('common.na') }})
         </option>
       </select>
@@ -144,11 +144,17 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const store = usePlanWizardStore()
-const { prevPlanData, prevPlans, prevUcs, prevUcsBySemester, loadingPlan } = storeToRefs(store)
+const { wizardData, prevPlanData, prevPlans, prevUcs, prevUcsBySemester, loadingPlan } = storeToRefs(store)
 
 const selectedPrevPlanId = computed({
   get: () => store.wizardData.equivalences.prevPlanId,
   set: (val) => { store.wizardData.equivalences.prevPlanId = val }
+})
+
+const filteredPrevPlans = computed(() => {
+  const currentPlanId = wizardData.value.plan?.id
+  if (!currentPlanId) return prevPlans.value
+  return prevPlans.value.filter((plan) => plan.id !== currentPlanId)
 })
 const equivalences = ref([])
 

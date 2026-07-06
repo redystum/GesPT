@@ -206,7 +206,12 @@
           class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-6"
           v-if="currentStep === 4"
         >
-          <CompareTable :equivalences="planPreview" :plano_final="true" />
+          <CompareTable
+            :equivalences="planPreview"
+            :plano-inicial="planoInicialObj"
+            :plano-final-obj="planoFinalObj"
+            :plano_final="true"
+          />
         </div>
       </div>
     </div>
@@ -228,7 +233,30 @@ import { useRouter, useRoute } from 'vue-router'
 const store = usePlanWizardStore()
 const api = inject('api')
 const { t } = useI18n()
-const { wizardData, planPreview } = storeToRefs(store)
+const { wizardData, planPreview, prevPlans, prevPlanData, prevUcs } = storeToRefs(store)
+
+const planoInicialObj = computed(() => {
+  const prevPlanId = wizardData.value.equivalences.prevPlanId
+  if (!prevPlanId) return null
+
+  const foundPlan = prevPlans.value.find((p) => p.id === prevPlanId)
+  const ano = foundPlan?.ano || prevPlanData.value?.ano || ''
+  const ectsSum = prevUcs.value.reduce((sum, uc) => sum + (Number(uc.ects) || 0), 0)
+
+  return {
+    id: prevPlanId,
+    ano: ano,
+    ects: ectsSum
+  }
+})
+
+const planoFinalObj = computed(() => {
+  const ectsSum = wizardData.value.ucs.reduce((sum, uc) => sum + (Number(uc.ects) || 0), 0)
+  return {
+    ano: wizardData.value.plan.ano || 'New Plan',
+    ects: ectsSum
+  }
+})
 const router = useRouter()
 const route = useRoute()
 const planId = route.params.id

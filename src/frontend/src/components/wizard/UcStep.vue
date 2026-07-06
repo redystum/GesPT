@@ -49,7 +49,7 @@
           <div class="relative flex-1">
             <SearchableDropdown
               v-model="selectedExistingUc"
-              :options="dbUcs"
+              :options="filteredDbUcs"
               :return-object="true"
               :display-fn="(u) => `${u.nome} (${u.sigla})`"
               :search-fn="
@@ -118,7 +118,8 @@
             type="number"
             v-model.number="newUc.ects"
             step="1"
-            min="0"
+            min="1"
+            @keypress="preventNegative"
             inputmode="numeric"
             class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
           />
@@ -131,7 +132,8 @@
             type="number"
             v-model.number="newUc.semestre"
             step="1"
-            min="0"
+            min="1"
+            @keypress="preventNegative"
             inputmode="numeric"
             class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
           />
@@ -142,7 +144,8 @@
             type="number"
             v-model.number="newUc.ano"
             step="1"
-            min="0"
+            min="1"
+            @keypress="preventNegative"
             inputmode="numeric"
             class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
           />
@@ -179,6 +182,7 @@
                       v-model.number="newUc.horas_trabalho_totais"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-12 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -190,6 +194,7 @@
                       v-model.number="newUc.t"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -201,6 +206,7 @@
                       v-model.number="newUc.tp"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -212,6 +218,7 @@
                       v-model.number="newUc.pl"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -223,6 +230,7 @@
                       v-model.number="newUc.tc"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -234,6 +242,7 @@
                       v-model.number="newUc.s"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -245,6 +254,7 @@
                       v-model.number="newUc.e"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -256,6 +266,7 @@
                       v-model.number="newUc.ot"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -267,6 +278,7 @@
                       v-model.number="newUc.o"
                       step="1"
                       min="0"
+                      @keypress="preventNegative"
                       inputmode="numeric"
                       placeholder="0"
                       class="w-full min-w-6 rounded-md border p-2 dark:text-white dark:border-neutral-700 no-spin"
@@ -317,6 +329,14 @@ const dbUcs = ref([])
 const selectedExistingUc = ref(null)
 const newUcs = ref(0)
 const loadingUcs = ref(false)
+
+const filteredDbUcs = computed(() => {
+  return dbUcs.value.filter((dbUc) => {
+    return !ucs.value.some(
+      (u) => (u.id && dbUc.id && u.id === dbUc.id) || (u.sigla && dbUc.sigla && u.sigla.toLowerCase() === dbUc.sigla.toLowerCase())
+    )
+  })
+})
 
 const newUc = ref({
   id: 0,
@@ -408,8 +428,29 @@ const addExistingUc = () => {
   }
 }
 
+const preventNegative = (e) => {
+  if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+    e.preventDefault()
+  }
+}
+
 const addNewUc = () => {
   if (newUc.value.nome && newUc.value.sigla) {
+    // Sanitize numeric inputs to ensure no negative values can be submitted
+    const fieldsMin1 = ['ects', 'semestre', 'ano']
+    fieldsMin1.forEach(field => {
+      if (newUc.value[field] !== null && newUc.value[field] !== undefined) {
+        newUc.value[field] = Math.max(1, Math.floor(Number(newUc.value[field])))
+      }
+    })
+
+    const fieldsMin0 = ['horas_trabalho_totais', 't', 'tp', 'pl', 'tc', 's', 'e', 'ot', 'o']
+    fieldsMin0.forEach(field => {
+      if (newUc.value[field] !== null && newUc.value[field] !== undefined) {
+        newUc.value[field] = Math.max(0, Math.floor(Number(newUc.value[field])))
+      }
+    })
+
     newUcs.value++
     const ucPayload = { ...newUc.value, id: -newUcs.value, isNew: true }
     if (ucPayload.horas_trabalho_totais != null && ucPayload.horas == null) {

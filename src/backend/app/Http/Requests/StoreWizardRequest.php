@@ -57,7 +57,7 @@ class StoreWizardRequest extends FormRequest
             'ucs.*.sigla' => 'required_if:ucs.*.isNew,true|string',
             'ucs.*.ects' => 'required_if:ucs.*.isNew,true|integer|min:1',
             'ucs.*.ano' => 'required_if:ucs.*.isNew,true|integer|min:1',
-            'ucs.*.semestre' => 'required_if:ucs.*.isNew,true|integer',
+            'ucs.*.semestre' => 'required_if:ucs.*.isNew,true|integer|min:1',
             'ucs.*.horas_trabalho_totais' => 'nullable|integer|min:0',
             'ucs.*.t' => 'nullable|integer|min:0',
             'ucs.*.tp' => 'nullable|integer|min:0',
