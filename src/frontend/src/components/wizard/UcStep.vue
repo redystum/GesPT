@@ -20,7 +20,7 @@
             <div class="text-xs text-neutral-600 dark:text-neutral-400">
               {{ $t('wizard.uc_step.ects') }}: {{ uc.ects }} | {{ $t('wizard.uc_step.hours') }}:
               {{ uc.horas_trabalho_totais ?? uc.horas }} | {{ $t('wizard.uc_step.semester') }}:
-              {{ uc.semestre }} | {{ $t('wizard.uc_step.year') }}: {{ uc.ano }}
+              {{ formatSemester(uc.semestre) }} | {{ $t('wizard.uc_step.year') }}: {{ uc.ano }}
             </div>
           </div>
           <button
@@ -128,15 +128,14 @@
           <label class="block text-sm font-medium mb-1"
             >{{ $t('wizard.uc_step.semester') }} *</label
           >
-          <input
-            type="number"
+          <select
             v-model.number="newUc.semestre"
-            step="1"
-            min="1"
-            @keypress="preventNegative"
-            inputmode="numeric"
-            class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
-          />
+            class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700 focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
+          >
+            <option :value="1">{{ $t('wizard.uc_step.sem_1') }}</option>
+            <option :value="2">{{ $t('wizard.uc_step.sem_2') }}</option>
+            <option :value="3">{{ $t('wizard.uc_step.sem_both') }}</option>
+          </select>
         </div>
         <div>
           <label class="block text-sm font-medium mb-1">{{ $t('wizard.uc_step.year') }} *</label>
@@ -145,6 +144,7 @@
             v-model.number="newUc.ano"
             step="1"
             min="1"
+            max="5"
             @keypress="preventNegative"
             inputmode="numeric"
             class="w-full rounded-md border p-2 bg-white dark:bg-[#1a1a1a] dark:text-white dark:border-neutral-700"
@@ -319,6 +319,16 @@
 <script setup>
 import { inject, ref, watch, onMounted, computed } from 'vue'
 import SearchableDropdown from '../SearchableDropdown.vue'
+import { useI18n } from '@/i18n'
+
+const { locale } = useI18n()
+
+const formatSemester = (sem) => {
+  if (sem === 1) return '1º'
+  if (sem === 2) return '2º'
+  if (sem === 3) return locale.value === 'pt' ? 'Ambos' : 'Both'
+  return '-'
+}
 
 const props = defineProps(['modelValue', 'courseData'])
 const emit = defineEmits(['update:modelValue'])
@@ -440,7 +450,13 @@ const addNewUc = () => {
     const fieldsMin1 = ['ects', 'semestre', 'ano']
     fieldsMin1.forEach(field => {
       if (newUc.value[field] !== null && newUc.value[field] !== undefined) {
-        newUc.value[field] = Math.max(1, Math.floor(Number(newUc.value[field])))
+        let val = Math.max(1, Math.floor(Number(newUc.value[field])))
+        if (field === 'ano') {
+          val = Math.min(5, val)
+        } else if (field === 'semestre') {
+          val = Math.min(3, val)
+        }
+        newUc.value[field] = val
       }
     })
 

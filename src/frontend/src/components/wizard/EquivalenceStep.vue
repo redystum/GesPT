@@ -51,7 +51,7 @@
                 v-model="equiv.newUcIndex"
                 :options="getAvailableNewUcs(index)"
                 value-key="origIndex"
-                :display-fn="u => `${u.nome} (${$t('wizard.equivalence_step.sem_abbr')} ${u.semestre || '-'})`"
+                :display-fn="u => `${u.nome} (${$t('wizard.equivalence_step.sem_abbr')} ${formatSemesterShort(u.semestre)})`"
                 :search-fn="(u, q) => normalizeString(u.nome?.toLowerCase() || '').includes(q)"
                 @change="onNewUcChange(index)"
                 :placeholder="$t('wizard.equivalence_step.search_new_uc_placeholder')"
@@ -115,7 +115,7 @@
                 <span>
                   {{ oldUc.nome || oldUc.uc?.nome }} ({{ oldUc.sigla || oldUc.uc?.sigla }})
                   <span class="text-xs text-neutral-500 dark:text-neutral-400 ml-1">
-                    ({{ $t('wizard.equivalence_step.sem_abbr') }} {{ oldUc.semestre || oldUc.uc?.semestre || '-' }})
+                    ({{ $t('wizard.equivalence_step.sem_abbr') }} {{ formatSemesterShort(oldUc.semestre || oldUc.uc?.semestre) }})
                   </span>
                 </span>
               </label>
@@ -187,6 +187,13 @@ const getAvailableNewUcs = (index) => {
 
 const normalizeString = (str) => {
   return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
+}
+
+const formatSemesterShort = (sem) => {
+  if (sem === 1) return '1'
+  if (sem === 2) return '2'
+  if (sem === 3) return '1&2'
+  return '-'
 }
 
 const getEquivSemester = (equiv) => {
@@ -262,6 +269,7 @@ const getFilteredOldUcs = (equiv) => {
   }
   const semester = getEquivSemester(equiv)
   if (!semester) return prevUcs.value
+  if (semester === 3) return prevUcs.value
   return prevUcsBySemester.value[semester] || prevUcs.value.filter((uc) => Number(uc.semestre) === Number(semester))
 }
 
@@ -273,6 +281,7 @@ const onNewUcChange = async (index) => {
   equiv.oldUcs = []
 
   if (!selectedPrevPlanId.value || !semester) return
+  if (semester === 3) return
   if (prevUcsBySemester.value[semester]) return
 
   const originalLoadingState = true

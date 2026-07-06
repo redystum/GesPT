@@ -172,9 +172,10 @@
                 >
                   <option :value="1">1º</option>
                   <option :value="2">2º</option>
+                  <option :value="3">Ambos</option>
                 </select>
                 <p v-else class="text-neutral-900 dark:text-neutral-100 font-medium">
-                  {{ uc.semestre ? `${uc.semestre}º` : 'N/A' }}
+                  {{ formatSemester(uc.semestre) }}
                 </p>
               </div>
 
@@ -188,7 +189,7 @@
                   type="number"
                   v-model.number="form.ano"
                   min="1"
-                  max="6"
+                  max="5"
                   @keypress="preventNegative"
                   class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 p-2.5 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
@@ -558,6 +559,13 @@ const preventNegative = (e) => {
   }
 }
 
+const formatSemester = (sem) => {
+  if (sem === 1) return '1º'
+  if (sem === 2) return '2º'
+  if (sem === 3) return locale.value === 'pt' ? 'Ambos' : 'Both'
+  return 'N/A'
+}
+
 const ucId = computed(() => route.params.id)
 
 const uc = ref(null)
@@ -708,9 +716,17 @@ const saveUc = async () => {
   const fieldsMin1 = ['ects', 'ano', 'horas']
   fieldsMin1.forEach(field => {
     if (form.value[field] !== null && form.value[field] !== undefined) {
-      form.value[field] = Math.max(1, Math.floor(Number(form.value[field])))
+      let val = Math.max(1, Math.floor(Number(form.value[field])))
+      if (field === 'ano') {
+        val = Math.min(5, val)
+      }
+      form.value[field] = val
     }
   })
+
+  if (form.value.semestre !== null && form.value.semestre !== undefined) {
+    form.value.semestre = Math.min(3, Math.max(1, Math.floor(Number(form.value.semestre))))
+  }
 
   const fieldsMin0 = ['horas_t', 'horas_tp', 'horas_pl', 'horas_tc', 'horas_s', 'horas_e', 'horas_ot', 'horas_o']
   fieldsMin0.forEach(field => {

@@ -118,7 +118,7 @@
               {{ uc.ects }}
             </td>
             <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
-              {{ uc.semestre ? `${uc.semestre}º` : 'N/A' }}
+              {{ formatSemester(uc.semestre) }}
             </td>
             <td class="px-6 py-3.5 text-center text-neutral-600 dark:text-neutral-300">
               {{ uc.horas }}h
@@ -180,6 +180,13 @@ defineEmits(['add-uc', 'edit-uc', 'delete-uc'])
 
 const { locale } = useI18n()
 const authStore = useAuthStore()
+
+const formatSemester = (sem) => {
+  if (sem === 1) return '1º'
+  if (sem === 2) return '2º'
+  if (sem === 3) return locale.value === 'pt' ? 'Ambos' : 'Both'
+  return 'N/A'
+}
 
 const searchQuery = ref('')
 const activeFilter = ref('all')

@@ -1,8 +1,17 @@
 <script setup>
 import SearchableDropdown from '@/components/SearchableDropdown.vue'
 import { useAuthStore } from '@/stores/auth'
+import { useI18n } from '@/i18n'
 
 const authStore = useAuthStore()
+const { locale } = useI18n()
+
+const formatSemester = (sem) => {
+  if (sem === 1) return '1º'
+  if (sem === 2) return '2º'
+  if (sem === 3) return locale.value === 'pt' ? 'Ambos' : 'Both'
+  return '-'
+}
 
 defineProps({
   equivalences: {},
@@ -112,7 +121,7 @@ function dividerClass(item, side, idx, listLength) {
                   {{ $t('compare.ects') }}: {{ part.data.uc.ects }}
                 </p>
                 <p class="mt-1 text-xs">
-                  {{ $t('compare.semester') }}: {{ part.data.uc.semestre }}
+                  {{ $t('compare.semester') }}: {{ formatSemester(part.data.uc.semestre) }}
                 </p>
               </div>
             </div>
@@ -179,7 +188,7 @@ function dividerClass(item, side, idx, listLength) {
                   {{ $t('compare.ects') }}: {{ part.data.uc.ects }}
                 </p>
                 <p class="mt-1 text-xs">
-                  {{ $t('compare.semester') }}: {{ part.data.uc.semestre }}
+                  {{ $t('compare.semester') }}: {{ formatSemester(part.data.uc.semestre) }}
                 </p>
               </div>
             </div>

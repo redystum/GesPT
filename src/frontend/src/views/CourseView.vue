@@ -276,8 +276,9 @@
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                   >
                     <option :value="null">N/A</option>
-                    <option :value="1">1º Semestre</option>
-                    <option :value="2">2º Semestre</option>
+                    <option :value="1">{{ $t('wizard.uc_step.sem_1') }}</option>
+                    <option :value="2">{{ $t('wizard.uc_step.sem_2') }}</option>
+                    <option :value="3">{{ $t('wizard.uc_step.sem_both') }}</option>
                   </select>
                 </div>
 
@@ -289,7 +290,7 @@
                     v-model.number="modalData.uc.ano"
                     type="number"
                     min="1"
-                    max="6"
+                    max="5"
                     required
                     @keypress="preventNegative"
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
@@ -660,9 +661,17 @@ const saveUc = async () => {
   const fieldsMin1 = ['ects', 'ano', 'horas']
   fieldsMin1.forEach(field => {
     if (modalData.uc[field] !== null && modalData.uc[field] !== undefined) {
-      modalData.uc[field] = Math.max(1, Math.floor(Number(modalData.uc[field])))
+      let val = Math.max(1, Math.floor(Number(modalData.uc[field])))
+      if (field === 'ano') {
+        val = Math.min(5, val)
+      }
+      modalData.uc[field] = val
     }
   })
+
+  if (modalData.uc.semestre !== null && modalData.uc.semestre !== undefined) {
+    modalData.uc.semestre = Math.min(3, Math.max(1, Math.floor(Number(modalData.uc.semestre))))
+  }
 
   const fieldsMin0 = ['horas_t', 'horas_tp', 'horas_pl', 'horas_tc', 'horas_s', 'horas_e', 'horas_ot', 'horas_o']
   fieldsMin0.forEach(field => {
