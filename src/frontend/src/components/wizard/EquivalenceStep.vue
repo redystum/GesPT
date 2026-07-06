@@ -49,7 +49,7 @@
             <div class="relative">
               <SearchableDropdown
                 v-model="equiv.newUcIndex"
-                :options="newPlanUcs.map((u, idx) => ({ ...u, origIndex: idx }))"
+                :options="getAvailableNewUcs(index)"
                 value-key="origIndex"
                 :display-fn="u => `${u.nome} (${$t('wizard.equivalence_step.sem_abbr')} ${u.semestre || '-'})`"
                 :search-fn="(u, q) => normalizeString(u.nome?.toLowerCase() || '').includes(q)"
@@ -65,7 +65,7 @@
               class="text-red-500 font-bold ml-2 cursor-pointer"
               :title="$t('wizard.equivalence_step.remove_equivalence')"
             >
-              <i class="fa fa-remove" />
+              <i class="fa fa-trash" />
             </button>
           </div>
         </div>
@@ -74,8 +74,18 @@
           v-if="equiv.newUcIndex !== ''"
           class="bg-neutral-50 dark:bg-neutral-900/30 rounded-md border dark:border-neutral-700 p-3"
         >
-          <div class="text-xs font-semibold mb-2 text-neutral-700 dark:text-neutral-300">
-            {{ $t('wizard.equivalence_step.old_uc_same_semester') }} ({{ getEquivSemester(equiv) || '-' }}) *
+          <div class="flex items-center justify-between mb-3">
+            <div class="text-xs font-semibold text-neutral-700 dark:text-neutral-300">
+              {{ equiv.showAllSemesters ? $t('wizard.equivalence_step.old_uc_all_semesters') : $t('wizard.equivalence_step.old_uc_same_semester') + ' (' + (getEquivSemester(equiv) || '-') + ')' }} *
+            </div>
+            <label class="flex items-center gap-1.5 text-xs text-blue-600 dark:text-blue-400 font-semibold cursor-pointer select-none">
+              <input
+                type="checkbox"
+                v-model="equiv.showAllSemesters"
+                class="cursor-pointer rounded text-blue-600 focus:ring-blue-500/20"
+              />
+              <span>{{ $t('wizard.equivalence_step.show_all_semesters') }}</span>
+            </label>
           </div>
 
           <div v-if="equiv.loading" class="text-sm text-neutral-500 dark:text-neutral-400">
@@ -102,7 +112,12 @@
                   v-model="equiv.oldUcs"
                   class="cursor-pointer"
                 />
-                <span>{{ oldUc.nome || oldUc.uc?.nome }} ({{ oldUc.sigla || oldUc.uc?.sigla }})</span>
+                <span>
+                  {{ oldUc.nome || oldUc.uc?.nome }} ({{ oldUc.sigla || oldUc.uc?.sigla }})
+                  <span class="text-xs text-neutral-500 dark:text-neutral-400 ml-1">
+                    ({{ $t('wizard.equivalence_step.sem_abbr') }} {{ oldUc.semestre || oldUc.uc?.semestre || '-' }})
+                  </span>
+                </span>
               </label>
             </div>
           </div>
@@ -160,6 +175,16 @@ const equivalences = ref([])
 
 const newPlanUcs = computed(() => props.newPlanUcs || [])
 
+const getAvailableNewUcs = (index) => {
+  const selectedIndices = equivalences.value
+    .map((eq, idx) => (idx !== index && eq.newUcIndex !== '' ? Number(eq.newUcIndex) : null))
+    .filter((val) => val !== null)
+
+  return newPlanUcs.value
+    .map((u, idx) => ({ ...u, origIndex: idx }))
+    .filter((u) => !selectedIndices.includes(u.origIndex))
+}
+
 const normalizeString = (str) => {
   return str ? str.normalize('NFD').replace(/[\u0300-\u036f]/g, "") : ''
 }
@@ -183,7 +208,8 @@ onMounted(() => {
       newUcIndex: eq.newUcIndex ?? '',
       oldUcs: Array.isArray(eq.oldUcs) ? [...eq.oldUcs] : [],
       observacoes: eq.observacoes || '',
-      loading: false
+      loading: false,
+      showAllSemesters: false
     }))
   }
 })
@@ -231,6 +257,9 @@ watch(
 )
 
 const getFilteredOldUcs = (equiv) => {
+  if (equiv.showAllSemesters) {
+    return prevUcs.value
+  }
   const semester = getEquivSemester(equiv)
   if (!semester) return prevUcs.value
   return prevUcsBySemester.value[semester] || prevUcs.value.filter((uc) => Number(uc.semestre) === Number(semester))
@@ -263,7 +292,8 @@ const addEquiv = () => {
     newUcIndex: '',
     oldUcs: [],
     observacoes: '',
-    loading: false
+    loading: false,
+    showAllSemesters: false
   })
 }
 

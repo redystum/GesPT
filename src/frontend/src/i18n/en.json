@@ -326,6 +326,8 @@
       "search_new_uc_placeholder": "Search and select new UC...",
       "remove_equivalence": "Remove equivalence",
       "old_uc_same_semester": "Old UC(s) - same semester",
+      "old_uc_all_semesters": "Old UC(s) - all semesters",
+      "show_all_semesters": "Show all semesters",
       "loading_old_ucs": "Loading old UCs...",
       "no_old_ucs_found": "No old UCs found for this semester in the selected previous plan.",
       "observations": "Observations",
