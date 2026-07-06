@@ -23,6 +23,10 @@ defineProps({
   planoFinalObj: {
     type: Object,
     default: null
+  },
+  curso: {
+    type: Object,
+    default: null
   }
 })
 function mappingCount(item, side) {
@@ -115,14 +119,14 @@ function dividerClass(item, side, idx, listLength) {
                   <span v-else>{{ part.data.opcao_escolhida.nome }}</span>
                 </span>
               </p>
-              <div class="flex flex-wrap sm:flex-nowrap">
-                <p class="mt-1 text-xs">{{ part.data.uc.sigla }}</p>
-                <p class="mt-1 mx-2 px-2 border-x border-x-neutral-600 text-xs">
+              <div class="flex flex-wrap sm:flex-nowrap gap-x-2 text-neutral-500 dark:text-neutral-400 text-xs mt-1">
+                <span>{{ part.data.uc.sigla }}</span>
+                <span class="border-l border-neutral-300 dark:border-neutral-700 pl-2">
                   {{ $t('compare.ects') }}: {{ part.data.uc.ects }}
-                </p>
-                <p class="mt-1 text-xs">
+                </span>
+                <span class="border-l border-neutral-300 dark:border-neutral-700 pl-2">
                   {{ $t('compare.semester') }}: {{ formatSemester(part.data.uc.semestre) }}
-                </p>
+                </span>
               </div>
             </div>
             <div class="hidden sm:block">
@@ -135,7 +139,7 @@ function dividerClass(item, side, idx, listLength) {
             </div>
           </div>
         </template>
-        <p v-else class="text-sm italic">{{ $t('compare.no_inicial') }}</p>
+        <p v-else class="text-sm italic text-neutral-400 dark:text-neutral-500">{{ $t('compare.no_inicial') }}</p>
       </div>
     </div>
 
@@ -143,7 +147,7 @@ function dividerClass(item, side, idx, listLength) {
       <div
         v-for="(part, idx) in item.final"
         :key="part?.data ? part.data.id : 'no-final-' + index + '-' + idx"
-        class="p-2 sm:p-5 border-neutral-300"
+        class="p-2 sm:p-5"
         :class="dividerClass(item, 'final', idx, item.final.length)"
       >
         <template v-if="part?.data">
@@ -182,14 +186,14 @@ function dividerClass(item, side, idx, listLength) {
                   <span v-else>{{ part.data.opcao_escolhida.nome }}</span>
                 </span>
               </p>
-              <div class="flex flex-wrap sm:flex-nowrap">
-                <p class="mt-1 text-xs">{{ part.data.uc.sigla }}</p>
-                <p class="mt-1 mx-2 px-2 border-x border-x-neutral-600 text-xs">
+              <div class="flex flex-wrap sm:flex-nowrap gap-x-2 text-neutral-500 dark:text-neutral-400 text-xs mt-1">
+                <span>{{ part.data.uc.sigla }}</span>
+                <span class="border-l border-neutral-300 dark:border-neutral-700 pl-2">
                   {{ $t('compare.ects') }}: {{ part.data.uc.ects }}
-                </p>
-                <p class="mt-1 text-xs">
+                </span>
+                <span class="border-l border-neutral-300 dark:border-neutral-700 pl-2">
                   {{ $t('compare.semester') }}: {{ formatSemester(part.data.uc.semestre) }}
-                </p>
+                </span>
               </div>
             </div>
             <div class="hidden sm:block">
@@ -202,7 +206,7 @@ function dividerClass(item, side, idx, listLength) {
             </div>
           </div>
         </template>
-        <p v-else-if="plano_final" class="text-sm italic text-[#b91c1c] dark:text-[#fca5a5]">
+        <p v-else-if="plano_final" class="text-sm italic text-red-500 dark:text-red-400">
           {{ $t('compare.no_final') }}
         </p>
       </div>

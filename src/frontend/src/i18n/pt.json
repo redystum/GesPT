@@ -224,7 +224,9 @@
     "semester": "Semestre",
     "empty_hint": "Não foram encontradas equivalências para a combinação selecionada.",
     "select_prompt_title": "Selecione um curso e planos para comparar",
-    "select_prompt_subtitle": "Escolha o curso e os planos curriculares para ver a análise detalhada."
+    "select_prompt_subtitle": "Escolha o curso e os planos curriculares para ver a análise detalhada.",
+    "export_excel": "Exportar para Excel",
+    "export_pdf": "Exportar para PDF"
   },
   "wizard": {
     "kicker": "Configuração Guiada",

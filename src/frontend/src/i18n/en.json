@@ -224,7 +224,9 @@
     "empty_hint": "No equivalences were found for the selected combination.",
     "select_prompt_title": "Select a course and plans to compare",
     "select_prompt_subtitle": "Choose the course and curriculum plans to open detailed analysis.",
-    "semester": "Semester"
+    "semester": "Semester",
+    "export_excel": "Export to Excel",
+    "export_pdf": "Export to PDF"
   },
   "wizard": {
     "kicker": "Guided Setup",

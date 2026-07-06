@@ -29,6 +29,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/me/preferences', [MeController::class, 'updatePreferences']);
 
     Route::get('/compare', [EquivalencesController::class, 'compare']);
+    Route::get('/compare/export', [EquivalencesController::class, 'export']);
 
 // Routes for courses
     Route::get('/cursos/{curso}/latest-plan', [CourseController::class, 'getLatestPlan']);

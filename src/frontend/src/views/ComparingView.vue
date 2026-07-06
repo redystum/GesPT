@@ -95,36 +95,61 @@
       class="rounded-md border-2 border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a]"
     >
       <div
-        class="rounded-t-md border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 grid grid-cols-1 p-4 sm:grid-cols-2 sm:gap-4"
+        class="rounded-t-md border-b-2 border-neutral-300 dark:border-neutral-700 bg-neutral-100 dark:bg-neutral-800 p-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between"
       >
-        <div class="space-y-1">
-          <label
-            class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
-            >{{ $t('compare.initial_plan') }}</label
-          >
-          <SearchableDropdown
-            v-model="plano_inicial"
-            :options="planos_disponiveis"
-            :displayFn="displayPlan"
-            valueKey="id"
-            :placeholder="$t('compare.initial_plan')"
-            inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
-          />
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 flex-1">
+          <div class="space-y-1">
+            <label
+              class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+              >{{ $t('compare.initial_plan') }}</label
+            >
+            <SearchableDropdown
+              v-model="plano_inicial"
+              :options="planos_disponiveis"
+              :displayFn="displayPlan"
+              valueKey="id"
+              :placeholder="$t('compare.initial_plan')"
+              inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
+            />
+          </div>
+
+          <div class="space-y-1">
+            <label
+              class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+              >{{ $t('compare.target_plan') }}</label
+            >
+            <SearchableDropdown
+              v-model="plano_final"
+              :options="planosFinalDisponiveis"
+              :displayFn="displayPlan"
+              valueKey="id"
+              :placeholder="$t('compare.target_plan')"
+              inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
+            />
+          </div>
         </div>
 
-        <div class="space-y-1">
-          <label
-            class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
-            >{{ $t('compare.target_plan') }}</label
+        <!-- Export Actions Bar -->
+        <div v-if="plano_inicial && equivalences.length > 0" class="flex flex-wrap items-center gap-2 lg:ml-4">
+          <!-- Excel Export Button -->
+          <button
+            @click="exportData('xlsx')"
+            :disabled="isExporting"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-50 shadow-sm"
           >
-          <SearchableDropdown
-            v-model="plano_final"
-            :options="planosFinalDisponiveis"
-            :displayFn="displayPlan"
-            valueKey="id"
-            :placeholder="$t('compare.target_plan')"
-            inputClass="!py-2.5 text-neutral-900 dark:text-neutral-100 border-neutral-200 dark:border-neutral-700"
-          />
+            <font-awesome-icon :icon="['fas', 'file-excel']" class="text-emerald-600 dark:text-emerald-400" />
+            <span>{{ $t('compare.export_excel') }}</span>
+          </button>
+          
+          <!-- PDF Export Button -->
+          <button
+            @click="exportData('pdf')"
+            :disabled="isExporting"
+            class="flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-semibold border border-neutral-300 dark:border-neutral-700 bg-white dark:bg-[#1a1a1a] text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800 transition-colors cursor-pointer disabled:opacity-50 shadow-sm"
+          >
+            <font-awesome-icon :icon="['fas', 'file-pdf']" class="text-rose-600 dark:text-rose-400" />
+            <span>{{ $t('compare.export_pdf') }}</span>
+          </button>
         </div>
       </div>
 
@@ -143,6 +168,7 @@
         :plano-inicial="planoInicialObj"
         :plano-final-obj="planoFinalObj"
         :plano_final="plano_final"
+        :curso="selectedCurso"
       />
     </section>
 
@@ -221,6 +247,52 @@ const planoFinalObj = computed(() => {
 const planosFinalDisponiveis = computed(() => {
   return planos_disponiveis.value.filter((p) => p.id !== plano_inicial.value)
 })
+
+const selectedCurso = computed(() => {
+  return cursos.value.find((c) => c.id === curso_id.value) || null
+})
+
+const isExporting = ref(false)
+
+async function exportData(format) {
+  if (isExporting.value) return
+  isExporting.value = true
+  try {
+    const params = {
+      plano_inicial: plano_inicial.value,
+      format
+    }
+    if (plano_final.value) {
+      params.plano_final = plano_final.value
+    }
+
+    const response = await api.get('/compare/export', {
+      params,
+      responseType: 'blob'
+    })
+
+    const blob = new Blob([response.data], {
+      type: format === 'pdf'
+        ? 'application/pdf'
+        : 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    })
+
+    const link = document.createElement('a')
+    link.href = window.URL.createObjectURL(blob)
+
+    const courseSigla = selectedCurso.value?.sigla || 'curso'
+    const planInitialYear = planoInicialObj.value?.ano.replace('/', '_') || 'inicial'
+    const planFinalYear = planoFinalObj.value ? `_to_${planoFinalObj.value.ano.replace('/', '_')}` : ''
+
+    link.download = `comparacao_${courseSigla}_${planInitialYear}${planFinalYear}.${format === 'pdf' ? 'pdf' : 'xlsx'}`
+    link.click()
+    window.URL.revokeObjectURL(link.href)
+  } catch (error) {
+    console.error('Export failed:', error)
+  } finally {
+    isExporting.value = false
+  }
+}
 
 async function fetchCursos() {
   try {

@@ -11,28 +11,35 @@ use Illuminate\Http\Request;
 
 class EquivalencesController extends Controller
 {
-    // http://localhost:8000/api/home?estudante_id=1&plano_inicial=1&plano_final=2
-    public function compare(Request $request)
+    private function getComparisonData(Request $request)
     {
         $request->validate([
-//            'estudante_id' => 'required|integer|exists:estudantes,id',
             'plano_inicial' => 'required|integer|exists:plano_estudos,id',
             'plano_final' => 'nullable|integer|exists:plano_estudos,id',
-            'dd' => 'nullable|bool'
+            'estudante_id' => 'nullable|integer',
         ]);
 
         $planoInicial = PlanoEstudo::where('id', $request->plano_inicial)
-            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida'])
+            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida', 'curso'])
             ->first();
-        $planoFinal = PlanoEstudo::where('id', $request->plano_final)
-            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida'])
-            ->first();
-
-        if (!$request->estudante_id){
-            $request->estudante_id = 1;
+        if ($planoInicial) {
+            $planoInicial->ects_sum = $planoInicial->planoUcs->sum(function ($pu) {
+                return $pu->uc ? $pu->uc->ects : 0;
+            });
         }
 
-        $opInicial = OpcoesEstudante::where('id_estudante', $request->estudante_id)
+        $planoFinal = PlanoEstudo::where('id', $request->plano_final)
+            ->with(['planoUcs', 'planoUcs.uc', 'planoUcs.opcoes.ucEscolhida', 'curso'])
+            ->first();
+        if ($planoFinal) {
+            $planoFinal->ects_sum = $planoFinal->planoUcs->sum(function ($pu) {
+                return $pu->uc ? $pu->uc->ects : 0;
+            });
+        }
+
+        $estudanteId = $request->estudante_id ?? 1;
+
+        $opInicial = OpcoesEstudante::where('id_estudante', $estudanteId)
             ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
             ->join('plano_ucs', 'opcoes.id_uc_opcional', '=', 'plano_ucs.id')
             ->where('plano_ucs.id_plano', $planoInicial->id)
@@ -64,32 +71,22 @@ class EquivalencesController extends Controller
                 ];
             }
 
-            if ($request->dd)
-                dd($eqs);
-
-            return response()->json([
-                'plans' => [
-                    'initial' => $planoInicial,
-                    'final' => null,
-                ],
+            return [
+                'planoInicial' => $planoInicial,
+                'planoFinal' => null,
+                'curso' => $planoInicial->curso,
                 'data' => $eqs
-            ]);
+            ];
         }
 
-        $opFinal = OpcoesEstudante::where('id_estudante', $request->estudante_id)
+        $opFinal = OpcoesEstudante::where('id_estudante', $estudanteId)
             ->join('opcoes', 'opcoes_estudante.id_opcao', '=', 'opcoes.id')
             ->join('plano_ucs', 'opcoes.id_uc_opcional', '=', 'plano_ucs.id')
             ->where('plano_ucs.id_plano', $planoFinal->id)
             ->with(['opcao', 'opcao.ucEscolhida'])
             ->get();
 
-        $rules_in_plano = EquivalenciaRule::where('id_plano', $planoFinal->id)
-            ->with(['equivalencias.plano_uc.uc', 'equivalencias.plano_uc.opcoes.ucEscolhida'])
-            ->get();
-
-        $equivalences = [];
-        $uc_w_eq = [];
-        $planoFinal->planoUcs->each(function ($planoUc) use ($rules_in_plano, &$equivalences, $planoInicial, &$uc_w_eq, $opFinal) {
+        $planoFinal->planoUcs->each(function ($planoUc) use ($opFinal) {
             $op = $opFinal
                 ->pluck('opcao')
                 ->filter()
@@ -101,8 +98,16 @@ class EquivalencesController extends Controller
             } else {
                 $planoUc->opcao_escolhida = null;
             }
+        });
 
+        $rules_in_plano = EquivalenciaRule::where('id_plano', $planoFinal->id)
+            ->with(['equivalencias.plano_uc.uc', 'equivalencias.plano_uc.opcoes.ucEscolhida'])
+            ->get();
 
+        $equivalences = [];
+        $uc_w_eq = [];
+        
+        $planoFinal->planoUcs->each(function ($planoUc) use ($rules_in_plano, &$equivalences, $planoInicial, &$uc_w_eq) {
             /** @var PlanoUc $direct_eq */
             $direct_eq = $planoInicial->planoUcs->where('id_uc', $planoUc->id_uc)->first();
             $eq = $rules_in_plano->map(function ($rule) use ($planoUc) {
@@ -188,7 +193,6 @@ class EquivalencesController extends Controller
             ];
         });
 
-        // just to normalize this because it does not take that much time and it's much simpler
         $eqs = [];
         foreach ($equivalences as $e) {
             $eqs[] = [
@@ -196,17 +200,87 @@ class EquivalencesController extends Controller
                 'final' => $e['final'] && count($e['final']) > 0 ? $e['final'] : null,
             ];
         }
-        unset($equivalences);
 
-        if ($request->dd)
-            dd($eqs);
+        return [
+            'planoInicial' => $planoInicial,
+            'planoFinal' => $planoFinal,
+            'curso' => $planoInicial->curso,
+            'data' => $eqs
+        ];
+    }
+
+    public function compare(Request $request)
+    {
+        $comp = $this->getComparisonData($request);
+        
+        if ($request->dd) {
+            dd($comp['data']);
+        }
 
         return response()->json([
             'plans' => [
-                'initial' => PlanoEstudo::find($request->plano_inicial),
-                'final' => PlanoEstudo::find($request->plano_final),
+                'initial' => $comp['planoInicial'],
+                'final' => $comp['planoFinal'],
             ],
-            'data' => $eqs
+            'data' => $comp['data']
         ]);
+    }
+
+    public function export(Request $request)
+    {
+        $request->validate([
+            'format' => 'required|string|in:pdf,xlsx',
+        ]);
+
+        $comp = $this->getComparisonData($request);
+
+        $isEnglish = str_contains(strtolower($request->header('Accept-Language', 'pt')), 'en');
+
+        if ($request->format === 'pdf') {
+            $options = new \Dompdf\Options();
+            $options->set('isHtml5ParserEnabled', true);
+            $options->set('isRemoteEnabled', true);
+
+            $dompdf = new \Dompdf\Dompdf($options);
+            $html = view('exports.compare_pdf', [
+                'planoInicial' => $comp['planoInicial'],
+                'planoFinal' => $comp['planoFinal'],
+                'curso' => $comp['curso'],
+                'data' => $comp['data'],
+                'isEnglish' => $isEnglish
+            ])->render();
+
+            $dompdf->loadHtml($html);
+            $dompdf->setPaper('A4', 'landscape');
+            $dompdf->render();
+
+            $filename = 'comparacao_' . $comp['curso']->sigla . '_' . str_replace('/', '_', $comp['planoInicial']->ano);
+            if ($comp['planoFinal']) {
+                $filename .= '_to_' . str_replace('/', '_', $comp['planoFinal']->ano);
+            }
+            $filename .= '.pdf';
+
+            return response($dompdf->output(), 200, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ]);
+        }
+
+        // Excel format
+        $export = new \App\Exports\ComparisonExport(
+            $comp['data'],
+            $comp['curso'],
+            $comp['planoInicial'],
+            $comp['planoFinal'],
+            $isEnglish
+        );
+
+        $filename = 'comparacao_' . $comp['curso']->sigla . '_' . str_replace('/', '_', $comp['planoInicial']->ano);
+        if ($comp['planoFinal']) {
+            $filename .= '_to_' . str_replace('/', '_', $comp['planoFinal']->ano);
+        }
+        $filename .= '.xlsx';
+
+        return \Maatwebsite\Excel\Facades\Excel::download($export, $filename);
     }
 }
