@@ -96,6 +96,7 @@
           :ucs="ucs"
           :loading="loading.ucs"
           @add-uc="openAddUcModal"
+          @edit-uc="openEditUcModal"
           @delete-uc="openDeleteUcModal"
         />
       </div>
@@ -258,6 +259,7 @@
                     type="number"
                     required
                     min="1"
+                    @keypress="preventNegative"
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                   />
                 </div>
@@ -289,6 +291,7 @@
                     min="1"
                     max="6"
                     required
+                    @keypress="preventNegative"
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                     placeholder="e.g. 1"
                   />
@@ -303,6 +306,7 @@
                     type="number"
                     required
                     min="1"
+                    @keypress="preventNegative"
                     class="w-full rounded-md border border-neutral-200 dark:border-neutral-700 px-3 py-2 text-sm bg-white dark:bg-neutral-900 text-neutral-900 dark:text-neutral-100 outline-hidden focus:border-neutral-500 focus:ring-2 focus:ring-neutral-500/20"
                   />
                 </div>
@@ -322,35 +326,35 @@
                 <div v-show="showWorkloadDetails" class="p-4 bg-white dark:bg-neutral-900 border-t border-neutral-100 dark:border-neutral-800 grid grid-cols-4 gap-3">
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">T</label>
-                    <input v-model.number="modalData.uc.horas_t" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_t" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">TP</label>
-                    <input v-model.number="modalData.uc.horas_tp" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_tp" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">PL</label>
-                    <input v-model.number="modalData.uc.horas_pl" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_pl" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">TC</label>
-                    <input v-model.number="modalData.uc.horas_tc" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_tc" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">S</label>
-                    <input v-model.number="modalData.uc.horas_s" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_s" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">E</label>
-                    <input v-model.number="modalData.uc.horas_e" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_e" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">OT</label>
-                    <input v-model.number="modalData.uc.horas_ot" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_ot" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                   <div>
                     <label class="block text-[11px] font-semibold text-neutral-500 dark:text-neutral-400 mb-0.5">O</label>
-                    <input v-model.number="modalData.uc.horas_o" type="number" min="0" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
+                    <input v-model.number="modalData.uc.horas_o" type="number" min="0" @keypress="preventNegative" class="w-full rounded border border-neutral-200 dark:border-neutral-700 p-1.5 text-xs bg-white dark:bg-neutral-900 dark:text-white" />
                   </div>
                 </div>
               </div>
@@ -445,6 +449,12 @@ const course = ref({})
 const ucs = ref([])
 const planos = ref([])
 const showWorkloadDetails = ref(false)
+
+const preventNegative = (e) => {
+  if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+    e.preventDefault()
+  }
+}
 
 const loading = reactive({
   course: true,
@@ -609,9 +619,57 @@ const openAddUcModal = () => {
   modals.uc = true
 }
 
+const openEditUcModal = (uc) => {
+  isEditing.value = true
+  modalError.value = null
+  showWorkloadDetails.value =
+    uc.horas_t != null ||
+    uc.horas_tp != null ||
+    uc.horas_pl != null ||
+    uc.horas_tc != null ||
+    uc.horas_s != null ||
+    uc.horas_e != null ||
+    uc.horas_ot != null ||
+    uc.horas_o != null
+  modalData.uc = {
+    id: uc.id,
+    nome: uc.nome,
+    name: uc.name || '',
+    sigla: uc.sigla,
+    ects: uc.ects,
+    horas: uc.horas,
+    semestre: uc.semestre,
+    ano: uc.ano,
+    horas_t: uc.horas_t,
+    horas_tp: uc.horas_tp,
+    horas_pl: uc.horas_pl,
+    horas_tc: uc.horas_tc,
+    horas_s: uc.horas_s,
+    horas_e: uc.horas_e,
+    horas_ot: uc.horas_ot,
+    horas_o: uc.horas_o
+  }
+  modals.uc = true
+}
+
 const saveUc = async () => {
   saving.value = true
   modalError.value = null
+
+  // Sanitize numeric inputs to ensure no negative values can be submitted
+  const fieldsMin1 = ['ects', 'ano', 'horas']
+  fieldsMin1.forEach(field => {
+    if (modalData.uc[field] !== null && modalData.uc[field] !== undefined) {
+      modalData.uc[field] = Math.max(1, Math.floor(Number(modalData.uc[field])))
+    }
+  })
+
+  const fieldsMin0 = ['horas_t', 'horas_tp', 'horas_pl', 'horas_tc', 'horas_s', 'horas_e', 'horas_ot', 'horas_o']
+  fieldsMin0.forEach(field => {
+    if (modalData.uc[field] !== null && modalData.uc[field] !== undefined) {
+      modalData.uc[field] = Math.max(0, Math.floor(Number(modalData.uc[field])))
+    }
+  })
   
   // Build payload and clean empty strings or nulls to match rules
   const payload = {

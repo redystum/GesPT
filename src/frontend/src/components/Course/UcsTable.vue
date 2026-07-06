@@ -135,14 +135,14 @@
                   <font-awesome-icon :icon="['fas', 'scroll']" class="w-3.5 h-3.5" />
                 </router-link>
 
-                <router-link
+                <button
                   v-if="authStore.hasPermission('ucs.update')"
-                  :to="{ name: 'uc-detail', params: { id: uc.id } }"
+                  @click="$emit('edit-uc', uc)"
                   class="p-1.5 rounded-md text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 hover:bg-neutral-100 dark:hover:bg-neutral-800 cursor-pointer"
                   :title="$t('course_detail.edit_uc')"
                 >
                   <font-awesome-icon :icon="['fas', 'pencil']" class="w-3.5 h-3.5" />
-                </router-link>
+                </button>
                 <button
                   v-if="authStore.hasPermission('ucs.delete')"
                   @click="$emit('delete-uc', uc)"
@@ -176,7 +176,7 @@ const props = defineProps({
   }
 })
 
-defineEmits(['add-uc', 'delete-uc'])
+defineEmits(['add-uc', 'edit-uc', 'delete-uc'])
 
 const { locale } = useI18n()
 const authStore = useAuthStore()

@@ -152,6 +152,7 @@
                   type="number"
                   v-model.number="form.ects"
                   min="1"
+                  @keypress="preventNegative"
                   class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 p-2.5 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <p v-else class="text-neutral-900 dark:text-neutral-100 font-medium">
@@ -188,6 +189,7 @@
                   v-model.number="form.ano"
                   min="1"
                   max="6"
+                  @keypress="preventNegative"
                   class="w-full rounded-lg border border-neutral-300 dark:border-neutral-700 p-2.5 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <p v-else class="text-neutral-900 dark:text-neutral-100 font-medium">
@@ -211,6 +213,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas"
+                  min="1"
+                  @keypress="preventNegative"
                   class="w-full text-center font-bold text-lg rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white block"
                 />
                 <span v-else class="text-2xl font-black text-neutral-800 dark:text-neutral-100 block">{{ uc.horas ?? 0 }}h</span>
@@ -223,6 +227,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_t"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_t ?? 0 }}h</span>
@@ -235,6 +241,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_tp"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_tp ?? 0 }}h</span>
@@ -247,6 +255,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_pl"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_pl ?? 0 }}h</span>
@@ -259,6 +269,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_tc"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_tc ?? 0 }}h</span>
@@ -271,6 +283,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_s"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_s ?? 0 }}h</span>
@@ -283,6 +297,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_e"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_e ?? 0 }}h</span>
@@ -295,6 +311,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_ot"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_ot ?? 0 }}h</span>
@@ -307,6 +325,8 @@
                   v-if="editMode"
                   type="number"
                   v-model.number="form.horas_o"
+                  min="0"
+                  @keypress="preventNegative"
                   class="w-full text-center font-medium rounded-lg border border-neutral-300 dark:border-neutral-700 p-1 bg-white dark:bg-[#1a1a1a] dark:text-white"
                 />
                 <span v-else class="font-bold text-neutral-700 dark:text-neutral-300">{{ uc.horas_o ?? 0 }}h</span>
@@ -532,6 +552,12 @@ const authStore = useAuthStore()
 const { locale } = useI18n()
 const api = inject('api')
 
+const preventNegative = (e) => {
+  if (e.key === '-' || e.key === 'e' || e.key === 'E') {
+    e.preventDefault()
+  }
+}
+
 const ucId = computed(() => route.params.id)
 
 const uc = ref(null)
@@ -677,6 +703,22 @@ const removeOption = (id) => {
 const saveUc = async () => {
   saving.value = true
   saveError.value = null
+
+  // Sanitize numeric inputs to ensure no negative values can be submitted
+  const fieldsMin1 = ['ects', 'ano', 'horas']
+  fieldsMin1.forEach(field => {
+    if (form.value[field] !== null && form.value[field] !== undefined) {
+      form.value[field] = Math.max(1, Math.floor(Number(form.value[field])))
+    }
+  })
+
+  const fieldsMin0 = ['horas_t', 'horas_tp', 'horas_pl', 'horas_tc', 'horas_s', 'horas_e', 'horas_ot', 'horas_o']
+  fieldsMin0.forEach(field => {
+    if (form.value[field] !== null && form.value[field] !== undefined) {
+      form.value[field] = Math.max(0, Math.floor(Number(form.value[field])))
+    }
+  })
+
   try {
     // If hasOptions is false, options array should be empty
     const optionsPayload = hasOptions.value ? options.value.map(op => op.id) : []
