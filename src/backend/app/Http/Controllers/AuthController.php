@@ -198,9 +198,26 @@ class AuthController extends Controller
 
             $user = User::where('email', $request->email)->first();
 
+            $debug = [
+                'step1_validation' => 'passed',
+                'requested_email' => $request->email,
+                'user_found' => $user ? true : false,
+            ];
+
+            if ($user) {
+                $debug['user_details'] = [
+                    'id' => $user->id,
+                    'email' => $user->email,
+                    'type' => $user->type,
+                    'is_local' => $user->type === User::USER_TYPE_LOCAL,
+                    'recovery_email' => $user->recovery_email,
+                ];
+            }
+
             // Check if user exists and is local
             if ($user && $user->type === User::USER_TYPE_LOCAL) {
                 $recipient = $user->recovery_email ?: $user->email;
+                $debug['recipient'] = $recipient;
 
                 if ($recipient) {
                     // Generate a token
@@ -214,13 +231,28 @@ class AuthController extends Controller
                         ]
                     );
 
+                    $debug['token_generated'] = true;
+
+                    // Log mail config
+                    $debug['mail_config'] = [
+                        'default_driver' => config('mail.default'),
+                        'mailers' => config('mail.mailers.' . config('mail.default')),
+                    ];
+
+                    $debug['sending_email'] = true;
                     Mail::to($recipient)->send(new ResetPasswordMail($user, $token));
+                    $debug['email_sent'] = true;
+                } else {
+                    $debug['recipient_empty'] = true;
                 }
+            } else {
+                $debug['skipped_sending_reason'] = !$user ? 'user_not_found' : 'user_not_local_type';
             }
 
             // Return a generic response for security to avoid email enumeration
             return response()->json([
                 'message' => __('messages.password_recovery_sent'),
+                'debug_info' => $debug,
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
