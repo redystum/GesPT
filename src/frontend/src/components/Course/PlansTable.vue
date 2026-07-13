@@ -56,7 +56,6 @@
       <table class="w-full text-sm border-collapse text-left">
         <thead>
           <tr class="bg-neutral-50 dark:bg-neutral-800/40 text-neutral-500 dark:text-neutral-400 text-xs font-semibold border-b border-neutral-100 dark:border-neutral-800">
-            <th class="px-6 py-4">ID</th>
             <th class="px-6 py-4">{{ $t('wizard.plan_step.academic_year') }}</th>
             <th class="px-6 py-4 text-center">{{ $t('course_detail.ects') }}</th>
             <th class="px-6 py-4 text-center">{{ $t('course_detail.ucs') }}</th>
@@ -69,9 +68,6 @@
             :key="plan.id"
             class="hover:bg-neutral-50/50 dark:hover:bg-neutral-800/20 transition-colors"
           >
-            <td class="px-6 py-3.5 font-medium text-neutral-400">
-              #{{ plan.id }}
-            </td>
             <td class="px-6 py-3.5 font-semibold text-neutral-900 dark:text-neutral-100">
               {{ plan.ano }}
             </td>
