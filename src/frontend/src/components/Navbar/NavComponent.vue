@@ -42,6 +42,36 @@
                 class="text-sm"
               />
             </button>
+
+            <div v-if="authStore.isLoggedIn" class="relative ml-1" ref="mobileDropdownRef">
+              <div
+                @click="toggleMobileDropdown"
+                class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-[color:var(--border)] bg-[color:var(--surface-soft)] text-xs font-semibold text-[color:var(--muted)] cursor-pointer"
+              >
+                {{ authStore.initials || 'U' }}
+              </div>
+
+              <!-- Dropdown for logout -->
+              <div
+                v-show="isMobileDropdownOpen"
+                class="absolute right-0 top-full mt-1 w-32 rounded-md bg-white dark:bg-neutral-900 shadow-lg border border-neutral-200 dark:border-neutral-800 z-50"
+              >
+                <button
+                  @click="logout"
+                  class="cursor-pointer w-full text-left px-4 py-2 text-sm text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-md"
+                >
+                  Logout
+                </button>
+              </div>
+            </div>
+
+            <router-link
+              v-else
+              to="/login"
+              class="cursor-pointer ml-1 inline-flex h-9 items-center justify-center rounded-md bg-neutral-900 px-4 text-sm font-medium text-white shadow-sm transition-colors hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100"
+            >
+              {{ $t('nav.login') }}
+            </router-link>
           </div>
         </div>
 
@@ -132,14 +162,23 @@ const authStore = useAuthStore()
 
 const isDropdownOpen = ref(false)
 const dropdownRef = ref(null)
+const isMobileDropdownOpen = ref(false)
+const mobileDropdownRef = ref(null)
 
 const toggleDropdown = () => {
   isDropdownOpen.value = !isDropdownOpen.value
 }
 
+const toggleMobileDropdown = () => {
+  isMobileDropdownOpen.value = !isMobileDropdownOpen.value
+}
+
 const closeDropdown = (event) => {
   if (dropdownRef.value && !dropdownRef.value.contains(event.target)) {
     isDropdownOpen.value = false
+  }
+  if (mobileDropdownRef.value && !mobileDropdownRef.value.contains(event.target)) {
+    isMobileDropdownOpen.value = false
   }
 }
 
@@ -182,6 +221,7 @@ const toggleLanguage = () => {
 const logout = () => {
   authStore.logout()
   isDropdownOpen.value = false
+  isMobileDropdownOpen.value = false
   router.push('/login')
 }
 </script>
