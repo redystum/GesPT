@@ -55,38 +55,44 @@
       </section>
     </div>
 
-    <div class="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
+    <div class="mb-6 grid grid-cols-3 gap-2 sm:gap-4">
       <article
-        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5"
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-2.5 sm:p-5 flex flex-col justify-between"
       >
         <p
-          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+          class="text-[0.58rem] sm:text-xs font-semibold uppercase tracking-wider sm:tracking-[0.14em] text-neutral-500 dark:text-neutral-400 leading-tight"
         >
           {{ $t('compare.no_antecedente') }}
         </p>
-        <p class="mt-2 text-3xl font-bold">{{ statsNoAntecedente }}</p>
+        <p class="mt-1.5 sm:mt-2 text-xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+          {{ statsNoAntecedente }}
+        </p>
       </article>
 
       <article
-        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5"
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-2.5 sm:p-5 flex flex-col justify-between"
       >
         <p
-          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+          class="text-[0.58rem] sm:text-xs font-semibold uppercase tracking-wider sm:tracking-[0.14em] text-neutral-500 dark:text-neutral-400 leading-tight"
         >
           {{ $t('compare.descontinuadas') }}
         </p>
-        <p class="mt-2 text-3xl font-bold">{{ statsDescontinuadas }}</p>
+        <p class="mt-1.5 sm:mt-2 text-xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+          {{ statsDescontinuadas }}
+        </p>
       </article>
 
       <article
-        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-5"
+        class="rounded-lg border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150 p-2.5 sm:p-5 flex flex-col justify-between"
       >
         <p
-          class="text-[0.68rem] sm:text-xs font-semibold uppercase tracking-[0.14em] text-neutral-500 dark:text-neutral-400"
+          class="text-[0.58rem] sm:text-xs font-semibold uppercase tracking-wider sm:tracking-[0.14em] text-neutral-500 dark:text-neutral-400 leading-tight"
         >
           {{ $t('compare.equivalences') }}
         </p>
-        <p class="mt-2 text-3xl font-bold">{{ statsEquivalences }}</p>
+        <p class="mt-1.5 sm:mt-2 text-xl sm:text-3xl font-bold text-neutral-900 dark:text-neutral-100">
+          {{ statsEquivalences }}
+        </p>
       </article>
     </div>
 
