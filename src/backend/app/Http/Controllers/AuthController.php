@@ -252,18 +252,18 @@ class AuthController extends Controller
             // Return a generic response for security to avoid email enumeration
             return response()->json([
                 'message' => __('messages.password_recovery_sent'),
-                'debug_info' => $debug,
+                //'debug_info' => $debug,
             ], 200);
         } catch (\Illuminate\Validation\ValidationException $e) {
             throw $e;
         } catch (\Throwable $e) {
             return response()->json([
                 'error' => true,
-                'message' => $e->getMessage(),
-                'exception' => get_class($e),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => explode("\n", $e->getTraceAsString()),
+//                'message' => $e->getMessage(),
+//                'exception' => get_class($e),
+//                'file' => $e->getFile(),
+//                'line' => $e->getLine(),
+//                'trace' => explode("\n", $e->getTraceAsString()),
             ], 500);
         }
     }

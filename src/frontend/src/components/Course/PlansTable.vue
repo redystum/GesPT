@@ -7,11 +7,8 @@
     >
       <div>
         <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-          {{ $t('course_detail.plans_table_title') }}
+          {{ planos.length }} {{ $t('course_detail.plans_table_title') }}
         </h2>
-        <p class="text-xs text-neutral-400 mt-0.5">
-          {{ planos.length }} {{ $t('course_detail.plans_table_title').toLowerCase() }}
-        </p>
       </div>
       <router-link v-if="authStore.hasPermission('planos_estudo.create')" :to="{ name: 'wizard'}"
         class="inline-flex items-center justify-center gap-1.5 rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all bg-neutral-900 dark:bg-neutral-100 text-white dark:text-neutral-950 hover:bg-neutral-800 dark:hover:bg-neutral-200 cursor-pointer"

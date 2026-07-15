@@ -7,16 +7,8 @@
     >
       <div>
         <h2 class="text-lg font-bold text-neutral-900 dark:text-neutral-100">
-          {{ $t('course_detail.ucs_table_title') }}
+          {{ ucs.length }} {{ $t('course_detail.ucs_table_title') }}
         </h2>
-        <p class="text-xs text-neutral-400 mt-0.5">
-          <span v-if="filteredUcs.length !== ucs.length">
-            {{ $t('course_detail.showing_filtered_ucs', { count: filteredUcs.length, total: ucs.length }) }}
-          </span>
-          <span v-else>
-            {{ ucs.length }} {{ $t('course_detail.ucs_table_title').toLowerCase() }}
-          </span>
-        </p>
       </div>
       <button
         v-if="authStore.hasPermission('ucs.create')"
