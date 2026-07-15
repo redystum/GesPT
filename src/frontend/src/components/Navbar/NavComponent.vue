@@ -6,10 +6,7 @@
       <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
         <div class="flex items-center justify-between gap-4">
           <router-link to="/" class="flex items-center gap-3">
-            <span
-              class="inline-flex h-10 w-10 items-center justify-center rounded-lg text-sm font-bold bg-neutral-100 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 text-neutral-900 dark:text-neutral-100"
-              >GP</span
-            >
+            <img src="/logo_gespt.png" alt="Logo" width="30"/>
             <div class="leading-tight">
               <p class="text-sm sm:text-base font-semibold text-neutral-900 dark:text-neutral-100">
                 {{ $t('brand.name') }}
