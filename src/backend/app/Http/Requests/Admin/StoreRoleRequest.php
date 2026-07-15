@@ -23,8 +23,7 @@ class StoreRoleRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'nome' => ['required', 'string', 'max:255',
-                Rule::unique('roles', 'nome')->ignore($this->route('role'))],
+            'nome' => ['required', 'string', 'max:255'],
             'descricao' => 'required|string|max:255',
             'permissoes' => 'required|array',
             'permissoes.*' => 'integer|exists:permissoes,id',
