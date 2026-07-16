@@ -205,6 +205,7 @@ const navLinks = computed(() => {
     if (hasAdminAccess) {
       links.push({ name: t('nav.admin'), path: '/admin' })
     }
+    links.push({ name: t('nav.manual'), path: '/manual' })
   }
 
   return links

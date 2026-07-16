@@ -13,7 +13,8 @@
     "logout": "Logout",
     "theme_light": "Switch to light mode",
     "theme_dark": "Switch to dark mode",
-    "language_toggle": "Switch language"
+    "language_toggle": "Switch language",
+    "manual": "User Manual"
   },
   "footer": {
     "description": "Institutional platform for academic study plans management and curriculum equivalence analysis.",
@@ -201,7 +202,7 @@
     "block": "Block",
     "block_user_title": "Block User",
     "unblock_user_title": "Unblock User",
-    "block_reason_label": "Reason (optional)",
+    "block_reason_label": "Reason",
     "block_reason_placeholder": "Add a reason for blocking",
     "block_reason_title": "Block reason",
     "block_reason_empty": "No reason provided.",
@@ -243,9 +244,9 @@
     "plan_name_placeholder": "Computer Science - 2026 Revision",
     "effective_date": "Effective date",
     "expiration_date": "Expiration date",
-    "institutional_code": "Institutional code (optional)",
+    "institutional_code": "Institutional code",
     "code_placeholder": "CS-2026-REV-A",
-    "description": "Description (optional)",
+    "description": "Description",
     "description_placeholder": "Technical summary for academic context and institutional approval.",
     "summary_title": "Summary",
     "summary_course": "Course",
@@ -420,5 +421,176 @@
     "hours_ot": "Tutorial Orientation (OT)",
     "hours_o": "Other (O)",
     "not_configured": "Not configured"
+  },
+  "manual": {
+    "title": "User Manual",
+    "subtitle": "Detailed help guide for using and administering the GesPT platform.",
+    "back_to_top": "Back to top",
+    "categories": {
+      "courses": "Courses",
+      "ucs": "Curricular Units",
+      "plans": "Study Plans",
+      "users": "Users",
+      "roles": "Roles & Permissions",
+      "domains": "Authentication Domains",
+      "audit": "Auditing"
+    },
+    "fields": {
+      "description": "Description",
+      "permissions": "Required permissions",
+      "steps": "Step-by-step instructions"
+    },
+    "sections": {
+      "course_view": {
+        "title": "View Course",
+        "desc": "View detailed course information, including the list of Curricular Units (UCs) and associated Study Plans.",
+        "permissions": "View Courses",
+        "steps": "1. Go to the Home page of the platform.\n2. Use the search bar to filter courses by name, acronym, or code.\n3. Click on the course card or 'Course Details' to view more information."
+      },
+      "course_create": {
+        "title": "Create Course",
+        "desc": "Create a new course in the platform's general catalog.",
+        "permissions": "Create Courses",
+        "steps": "1. On the Home page, click the '+ New course' button in the top-right corner.\n2. In the modal, fill in the Name (PT), Name (EN), Acronym, and Code.\n3. Click 'Save' to finalize creation."
+      },
+      "course_edit": {
+        "title": "Edit Course",
+        "desc": "Modify metadata of an existing course (such as names or acronym).",
+        "permissions": "Edit Courses",
+        "steps": "1. Open the details page of the course you wish to edit.\n2. Click the 'Edit Course' button on the top panel.\n3. Update the form data in the editing modal.\n4. Click 'Save' to register changes."
+      },
+      "course_delete": {
+        "title": "Delete Course",
+        "desc": "Permanently delete a course along with all its UCs and associated study plans.",
+        "permissions": "Delete Courses",
+        "steps": "1. Open the corresponding course details page.\n2. Click 'Delete Course' in the top-right corner.\n3. Carefully read the confirmation warning and confirm the permanent deletion."
+      },
+      "uc_view": {
+        "title": "View UC",
+        "desc": "Consult academic details of a Curricular Unit, such as contact hours breakdown and study plans it belongs to.",
+        "permissions": "View UCs",
+        "steps": "1. Go to the details page of the course the UC belongs to.\n2. In the Curricular Units table, click on the name of the desired UC.\n3. You will be redirected to the page displaying contact hours and workload distribution."
+      },
+      "uc_create": {
+        "title": "Create UC",
+        "desc": "Add a new Curricular Unit to a course.",
+        "permissions": "Create UCs",
+        "steps": "1. Go to the course details page.\n2. In the header of the UC table, click the 'Add UC' button.\n3. Fill in the name, acronym, ECTS, semester, year, and detailed hours breakdown fields.\n4. Click 'Create & Add UC'."
+      },
+      "uc_edit": {
+        "title": "Edit UC",
+        "desc": "Change Curricular Unit details or configure optional UCs associated with it.",
+        "permissions": "Edit UCs",
+        "steps": "1. Go to the details page of the corresponding UC.\n2. At the top-right, click the 'Edit' button.\n3. Modify the desired information in the input fields or the UC Options section.\n4. Click 'Save' to register changes."
+      },
+      "uc_delete": {
+        "title": "Delete UC",
+        "desc": "Remove a Curricular Unit from a course.",
+        "permissions": "Delete UCs",
+        "steps": "1. Go to the details page of the course the UC belongs to.\n2. In the UCs table, click the trash can icon ('Delete UC') on the UC's row.\n3. Confirm permanent deletion in the dialog box."
+      },
+      "plan_view_compare": {
+        "title": "View/Compare Study Plan",
+        "desc": "View and perform comparative analysis of equivalences and discontinued UCs between two study plans.",
+        "permissions": "None (General Access)",
+        "steps": "1. Click the 'Comparison' link in the main navigation menu.\n2. Select the Course, Initial study plan, and Target study plan.\n3. Analyze the equivalences table. Click 'Export to Excel' or 'Export to PDF' to download the report."
+      },
+      "plan_create": {
+        "title": "Create Study Plan",
+        "desc": "Use the guided Wizard to create a curriculum study plan with structured UCs and equivalences.",
+        "permissions": "Create Study Plans",
+        "steps": "1. Click 'Create study plan' in the navigation menu.\n2. Step 1 (Course): Select an existing course or click to create a new one.\n3. Step 2 (Info): Define the study plan name, academic year (e.g. 2026/2027), and dates.\n4. Step 3 (UCs): Add UCs (existing or new) and specify semester/ECTS.\n5. Step 4 (Equivalences): Select the previous plan and map equivalences.\n6. Click 'Save study plans'."
+      },
+      "plan_edit": {
+        "title": "Edit Study Plan",
+        "desc": "Update details and structure of an existing study plan using the guided Wizard.",
+        "permissions": "Edit Study Plans",
+        "steps": "1. Go to the details page of the associated course.\n2. In the Study Plans table, click the 'Edit study plan' button (pencil icon) for that plan.\n3. In the wizard, update the necessary UCs or equivalences.\n4. Click 'Save study plans'."
+      },
+      "plan_delete": {
+        "title": "Delete Study Plan",
+        "desc": "Remove a study plan from the system.",
+        "permissions": "Delete Study Plans",
+        "steps": "1. Go to the corresponding course details page.\n2. In the Study Plans table, click the trash can icon for the plan.\n3. Confirm permanent deletion in the dialog box."
+      },
+      "user_view": {
+        "title": "View User",
+        "desc": "Consult the list of authorized users in the platform.",
+        "permissions": "View Users",
+        "steps": "1. Click 'Administration' in the top navigation menu.\n2. Open the 'Authentication and Users' tab.\n3. View the complete list in the Authorized access list table. Use the search field to filter by name or email."
+      },
+      "user_create": {
+        "title": "Create User",
+        "desc": "Add a new local or remote user to the authorized access list.",
+        "permissions": "Create Users",
+        "steps": "1. In the Administration panel, under 'Authentication and Users', click the '+ Add' (or '+ Add entry') button.\n2. Fill in the Name, Email, Account Type (Remote SSO or Local), Password, and Recovery Email.\n3. Click 'Save' to register the user."
+      },
+      "user_edit": {
+        "title": "Edit User",
+        "desc": "Update user information and configure their assigned roles and custom permissions.",
+        "permissions": "Edit Users",
+        "steps": "1. Locate the user in the user table under the Administration panel.\n2. Click the corresponding pencil icon.\n3. In the editing modal, change information and select/uncheck desired roles and custom permissions.\n4. Click 'Save' to register changes."
+      },
+      "user_block": {
+        "title": "Block User",
+        "desc": "Temporarily block a user from accessing the platform.",
+        "permissions": "Block Users",
+        "steps": "1. Locate the user in the user table under the Administration panel.\n2. Click the lock icon on the corresponding user row.\n3. In the confirmation modal, optionally enter a blocking reason.\n4. Click 'Block'. The user will now display a closed lock icon."
+      },
+      "user_delete": {
+        "title": "Delete User",
+        "desc": "Permanently remove a user account from the platform.",
+        "permissions": "Delete Users",
+        "steps": "1. Locate the user in the user table under the Administration panel.\n2. Click the trash can icon corresponding to the user.\n3. Confirm deletion in the dialog box."
+      },
+      "role_view": {
+        "title": "View Roles",
+        "desc": "Consult configured roles and permissions on the platform.",
+        "permissions": "View Roles",
+        "steps": "1. Go to 'Administration' in the top menu.\n2. Select the 'Role Management' tab.\n3. View roles, descriptions, and the number of associated users."
+      },
+      "role_create": {
+        "title": "Create Role",
+        "desc": "Create a new role to group access permissions.",
+        "permissions": "Create Roles",
+        "steps": "1. Under 'Role Management', click the '+ Add Role' button.\n2. Enter the Role Name, Description, and select associated permissions from the checklist.\n3. Click 'Save Role'."
+      },
+      "role_edit": {
+        "title": "Edit Role",
+        "desc": "Modify details or permissions associated with an existing role.",
+        "permissions": "Edit Roles",
+        "steps": "1. Under 'Role Management', locate the role in the list and click the pencil icon.\n2. In the modal, edit the name, description, and adjust the permissions selection.\n3. Click 'Save Role'."
+      },
+      "role_assign": {
+        "title": "Assign Role",
+        "desc": "Associate roles directly with users or define default rules by email domain.",
+        "permissions": "Edit Users or Edit Domains",
+        "steps": "1. Direct: edit the user in the admin panel and select the desired role from the dropdown.\n2. Auto-assign: configure a 'Default role' in the accepted domains list, which applies automatically on first successful login."
+      },
+      "domain_add": {
+        "title": "Add Domain",
+        "desc": "Authorize an institutional email domain to register or authenticate on the platform.",
+        "permissions": "Create Domains",
+        "steps": "1. Go to 'Administration' and open the 'Authentication and Users' tab.\n2. In the left panel form, type the email domain (e.g. ipleiria.pt) in the input field.\n3. Click the 'Add' (or 'Add entry') button."
+      },
+      "domain_edit": {
+        "title": "Edit Domain",
+        "desc": "Configure the default role automatically assigned to new users from a domain.",
+        "permissions": "Edit Domains",
+        "steps": "1. Open the 'Accepted Domains' panel in the 'Authentication and Users' tab.\n2. Locate the domain and use the 'Default role' dropdown to select the target role.\n3. The change is saved dynamically in the system."
+      },
+      "domain_remove": {
+        "title": "Remove Domain",
+        "desc": "Deauthorize an email domain, preventing new logins from users with that domain.",
+        "permissions": "Delete Domains",
+        "steps": "1. Open the 'Accepted Domains' panel in the 'Authentication and Users' tab.\n2. Locate the domain and click the corresponding trash can icon.\n3. Confirm removal (note: base domains like 'gespt.local' cannot be removed)."
+      },
+      "audit_view": {
+        "title": "View Audit",
+        "desc": "Consult detailed logs of critical actions and changes executed on the platform for security purposes.",
+        "permissions": "View Audit Logs",
+        "steps": "1. Go to 'Administration' and click the 'Audit Logs' tab.\n2. Use the filter buttons at the top to narrow down results (e.g. failed logins, database changes, access control).\n3. Click 'Show details' to view detailed JSON data for any log entry."
+      }
+    }
   }
 }

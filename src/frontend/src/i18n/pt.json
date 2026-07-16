@@ -13,7 +13,8 @@
     "logout": "Terminar sessão",
     "theme_light": "Mudar para modo claro",
     "theme_dark": "Mudar para modo escuro",
-    "language_toggle": "Mudar idioma"
+    "language_toggle": "Mudar idioma",
+    "manual": "Manual do Utilizador"
   },
   "footer": {
     "description": "Plataforma institucional para gestão de planos de estudo curriculares e equivalências académicas.",
@@ -201,7 +202,7 @@
     "block": "Bloquear",
     "block_user_title": "Bloquear Utilizador",
     "unblock_user_title": "Desbloquear Utilizador",
-    "block_reason_label": "Motivo (opcional)",
+    "block_reason_label": "Motivo",
     "block_reason_placeholder": "Adicione um motivo para o bloqueio",
     "block_reason_title": "Motivo do bloqueio",
     "block_reason_empty": "Nenhum motivo fornecido.",
@@ -243,9 +244,9 @@
     "plan_name_placeholder": "Engenharia Informática - Revisão 2026",
     "effective_date": "Data de entrada em vigor",
     "expiration_date": "Data de expiração",
-    "institutional_code": "Código institucional (opcional)",
+    "institutional_code": "Código institucional",
     "code_placeholder": "EI-2026-REV-A",
-    "description": "Descrição (opcional)",
+    "description": "Descrição",
     "description_placeholder": "Resumo técnico para contexto académico e aprovação institucional.",
     "summary_title": "Resumo",
     "summary_course": "Curso",
@@ -420,5 +421,176 @@
     "hours_ot": "Orientação Tutoria (OT)",
     "hours_o": "Outras (O)",
     "not_configured": "Não configurado"
+  },
+  "manual": {
+    "title": "Manual do Utilizador",
+    "subtitle": "Guia de ajuda detalhado para utilização e administração da plataforma GesPT.",
+    "back_to_top": "Voltar ao topo",
+    "categories": {
+      "courses": "Cursos",
+      "ucs": "Unidades Curriculares",
+      "plans": "Planos de Estudo",
+      "users": "Utilizadores",
+      "roles": "Roles e Permissões",
+      "domains": "Domínios de Autenticação",
+      "audit": "Auditoria"
+    },
+    "fields": {
+      "description": "Descrição",
+      "permissions": "Permissões necessárias",
+      "steps": "Instruções passo a passo"
+    },
+    "sections": {
+      "course_view": {
+        "title": "Ver Curso",
+        "desc": "Visualize as informações detalhadas de um curso, incluindo a listagem de Unidades Curriculares e os Planos de Estudo associados.",
+        "permissions": "Visualizar Cursos",
+        "steps": "1. Aceda à página inicial (Ínicio) da plataforma.\n2. Utilize a barra de pesquisa para filtrar os cursos por nome, sigla ou código.\n3. Clique no cartão do curso ou em 'Detalhes do Curso' para ver mais informações."
+      },
+      "course_create": {
+        "title": "Criar Curso",
+        "desc": "Crie um novo curso no catálogo geral da plataforma.",
+        "permissions": "Criar Cursos",
+        "steps": "1. Na página inicial, clique no botão '+ Novo curso' no canto superior direito.\n2. Introduza o Nome em Português, Nome em Inglês, Sigla e Código do curso no modal.\n3. Clique em 'Guardar' para concluir a criação."
+      },
+      "course_edit": {
+        "title": "Editar Curso",
+        "desc": "Modifique os metadados de um curso existente (como nomes ou sigla).",
+        "permissions": "Editar Cursos",
+        "steps": "1. Abra a página do curso que pretende editar.\n2. Clique no botão 'Editar Curso' no painel superior.\n3. Atualize os dados do formulário no modal de edição.\n4. Clique em 'Guardar' para gravar as alterações."
+      },
+      "course_delete": {
+        "title": "Apagar Curso",
+        "desc": "Elimine permanentemente um curso e todas as suas UCs e planos associados.",
+        "permissions": "Eliminar Cursos",
+        "steps": "1. Abra a página do curso correspondente.\n2. Clique em 'Eliminar Curso' no canto superior direito.\n3. Leia atentamente o aviso de confirmação e confirme a eliminação definitiva."
+      },
+      "uc_view": {
+        "title": "Ver UC",
+        "desc": "Consulte o detalhe académico de uma Unidade Curricular, como carga horária detalhada e planos onde está inserida.",
+        "permissions": "Visualizar UCs",
+        "steps": "1. Aceda à página de detalhes do curso ao qual a UC pertence.\n2. Na tabela de Unidades Curriculares, clique no nome da UC pretendida.\n3. Será redirecionado para a página com as horas de contacto e distribuição de carga horária."
+      },
+      "uc_create": {
+        "title": "Criar UC",
+        "desc": "Adicione uma nova Unidade Curricular a um curso.",
+        "permissions": "Criar UCs",
+        "steps": "1. Vá à página de detalhes do curso.\n2. No cabeçalho da tabela de UCs, clique no botão 'Adicionar UC'.\n3. Preencha os campos de nome, sigla, ECTS, semestre, ano e distribuição detalhada de horas.\n4. Clique em 'Criar e Adicionar UC'."
+      },
+      "uc_edit": {
+        "title": "Editar UC",
+        "desc": "Altere as informações de uma Unidade Curricular ou as UCs opcionais associadas a esta.",
+        "permissions": "Editar UCs",
+        "steps": "1. Aceda à página de detalhes da UC correspondente.\n2. No topo direito, clique no botão 'Editar'.\n3. Modifique os dados desejados nos campos de input ou na secção de Opções da UC.\n4. Clique em 'Guardar' para gravar as alterações."
+      },
+      "uc_delete": {
+        "title": "Apagar UC",
+        "desc": "Elimine uma Unidade Curricular de um curso.",
+        "permissions": "Eliminar UCs",
+        "steps": "1. Aceda à página de detalhes do curso ao qual a UC pertence.\n2. Na tabela de UCs, clique no ícone do caixote do lixo ('Eliminar UC') na linha da UC.\n3. Confirme a eliminação definitiva na caixa de diálogo."
+      },
+      "plan_view_compare": {
+        "title": "Ver/Comparar Plano de Estudo",
+        "desc": "Visualize e analise comparativamente as equivalências e UCs descontinuadas entre dois planos de estudo.",
+        "permissions": "Nenhuma (Acesso Geral)",
+        "steps": "1. Clique no link 'Comparação' no menu de navegação principal.\n2. Selecione o Curso, o Plano de Estudo Inicial e o Plano de Estudo de Destino.\n3. Analise a tabela de equivalências. Clique em 'Exportar para Excel' ou 'Exportar para PDF' para descarregar o relatório."
+      },
+      "plan_create": {
+        "title": "Criar Plano de Estudo",
+        "desc": "Utilize o Assistente guiado para criar um plano de estudo curricular com UCs e equivalências estruturadas.",
+        "permissions": "Criar Planos de Estudo",
+        "steps": "1. Clique em 'Criar plano de estudo' no menu de navegação.\n2. Etapa 1 (Curso): Selecione o curso existente ou clique em criar um novo.\n3. Etapa 2 (Dados): Defina o nome do plano, ano letivo (ex: 2026/2027) e datas.\n4. Etapa 3 (UCs): Adicione as UCs (existentes ou novas) e defina semestre/ECTS.\n5. Etapa 4 (Equivalências): Selecione o plano anterior e mapeie as equivalências.\n6. Clique em 'Guardar plano de estudo'."
+      },
+      "plan_edit": {
+        "title": "Editar Plano de Estudo",
+        "desc": "Atualize os dados e a estrutura de um plano de estudo existente usando o Assistente guiado.",
+        "permissions": "Editar Planos de Estudo",
+        "steps": "1. Aceda à página de detalhes do curso associado.\n2. Na tabela de Planos de Estudo, clique no botão 'Editar plano de estudo' (ícone de lápis) correspondente ao plano.\n3. No assistente, atualize os dados das UCs ou equivalências necessárias.\n4. Clique em 'Guardar plano de estudo'."
+      },
+      "plan_delete": {
+        "title": "Apagar Plano de Estudo",
+        "desc": "Elimine um plano de estudo do sistema.",
+        "permissions": "Eliminar Planos de Estudo",
+        "steps": "1. Aceda à página do curso correspondente.\n2. Na tabela de Planos de Estudo, clique no ícone da lixeira correspondente ao plano.\n3. Confirme a eliminação definitiva na caixa de diálogo."
+      },
+      "user_view": {
+        "title": "Ver Utilizador",
+        "desc": "Consulte a lista de utilizadores autorizados na plataforma.",
+        "permissions": "Visualizar Utilizadores",
+        "steps": "1. Clique em 'Administração' no menu de navegação superior.\n2. Aceda à aba 'Autenticação e Utilizadores'.\n3. Veja a lista completa na tabela e utilize a barra de pesquisa para filtrar por nome ou email."
+      },
+      "user_create": {
+        "title": "Criar Utilizador",
+        "desc": "Adicione um novo utilizador local ou remoto à lista de acessos autorizados.",
+        "permissions": "Criar Utilizadores",
+        "steps": "1. No painel de Administração, na aba 'Autenticação e Utilizadores', clique no botão '+ Adicionar' (ou '+ Adicionar Entrada').\n2. Preencha o Nome, Email, Tipo de Conta (Remota SSO ou Local), Palavra-passe e Email de Recuperação.\n3. Clique em 'Guardar' para registar o utilizador."
+      },
+      "user_edit": {
+        "title": "Editar Utilizador",
+        "desc": "Atualize as informações de um utilizador e ajuste as suas roles e permissões individuais.",
+        "permissions": "Editar Utilizadores",
+        "steps": "1. Localize o utilizador na tabela de utilizadores no painel de Administração.\n2. Clique no ícone de lápis correspondente.\n3. No modal de edição, altere os dados e selecione/desmarque as roles e as permissões individuais pretendidas.\n4. Clique em 'Guardar' para registar as alterações."
+      },
+      "user_block": {
+        "title": "Bloquear Utilizador",
+        "desc": "Bloqueie temporariamente o acesso de um utilizador à plataforma.",
+        "permissions": "Bloquear Utilizadores",
+        "steps": "1. Localize o utilizador na tabela de utilizadores no painel de Administração.\n2. Clique no ícone de cadeado na linha do utilizador correspondente.\n3. No modal de confirmação, introduza o motivo do bloqueio.\n4. Clique em 'Bloquear'. O utilizador passará a exibir um ícone de cadeado trancado."
+      },
+      "user_delete": {
+        "title": "Apagar Utilizador",
+        "desc": "Remova permanentemente a conta de um utilizador da plataforma.",
+        "permissions": "Eliminar Utilizadores",
+        "steps": "1. Localize o utilizador na tabela de utilizadores no painel de Administração.\n2. Clique no ícone de lixeira correspondente ao utilizador.\n3. Confirme a eliminação na caixa de diálogo."
+      },
+      "role_view": {
+        "title": "Ver Roles",
+        "desc": "Consulte a listagem de roles e permissões configuradas na plataforma.",
+        "permissions": "Visualizar Roles",
+        "steps": "1. Vá a 'Administração' no menu superior.\n2. Selecione a aba 'Gestão de Roles'.\n3. Consulte as roles, a descrição e o número de utilizadores associados a cada uma."
+      },
+      "role_create": {
+        "title": "Criar Role",
+        "desc": "Crie uma nova role para agrupar permissões de acesso.",
+        "permissions": "Criar Roles",
+        "steps": "1. Na aba 'Gestão de Roles', clique no botão '+ Adicionar Role'.\n2. Insira o nome da role e a descrição.\n3. Selecione as permissões pretendidas na lista de checkboxes.\n4. Clique em 'Guardar Role'."
+      },
+      "role_edit": {
+        "title": "Editar Role",
+        "desc": "Modifique os detalhes ou a seleção de permissões associadas a uma role existente.",
+        "permissions": "Editar Roles",
+        "steps": "1. Na aba 'Gestão de Roles', localize a role na listagem e clique no ícone de lápis.\n2. No modal, edite o nome, a descrição e ajuste a seleção de permissões.\n3. Clique em 'Guardar Role'."
+      },
+      "role_assign": {
+        "title": "Atribuir Role",
+        "desc": "Associe roles a utilizadores diretamente ou defina regras padrão por domínio.",
+        "permissions": "Editar Utilizadores ou Editar Domínios",
+        "steps": "1. Para um utilizador: edite o utilizador no painel de administração e selecione a role desejada no dropdown.\n2. Para um domínio: configure a 'Role por defeito' na lista de domínios aceites, aplicando-a a novos utilizadores desse domínio no primeiro login."
+      },
+      "domain_add": {
+        "title": "Adicionar Domínio",
+        "desc": "Autorize um domínio de email institucional a registar-se ou autenticar-se na plataforma.",
+        "permissions": "Criar Domínios",
+        "steps": "1. Vá a 'Administração' e abra a aba 'Autenticação e Utilizadores'.\n2. No formulário do painel esquerdo, digite o domínio de email (ex: ipleiria.pt) no campo correspondente.\n3. Clique no botão 'Adicionar'."
+      },
+      "domain_edit": {
+        "title": "Editar Domínio",
+        "desc": "Configure a role por defeito atribuída automaticamente aos novos utilizadores de um domínio.",
+        "permissions": "Editar Domínios",
+        "steps": "1. Aceda ao painel 'Domínios Aceites' na aba 'Autenticação e Utilizadores'.\n2. Localize o domínio e utilize o dropdown 'Role por defeito' para escolher a role a associar.\n3. A alteração é gravada dinamicamente no sistema."
+      },
+      "domain_remove": {
+        "title": "Remover Domínio",
+        "desc": "Remova a autorização de um domínio de email, impedindo novas autenticações de utilizadores desse domínio.",
+        "permissions": "Eliminar Domínios",
+        "steps": "1. Vá ao painel 'Domínios Aceites' na aba 'Autenticação e Utilizadores'.\n2. Localize o domínio e clique no botão de lixeira correspondente.\n3. Confirme a eliminação (nota: domínios base como 'gespt.local' não podem ser removidos)."
+      },
+      "audit_view": {
+        "title": "Ver Auditoria",
+        "desc": "Consulte o registo detalhado de ações e alterações críticas executadas na plataforma para fins de segurança.",
+        "permissions": "Visualizar Auditoria",
+        "steps": "1. Aceda a 'Administração' e clique na aba 'Registos de Auditoria'.\n2. Utilize os botões de filtro no topo para restringir a visualização (ex: logins falhados, alterações na base de dados, acessos).\n3. Clique em 'Mostrar detalhes' para visualizar dados JSON detalhados da atividade."
+      }
+    }
   }
 }

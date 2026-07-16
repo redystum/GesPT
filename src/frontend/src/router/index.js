@@ -14,7 +14,8 @@ const router = createRouter({
     { path: '/wizard', name: 'wizard', component: () => import('../views/PlanWizardView.vue') },
     { path: '/wizard/edit/:id', name: 'plan-edit-wizard', component: () => import('../views/PlanEditWizardView.vue') },
     { path: '/curso/:id', name: 'course', component: () => import('../views/CourseView.vue') },
-    { path: '/uc/:id', name: 'uc-detail', component: () => import('../views/UcDetailView.vue') }
+    { path: '/uc/:id', name: 'uc-detail', component: () => import('../views/UcDetailView.vue') },
+    { path: '/manual', name: 'manual', component: () => import('../views/ManualView.vue') }
   ]
 })
 

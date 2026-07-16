@@ -1,4 +1,7 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '@/stores/auth'
+const authStore = useAuthStore()
+</script>
 
 <template>
   <footer class="mt-auto border-t border-t-neutral-200 dark:border-t-neutral-800 bg-white dark:bg-[#1a1a1a] transition-colors duration-150">
@@ -15,6 +18,12 @@
         </div>
 
         <div class="flex flex-wrap items-center gap-5">
+          <router-link
+            v-if="authStore.isLoggedIn"
+            to="/manual"
+            class="text-sm transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
+            >{{ $t('nav.manual') }}</router-link
+          >
           <a
             href="#"
             class="text-sm transition-colors duration-200 text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100"
