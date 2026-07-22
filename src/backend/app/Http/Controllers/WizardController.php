@@ -53,6 +53,10 @@ class WizardController extends Controller implements HasMiddleware
             $ucs_to_plan_ucs = [];
             foreach ($data->ucs as $ucData) {
                 $uc = Uc::find($ucData->id);
+                if (!$uc)
+                {
+                    $uc = Uc::where('id_curso', $course->id)->where('sigla', $ucData->sigla)->first();
+                }
                 if (!$uc && $ucData->isNew) {
                     $uc = Uc::create([
                         'nome' => $ucData->nome,
